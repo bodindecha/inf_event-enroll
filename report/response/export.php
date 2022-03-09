@@ -201,12 +201,11 @@
                 header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
                 // force download dialog
                 if (strpos(php_sapi_name(), "cgi") === false) {
-                    header("Content-Type: $mime", true);
-                    # header("Content-Type: application/force-download");
+                    # header("Content-Type: $mime", true);
+                    header("Content-Type: application/force-download");
                     header("Content-Type: application/octet-stream", false);
                     header("Content-Type: application/download", false);
-                    # header("Content-Type: application/pdf", false);
-                    # header("Content-Type: $mime", false);
+                    header("Content-Type: $mime", false);
                     header("Content-Length: ".strlen(strval($outputData)));
                 } else header("Content-Type: $mime");
                 // use the Content-Disposition header to supply a recommended filename
