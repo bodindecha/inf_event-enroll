@@ -62,7 +62,8 @@
 					dlFile: function(type) {
 						switch (parseInt(type)) {
 							case 0: case 1: case 2: type = "1n"; break;
-							case 3: case 4: type = "1g"; break;
+							case 3: type = "1m"; break;
+							case 4: type = "1s"; break;
 							case 5: type = "4s"; break;
 							case 6: type = "4n"; break;
 							case 7: type = "4d"; break;
