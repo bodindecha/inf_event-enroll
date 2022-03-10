@@ -236,7 +236,7 @@
 		</main>
 		<?php require($dirPWroot."resource/hpe/material.php"); ?>
 		<footer>
-			<?php require($dirPWroot."resource/hpe/footer.php"); ?>
+			<?php require($dirPWroot."e/enroll/resource/hpe/footer.php"); ?>
 		</footer>
 	</body>
 </html>
