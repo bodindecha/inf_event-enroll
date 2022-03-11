@@ -182,6 +182,7 @@
                 case "tsv": $mime = "text/tsv"; break;
                 case "json": $mime = "application/json"; break;
             } if ($reqType == "json") $outputData = json_encode($outputData, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+            $evdLink = $evdLink ? "T" : "F";
             if (isset($error)) {
                 $error = array("905", '3, "Unknown error occurred."');
                 slog($authuser, "admission", "mod", "export", "$system,$reqType,$evdLink", "fail");
@@ -223,7 +224,7 @@
 
     if (isset($error)) {
         $header_title = "การนำออกข้อมูล";
-        $header_menu = "mod";
+        $home_menu = "mod";
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">

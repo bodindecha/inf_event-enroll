@@ -25,8 +25,9 @@
 					<li><a href="response/M4-change">เปลี่ยนกลุ่มการเรียน</a></li>
 					<li><a href="response/M4-confirm">ยืนยันสิทธิ์</a></li>
 				</ul>
-				<input name="mod" type="checkbox" id="ref_menu-c"><label for="ref_menu-c">ควรระวัง</label><ul>
+				<input name="mod" type="checkbox" id="ref_menu-c"><label for="ref_menu-c">การจัดการ</label><ul>
 					<li><a href="time-control">ตั้งค่าเวลา</a></li>
+					<li><a href="print-form">พิมพ์เอกสารใบมอบตัว</a></li>
 					<li><a href="delete-response">ลบรายการการตอบกลับ</a></li>
 					<li><a href="export-result">นำออกข้อมูล</a></li>
 				</ul>

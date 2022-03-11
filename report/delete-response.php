@@ -2,7 +2,7 @@
     $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "ลบรายการการตอบกลับ";
-	$header_menu = "mod";
+	$home_menu = "mod";
 	
 	$forceExternalBrowser = true;
 	$permitted = has_perm("admission");
@@ -142,9 +142,7 @@
 						<button name="lookup" class="blue" onClick="return drp.search()">ค้นหาข้อมูล</button>
 					</div>
 				</form>
-				<form class="result form message">
-
-				</form>
+				<form class="result form message"></form>
 			</div><?php } ?>
 		</main>
 		<?php require($dirPWroot."resource/hpe/material.php"); ?>

@@ -2,7 +2,7 @@
     $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "การนำออกข้อมูล";
-	$header_menu = "mod";
+	$home_menu = "mod";
     
 	$permitted = has_perm("admission");
 ?>

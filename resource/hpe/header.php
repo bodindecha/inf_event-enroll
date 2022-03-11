@@ -13,10 +13,11 @@
 		<div class="head-item text">
 			<?php if (has_perm("admission")) { ?>
 				<a href="/e/enroll/report/<?=!empty($home_menu??"")?"#menu=$home_menu":""?>"><span>เมนูหลัก</span></a>
-				<a href="/e/enroll/report/response/M4-present"><span>รายงานตัว</span></a>
+				<a href="/e/enroll/report/print-form"><span>พิมพ์เอกสาร</span></a>
+				<!--a href="/e/enroll/report/response/M4-present"><span>รายงานตัว</span></a>
 				<a href="/e/enroll/report/response/M4-change"><span>เปลี่ยนกลุ่มการเรียน</span></a>
 				<a href="/e/enroll/report/response/M4-confirm"><span>ยืนยันสิทธิ์</span></a>
-				<a href="/e/enroll/report/response/new-student"><span>นักเรียนใหม่</span></a>
+				<a href="/e/enroll/report/response/new-student"><span>นักเรียนใหม่</span></a-->
 				<a href="/e/enroll/report/delete-response"><span>ลบการตอบกลับ</span></a>
 			<?php } else { ?>
 				<a href="/e/enroll/new"><span>นักเรียนใหม่</span></a>

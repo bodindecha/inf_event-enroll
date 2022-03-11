@@ -3,7 +3,7 @@
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "การตอบกลับ - งานรับนักเรียน";
 	$header_desc = "นักเรียนเดิม: รายงานตัว";
-	$header_menu = "old";
+	$home_menu = "old";
 
 	$forceExternalBrowser = true;
 	$permitted = has_perm("admission");

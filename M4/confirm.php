@@ -8,7 +8,7 @@
 	$authuser = $_SESSION['auth']['user'] ?? "";
 
 	// Check right
-	$getstatus = $db -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop,c.name FROM admission_confirm a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sgroup c ON a.type=c.code WHERE a.stdid=$authuser");
+	$getstatus = $db -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop,c.name,e.name AS new FROM admission_confirm a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sgroup c ON a.type=c.code INNER JOIN admission_change d ON a.stdid=d.stdid LEFT JOIN admission_sgroup e ON d.choose=e.code WHERE a.stdid=$authuser");
 	$permitted = ($getstatus && $getstatus -> num_rows == 1);
 	if ($permitted) {
 		$readstatus = $getstatus -> fetch_array(MYSQLI_ASSOC);
@@ -137,7 +137,9 @@
 			<div class="container">
 				<h2>ระบบยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 				<?php if (!$permitted) echo '<center class="message red">นักเรียนไม่มีสิทธิ์ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ</center>'; else { ?>
-					<center class="message cyan">การยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2565<br><?=$_SESSION['auth']['name']['th']['a']?> กลุ่มการเรียน<u><?=$readstatus["name"]?></u></center>
+					<center class="message cyan">การยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2565<br><?=$_SESSION['auth']['name']['th']['a']?> กลุ่มการเรียน<u><?=$readstatus["name"]?></u>
+						<?php if (!empty($readstatus['new'])) echo '<center class="message blue" style="margin: 10px 0px 0px">คำร้องการขอเปลี่ยนเป็นกลุ่มการเรียน<u>'.$readstatus['new'].'</u>จะได้รับการพิจารณา'.($readstatus['choose'] == "Y" ? "ภายหลัง" : "หลังนักเรียนกดยืนยันสิทธิ์").'</center>'; ?>
+					</center>
 					<?php if (empty($readstatus['choose'])) { ?>
 						<?php if ($inTime) { ?>
 							<center class="message yellow">นักเรียนสามารถเลือกได้เพียง 1 ครั้งเท่านั้น ภายใน<?=date("วันที่ d/m/Y เวลา H:iน.", strtotime($readstatus["stop"]))?></center>
@@ -157,7 +159,6 @@
 									<button class="last red" onClick="return cnf.choose(false)">สละสิทธิ์การเข้าศึกษาต่อ</button>
 								</div>
 							</form>
-							<iframe name="dlframe" hidden></iframe>
 						<?php } else { ?>
 							<center class="message red">ขณะนี้อยู่นอกช่วงเวลาในการยืนยันสิทธิ์ของนักเรียน</center>
 					<?php } } else { ?>
@@ -171,8 +172,8 @@
 							</ol>
 							<center><a href="/e/enroll/resource/file/dl?name=sef-4n" target="dlframe" download="ใบมอบตัว.pdf">[<i class="material-icons">download</i> ใบมอบตัว ]</a></center>
 						</div>
-						<iframe name="dlframe" hidden></iframe>
 				<?php } } } ?>
+				<iframe name="dlframe" hidden></iframe>
 			</div>
 		</main>
 		<?php require($dirPWroot."resource/hpe/material.php"); ?>

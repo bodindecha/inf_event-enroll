@@ -63,6 +63,7 @@
             <label>เจ้าหน้าที่</label>
             <ul><?php if (has_perm("admission")) { ?>
 		    	<li><a href="/e/enroll/report/"><span>เมนูหลัก</span></a></li>
+                <li><a href="/e/enroll/report/time-control"><span>ตั้งค่าเวลา</span></a></li>
                 <li class="epdb"><details open>
                     <summary>รายงานการตอบกลับ</summary>
                     <ul>
@@ -77,7 +78,7 @@
                         <li><a href="/e/enroll/report/response/new-student"><span>นักเรียนใหม่</span></a></li>
                     </ul>
                 </details></li>
-                <li><a href="/e/enroll/report/time-control"><span>ตั้งค่าเวลา</span></a></li>
+                <li><a href="/e/enroll/report/print-form"><span>พิมพ์เอกสารใบมอบตัว</span></a></li>
                 <li><a href="/e/enroll/report/delete-response"><span>ลบรายการการตอบกลับ</span></a></li>
                 <li><a href="/e/enroll/report/export-result"><span>นำออกข้อมูล</span></a></li>
                 <li class="seperator">&nbsp;</li>

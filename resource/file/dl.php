@@ -8,7 +8,7 @@
         switch ($file) {
             case "sggtmf": $type = "jpg"; $dl = false; $path = "ตัวอย่างใบรับรองผลการสมัครเข้าศึกษาต่อระดับชั้นมัธยมศึกษาปีที่ 4.$type"; break;
             case "csgrf": $type = "pdf"; $dl = true; $path = "ใบยื่นคำร้องขอเปลี่ยนกลุ่มการเรียน.$type"; $pages = 1; break;
-            case "waiver": $type = "pdf"; $dl = true; $path = "คำร้องสละสิทธิ์.$type"; $pages = 1; break;
+            case "waiver": $type = "pdf"; $dl = true; $path = "คำร้องขอสละสิทธิ์.$type"; $pages = 1; break;
             case "sef-1n": $type = "pdf"; $dl = true; $path = "ใบมอบตัว ห้องเรียนทั่วไป ม.1.$type"; $pages = 1; break;
             case "sef-1m": $type = "pdf"; $dl = true; $path = "ใบมอบตัว ห้องเรียนคณิต ม.1.$type"; $pages = 1; break;
             case "sef-1s": $type = "pdf"; $dl = true; $path = "ใบมอบตัว ห้องเรียนวิทย์ ม.1.$type"; $pages = 1; break;
@@ -46,8 +46,8 @@
 			if (preg_match("/^sef\-(1[nms]|4[dns])$/", $file) && $pageno == 1) { // Write PDF for confirm
 				$exportfile -> SetTextColor(0, 0, 0);
 				// Get student data
-				$authuser = $_SESSION['auth']['user'] ?? "";if (empty($authuser) && isset($_REQUEST['authuser'])) $authuser = decryptNID(trim($_REQUEST['authuser']));
-				if ($authuser <> "" && ($_SESSION['auth']['type']=="s" || isset($_REQUEST['authuser']))) {
+				$authuser = $_SESSION['auth']['user'] ?? ""; if (empty($authuser) && isset($_REQUEST['authuser'])) $authuser = decryptNID(trim($_REQUEST['authuser']));
+				if ($authuser <> "" && (isset($_REQUEST['authuser']) || $_SESSION['auth']['type']=="s")) {
 					// Fetch biological information
 					if ($file == "sef-4n") {
 						$pathToDB = "resource/php/core";
@@ -103,7 +103,7 @@
         $exportfile -> Output($dlname ?? $path, ($dl ? "D": "I"));
         /* --- PDF generation --- (END) */
     } else {
-        $header_title = (isset($error) ? "Error: $error" : "ไฟล์หลักฐาน");
+        $header_title = (isset($error) ? "Error: $error" : "ใบมอบตัวนักเรียน");
         if (!$dl && $type <> "pdf") $size = getimagesize($path);
 ?>
 <!doctype html>
