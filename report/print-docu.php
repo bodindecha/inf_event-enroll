@@ -73,7 +73,14 @@
 					$exportfile -> SetXY(190, 146.85);
 					$exportfile -> Cell(10, 0, $stdbio['oldgrade'], 0, 1, "C", 0, "", 0);
 				}
-			} // Send out file
+			} // Add printing JS
+			$script = isset($error) ? <<<EOD
+			$(document).ready(function() {
+				app.ui.notify(1, [$errorMsg]);
+			}); if (self == top) document.querySelector("main").innerHTML = '<iframe src="/error/$error">Error: $error</iframe>';
+			EOD : 'window.print();';
+			# $exportfile -> IncludeJS($script);
+			// Send out file
 			$exportfile -> Output($dlname ?? $path, "I");
 			/* --- PDF generation --- (END) */
 		}
