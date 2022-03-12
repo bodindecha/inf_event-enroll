@@ -2,6 +2,8 @@
     $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "แผงควบคุม - งานรับนักเรียน";
+
+	if (!isset($_SESSION['auth'])) header("Location: /?return_url=e%2Fenroll%2Freport%2F");
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">

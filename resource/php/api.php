@@ -248,7 +248,7 @@
                         break;
                     } default: array_push($return["reason"], array(1, "Invalid command")); break;
                 }
-            } header("Location: /e/enroll/M4/$name".(count($return["reason"]) ? "#msgID=".implode("", $return["reason"]) : ""));
+            } header("Location: /e/enroll/M4/$name".(!empty($return["reason"] ?? null) ? "#msgID=".implode("", $return["reason"]) : ""));
             break;
         } case "mod": {
             if (!has_perm("admission")) {
