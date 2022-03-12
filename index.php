@@ -53,7 +53,7 @@
 							<p>นักเรียนที่จบจากชั้นมัธยมศึกษาปีที่ 3 โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ที่มีลำดับใน<a href="#announcement">รายชื่อผู้มีสิทธิ์เข้าศึกษาต่อ</a>ชั้นมัธยมศึกษาปีที่ 4 โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</p>
 						</div>
 						<div class="action">
-							<a href="M4/" role="button" class="dont-ripple">ดำเนินการ</a>
+							<a <?=isset($_SESSION['auth']) ? 'href="M4/"' : 'onClick="sys.auth.orize(\'e%2Fenroll%2FM4%2F\')" href="javascript:void(0)"'?> role="button" class="dont-ripple">ดำเนินการ</a>
 						</div>
 					</div>
 				</div>

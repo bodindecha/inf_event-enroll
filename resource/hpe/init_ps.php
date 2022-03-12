@@ -29,12 +29,12 @@
                     // Not all authened zone
                     if ($_SESSION['auth']['type']=="s" && !preg_match("/^\/e\/enroll\/(M4\/.*|resource\/upload\/view)?$/", $url)) header("Location: /e/enroll/M4/"); // isStd
                     else if ($_SESSION['auth']['type']=="t" && !preg_match("/^\/e\/enroll\/(report\/.*)?$/", $url)) { // isTch
-                        if (has_perm("admission")) header("Location: /e/enroll/report/");
+                        /* if (has_perm("admission")) */ header("Location: /e/enroll/report/");
                     }
                 }
             }
         }
-    }
+    } if (!isset($require_sso)) $require_sso = false;
 
     // App cookie settings
     $exptimeout = strval(time()+31536000);

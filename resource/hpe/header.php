@@ -21,7 +21,7 @@
 				<a href="/e/enroll/report/delete-response"><span>ลบการตอบกลับ</span></a>
 			<?php } else { ?>
 				<a href="/e/enroll/new"><span>นักเรียนใหม่</span></a>
-				<a href="/e/enroll/M4"><span>นักเรียนเดิม</span></a>
+				<a <?=isset($_SESSION['auth']) ? 'href="/e/enroll/M4/"' : 'onClick="sys.auth.orize(\'e%2Fenroll%2FM4%2F\')" href="javascript:void(0)"'?>><span>นักเรียนเดิม<?=isset($_SESSION['auth'])?"":" (เข้าสู่ระบบ)"?></span></a>
 			<?php } ?>
 		</div>
 	</div></section>
