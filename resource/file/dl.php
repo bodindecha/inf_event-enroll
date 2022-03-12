@@ -48,8 +48,9 @@
 				// Get student data
 				$authuser = $_SESSION['auth']['user'] ?? ""; if (empty($authuser) && isset($_REQUEST['authuser'])) $authuser = decryptNID(trim($_REQUEST['authuser']));
 				if ($authuser <> "" && (isset($_REQUEST['authuser']) || $_SESSION['auth']['type']=="s")) {
+					$is_oldstd = ($file == "sef-4n" && substr($authuser, 0, 1) == "4");
 					// Fetch biological information
-					if ($file == "sef-4n") {
+					if ($is_oldstd) {
 						$pathToDB = "resource/php/core";
 						$sqlbio = "SELECT citizen_id,birthy+543 AS birthy,birthm,birthd FROM user_s WHERE stdid=$authuser";
 					} else {
@@ -64,7 +65,7 @@
 					if (isset($stdbio['amsid'])) $authuser = $stdbio['amsid'];
 					$dlname = substr($path, 0, strlen($path)-strlen($type)-1)." - $authuser.$type";
 					// Add student ID
-					if ($file == "sef-4n") {
+					if ($is_oldstd) {
 						$exportfile -> SetFont("thsarabun", "B", 22);
 						$exportfile -> SetXY(183, 38.25);
 						$exportfile -> Cell(17, 0, $authuser, 0, 1, "C", 0, "", 0);
@@ -82,7 +83,7 @@
 					// Add fullname 2
 					$exportfile -> SetXY(66.6, 106.1);
 					$exportfile -> Cell(55.5, 0, $stdbio['nameath'], 0, 1, "C", 0, "", 0);
-					if ($file == "sef-4n") {
+					if ($is_oldstd) {
 						// Add Birthday
 							$exportfile -> SetXY(135, 106.1);
 							$exportfile -> Cell(12, 0, $stdbio['birthd']??"", 0, 1, "C", 0, "", 0);
