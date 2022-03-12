@@ -353,35 +353,44 @@
                                 slog($authuser, "admission", $type, $command, "$user,$group", "fail", "", "InvalidOption");
                         } } break;
                     } case "check": {
-                        $user = escapeSQL($attr);
+                        $user = escapeSQL($attr['user']); $group = $attr['group'];
                         if (!preg_match("/^([13-7]\d{4}|8\d{5}|9{5})$/", $user))
-                            errorMessage(2, "รูปแบบเลขประจำตัวผู้สมัครไม่ถูกต้อง");
+                            errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
                         else {
-                            $getinfo = $db -> query("SELECT datid,CONCAT(namepth,namefth,' ',namelth) AS nameath,type,choose FROM admission_newstd WHERE amsid=$user");
-                            if (!$getinfo) {
-                                errorMessage(3, "Unable to get data.");
-                                slog($authuser, "admission", $type, $command, $user, "fail", "", "InvalidQuery");
-                            } else if ($getinfo -> num_rows <> 1) {
-                                errorMessage(1, "ไม่พบข้อมูลของเลขประจำตัว $user");
-                                slog($authuser, "admission", $type, $command, $user, "fail", "", "NotExisted");
+                            switch ($group) {
+                                case "new": $sqlinfo = "SELECT datid,CONCAT(namepth,namefth,' ',namelth) AS nameath,type,choose FROM admission_newstd WHERE amsid=$user"; break;
+                                case "old": $sqlinfo = "SELECT a.stdid AS datid,CONCAT(b.namepth,b.namefth,' ',b.namelth) AS nameath,c.name AS type,a.choose FROM admission_confirm a INNER JOIN bd_student b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code WHERE a.stdid=$user"; break;
+                            } if (isset($sqlinfo)) {
+                                $getinfo = $db -> query($sqlinfo);
+                                if (!$getinfo) {
+                                    errorMessage(3, "Unable to get data.");
+                                    slog($authuser, "admission", $type, $command, "$user,$group", "fail", "", "InvalidQuery");
+                                } else if ($getinfo -> num_rows <> 1) {
+                                    errorMessage(1, "ไม่พบข้อมูลของเลขประจำตัว $user");
+                                    slog($authuser, "admission", $type, $command, "$user,$group", "fail", "", "NotExisted");
+                                } else {
+                                    $readinfo = $getinfo -> fetch_array(MYSQLI_ASSOC); $data = array(
+                                        "action" => $readinfo["choose"] == "Y",
+                                        "impact" => encryptNID($readinfo["datid"])."+".strrev(str_rot13(encryptNID(($group == "new" ? intval($readinfo["type"]) : 7) + 1)))
+                                    ); if ($group == "new") {
+                                        $intype = array(
+                                            "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ
+                                            "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ (คุณสมบัติไม่ครบ) [deprecated]
+                                            "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // นอกเขตพื้นที่บริการ
+                                            "ห้องเรียนพิเศษคณิตศาสตร์", // ชั้นมัธยมศึกษาปีที่ 1
+                                            "ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม ตามแนวทาง สสวท. และ สอวน.", // ชั้นมัธยมศึกษาปีที่ 1
+                                            "ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม", // ชั้นมัธยมศึกษาปีที่ 4
+                                            "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 4
+                                            "โครงการห้องเรียน พสวท. (สู่ความเป็นเลิศ)" // ชั้นมัธยมศึกษาปีที่ 4
+                                        ); $readinfo["type"] = $intype[intval($readinfo["type"]) - 1];
+                                    } $data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานตัว".($group == "new" ? "ประเภท" : "กลุ่มการเรียน")."<u>".$readinfo["type"]."</u>";
+                                    successState($data);
+                                    slog($authuser, "admission", $type, $command, "$user,$group", "pass");
+                                }
                             } else {
-                                $readinfo = $getinfo -> fetch_array(MYSQLI_ASSOC); $intype = array(
-                                    "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ
-                                    "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ (คุณสมบัติไม่ครบ) [deprecated]
-                                    "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // นอกเขตพื้นที่บริการ
-                                    "ห้องเรียนพิเศษคณิตศาสตร์", // ชั้นมัธยมศึกษาปีที่ 1
-                                    "ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม ตามแนวทาง สสวท. และ สอวน.", // ชั้นมัธยมศึกษาปีที่ 1
-                                    "ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม", // ชั้นมัธยมศึกษาปีที่ 4
-                                    "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 4
-                                    "โครงการห้องเรียน พสวท. (สู่ความเป็นเลิศ)" // ชั้นมัธยมศึกษาปีที่ 4
-                                ); $data = array(
-                                    "message" => $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานตัวประเภท<u>".$intype[intval($readinfo["type"])-1]."</u>",
-                                    "action" => $readinfo["choose"] == "Y",
-                                    "impact" => encryptNID($readinfo["datid"])."+".strrev(str_rot13(encryptNID(intval($readinfo["type"] + 1))))
-                                ); successState($data);
-                                slog($authuser, "admission", $type, $command, $user, "pass");
-                            }
-                        } break;
+                                errorMessage(2, "ตัวเลือกหมวดหมู่ไม่ถูกต้อง");
+                                slog($authuser, "admission", $type, $command, "$user,$group", "fail", "", "InvalidOption");
+                        } } break;
                     } default: array_push($return["reason"], array(1, "Invalid command")); break;
                 } break;
             }

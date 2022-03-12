@@ -22,11 +22,15 @@
 				var lookup = function() {
 					(function() {
 						var data = {
-							type: "mod", act: "check",
-							param: document.querySelector('main .form [name="sid"]').value.trim()
-						}; if (!/^([13-7]\d{4}|8\d{5}|9{5})$/.test(data.param)) {
-							app.ui.notify(1, [2, "รูปแบบเลขประจำตัวผู้สมัครไม่ถูกต้อง"]);
+							type: "mod", act: "check", param: {
+								user: document.querySelector('main .form [name="sid"]').value.trim(),
+								group: document.querySelector('main .form [name="system"] option:checked').value.trim()
+						} }; if (!/^([13-7]\d{4}|8\d{5}|9{5})$/.test(data.param.user)) {
+							app.ui.notify(1, [2, "รูปแบบเลขประจำตัวไม่ถูกต้อง"]);
 							$('main .form [name="sid"]').focus();
+						} else if (!/^(old|new)$/.test(data.param.group)) {
+							app.ui.notify(1, [2, "ตัวเลือกประเภทไม่ถูกต้อง"]);
+							$('main .form [name="system"]').focus();
 						} else {
 							document.querySelector('main .form button[name="lookup"]').disabled = true;
 							$.post(cv.APIurl, data, function(res, hsc) {
@@ -75,8 +79,16 @@
 				<h2>การจัดพิมพ์เอกสาร (ใบมอบตัวนักเรียน)</h2>
 				<form class="form inline">
 					<div class="group">
-						<span>เลขประจำตัวผู้สมัคร</span>
+						<span>เลขประจำตัว</span>
 						<input type="number" name="sid" maxlength="6">
+					</div>
+					<div class="group">
+						<span>ประเภท</span>
+						<select name="system">
+							<option value disabled selected>---กรุณาเลือก---</option>
+							<option value="old">นักเรียนเดิม</option>
+							<option value="new">นักเรียนใหม่</option>
+						</select>
 					</div>
 					<button name="lookup" class="blue" onClick="return psf.search()">ค้นหาข้อมูล</button>
 				</form>
