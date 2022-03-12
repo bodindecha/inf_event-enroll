@@ -93,7 +93,7 @@
 						$exportfile -> SetXY(113, 146.85);
 						$exportfile -> Cell(56, 0, "โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)", 0, 1, "C", 0, "", 0);
 					} // Add Grade
-					$stdbio['oldgrade'] = $group > 4 ? "ม.3" : "ป.6";
+					$stdbio['oldgrade'] = $group > 5 ? "ม.3" : "ป.6";
 					$exportfile -> SetXY(190, 146.85);
 					$exportfile -> Cell(10, 0, $stdbio['oldgrade'], 0, 1, "C", 0, "", 0);
 				}

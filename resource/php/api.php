@@ -371,7 +371,7 @@
                                 } else {
                                     $readinfo = $getinfo -> fetch_array(MYSQLI_ASSOC); $data = array(
                                         "action" => $readinfo["choose"] == "Y",
-                                        "impact" => encryptNID($readinfo["datid"])."+".strrev(str_rot13(encryptNID(($group == "new" ? intval($readinfo["type"]) : 7) + 1)))
+                                        "impact" => encryptNID($readinfo["datid"])."+".strrev(str_rot13(encryptNID($group == "new" ? intval($readinfo["type"]) : 7)))
                                     ); if ($group == "new") {
                                         $intype = array(
                                             "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ
