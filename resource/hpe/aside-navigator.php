@@ -40,22 +40,23 @@
             <label>เมนู</label>
             <ul>
 		    	<li><a href="/e/enroll/"><span>หน้าหลัก</span></a></li>
-                <!--li><a href="/e/enroll/M4/"><span>นักเรียนเดิม</span></a></li-->
-                <li class="epdb"><details open>
-                    <summary>นักเรียนเดิม</summary>
-                    <ul>
-		    	        <li><a href="/e/enroll/M4/present"><span>รายงานตัว</span></a></li>
-		    	        <li><a href="/e/enroll/M4/change"><span>เปลี่ยนกลุ่มการเรียน</span></a></li>
-		    	        <li><a href="/e/enroll/M4/confirm"><span>ยืนยันสิทธิ์</span></a></li>
-                    </ul>
-                </details></li>
-		    	<li><a href="/e/enroll/new"><span>นักเรียนใหม่</span></a></li>
                 <?php if (isset($_SESSION['auth']['user']) && $_SESSION['auth']['type']=="s") { ?>
+                    <li class="epdb"><details open>
+                        <summary>นักเรียนเดิม</summary>
+                        <ul>
+                            <li><a href="/e/enroll/M4/present"><span>รายงานตัว</span></a></li>
+                            <li><a href="/e/enroll/M4/change"><span>เปลี่ยนกลุ่มการเรียน</span></a></li>
+                            <li><a href="/e/enroll/M4/confirm"><span>ยืนยันสิทธิ์</span></a></li>
+                        </ul>
+                    </details></li>
                     <li class="seperator">&nbsp;</li>
                     <li><a href="/s/"><span>เว็บทะเบียนเสริม</span></a></li>
                     <li><a href="/go?url=http%3A%2F%2Freg.bodin.ac.th"><span>เว็บทะเบียนหลัก</span></a></li>
                     <li class="seperator">&nbsp;</li>
                     <li><a onClick="sys.auth.out()" href="javascript:void(0)"><span>ออกจากระบบ</span></a></li>
+                <?php } else { ?>
+                    <li><a onClick="sys.auth.orize('e%2Fenroll%2FM4%2F')" href="javascript:void(0)"><span>นักเรียนเดิม</span></a></li>
+		    	    <li><a href="/e/enroll/new"><span>นักเรียนใหม่</span></a></li>
                 <?php } ?>
             </ul>
         </div>
@@ -63,6 +64,7 @@
             <label>เจ้าหน้าที่</label>
             <ul><?php if (has_perm("admission")) { ?>
 		    	<li><a href="/e/enroll/report/"><span>เมนูหลัก</span></a></li>
+                <li><a href="/e/enroll/report/print-form"><span>พิมพ์เอกสารใบมอบตัว</span></a></li>
                 <li><a href="/e/enroll/report/time-control"><span>ตั้งค่าเวลา</span></a></li>
                 <li class="epdb"><details open>
                     <summary>รายงานการตอบกลับ</summary>
@@ -78,7 +80,6 @@
                         <li><a href="/e/enroll/report/response/new-student"><span>นักเรียนใหม่</span></a></li>
                     </ul>
                 </details></li>
-                <li><a href="/e/enroll/report/print-form"><span>พิมพ์เอกสารใบมอบตัว</span></a></li>
                 <li><a href="/e/enroll/report/delete-response"><span>ลบรายการการตอบกลับ</span></a></li>
                 <li><a href="/e/enroll/report/export-result"><span>นำออกข้อมูล</span></a></li>
                 <li class="seperator">&nbsp;</li>
@@ -87,7 +88,7 @@
                 <li class="seperator">&nbsp;</li>
                 <li><a onClick="sys.auth.out()" href="javascript:void(0)"><span>ออกจากระบบ</span></a></li>
             <?php } else { ?>
-		    	<li><a href="/e/enroll/report/"><span>เข้าสู่ระบบ</span></a></li>
+		    	<li><a onClick="sys.auth.orize('e%2Fenroll%2Freport%2F')" href="javascript:void(0)"><span>เข้าสู่ระบบ</span></a></li>
             <?php } ?>
             </ul>
         </div>

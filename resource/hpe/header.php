@@ -30,7 +30,7 @@
 			<?php if (has_perm("admission") || (isset($_SESSION['auth']['user']) && $_SESSION['auth']['type']=="s")) { ?>
 				<a onClick="sys.auth.out()" href="javascript:void(0)"><span>ออกจากระบบ</span></a>
 			<?php } else { ?>
-				<a href="/e/enroll/report/"><span>เจ้าหน้าที่</span></a>
+				<a onClick="sys.auth.orize('e%2Fenroll%2Freport%2F')" href="javascript:void(0)"><span>เจ้าหน้าที่</span></a>
 			<?php } ?>
 		</div>
 		<!--div class="head-item lang"><select name="hl">

@@ -33,14 +33,15 @@
                     errorMessage(2, "รูปแบบเลขประจำตัวผู้สมัครหรือเลขประจำตัวประชาชนไม่ถูกต้อง");
                 else {
                     $amsid = escapeSQL($attr["user"]); $natid = escapeSQL($attr["pswd"]);
-                    $get = $db -> query("SELECT a.datid, CONCAT(a.namepth, a.namefth, ' ', a.namelth) AS nameath, a.type, a.choose, a.time, a.ip, b.start, b.stop FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.amsid=$amsid AND a.natid=$natid");
+                    $get = $db -> query("SELECT a.datid, a.amsid, CONCAT(a.namepth, a.namefth, ' ', a.namelth) AS nameath, a.type, a.choose, a.filetype, a.time, a.ip, b.start, b.stop FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.amsid=$amsid AND a.natid=$natid");
                     if ($get) {
                         if ($get -> num_rows == 1) {
                             $read = $get -> fetch_array(MYSQLI_ASSOC); $data = array(
                                 "type" => intval($read["type"]),
                                 "name" => $read["nameath"],
                                 "expire" => date("วันที่ d/m/Y เวลา H:iน.", strtotime($read["stop"])),
-                                "done" => !empty($read["choose"])
+                                "done" => !empty($read["choose"]),
+                                "evfile" => (($read["choose"] == "N" && !empty($read["filetype"])) ? encryptNID($read["amsid"]) : null)
                             ); if ($data["done"]) {
                                 $data["choice"] = $read["choose"];
                                 $data["decidetime"] = date("วันที่ d/m/Y เวลา H:i:s", strtotime($read["time"]));
@@ -65,7 +66,7 @@
                 } break;
             } case "decide": {
                 if (!preg_match("/^[0-9A-Za-z]{4,7}$/", $attr["user"]))
-                    errorMessage(3, "เกิดขอ้ผิดพลาด. กรุณาปิดแล้วปิดหน้านี้และลองใหม่อีกครั้ง.");
+                    errorMessage(3, "เกิดขอ้ผิดพลาด. กรุณาปิดแล้วเปิดหน้านี้และลองใหม่อีกครั้ง.");
                 else if (!preg_match("/^(Y|N)$/", $attr["choose"]))
                     errorMessage(1, "รูปแบบคำตอบไม่ถูกต้อง. กรุณาลองใหม่อีกครั้ง.");
                 else {
@@ -79,17 +80,25 @@
                         $readTR = $getTR -> fetch_array(MYSQLI_ASSOC);
                         if (inTimerange($readTR["start"], $readTR["stop"])) {
                             // Clean input
-                            $record = true; $nameSQL = ""; if ($choose == "Y") {
+                            $record = true; $dataSQL = ""; switch ($choose) {
+                                case "Y": {
                                 $namefen = escapeSQL($attr["namefen"]); $namelen = escapeSQL($attr["namelen"]);
                                 if (!preg_match("/^[A-Z][a-z\- ]{1,49}$/", $namefen) || preg_match("/^(\-| ){2,}$/", $namefen)) {
                                     $record = false; errorMessage(1, "รูปแบบชื่อจริงภาษาอังกฤษไม่ถูกต้อง");
                                 } else if (!preg_match("/^[A-Z][A-Z\- ]{1,49}$/", $namelen) || preg_match("/^(\-| ){2,}$/", $namelen)) {
                                     $record = false; errorMessage(1, "รูปแบบนามสกุลภาษาอังกฤษไม่ถูกต้อง");
-                                } $nameSQL = ",namefen='$namefen',namelen='$namelen'";
-                            } if ($record) {
-                                $success = $db -> query("UPDATE admission_newstd SET choose='$choose',ip='$ip'$nameSQL WHERE datid=$datid");
+                                } $dataSQL = ",namefen='$namefen',namelen='$namelen'";
+                                break;
+                            } case "N": {
+                                $fileType = escapeSQL($attr["file-ext"]);
+                                if (!in_array($fileType, array("png", "jpg", "jpeg", "gif", "heic", "pdf"))) {
+                                    $record = false; errorMessage(2, "ประเภทไฟล์ไม่ถูกต้อง กรุณาติดต่อเจ้าหน้าที่ให้ทำการลบไฟล์ แล้วเริ่มใหม่");
+                                } else $dataSQL = ",filetype='$fileType'";
+                               break; 
+                            } } if ($record) {
+                                $success = $db -> query("UPDATE admission_newstd SET choose='$choose',ip='$ip'$dataSQL WHERE datid=$datid");
                                 if ($success) {
-                                    $getbio = $db -> query("SELECT choose,time,ip FROM admission_newstd WHERE datid=$datid");
+                                    $getbio = $db -> query("SELECT amsid,choose,filetype,time,ip FROM admission_newstd WHERE datid=$datid");
                                     if (!($getbio && $getbio -> num_rows == 1)) {
                                         errorMessage(3, "Unable to get data.");
                                         slog($datid, "admission", $type, $command, "getUR", "fail", "", "InvalidQuery");
@@ -99,7 +108,8 @@
                                             "result" => true,
                                             "choice" => $readbio["choose"],
                                             "decidetime" => date("วันที่ d/m/Y เวลา H:i:s", strtotime($readbio["time"])),
-                                            "IPaddr" => $readbio["ip"]
+                                            "IPaddr" => $readbio["ip"],
+                                            "evfile" => (($readbio["choose"] == "N" && !empty($readbio["filetype"])) ? encryptNID($readbio["amsid"]) : null)
                                         )); slog($datid, "admission", $type, $command, "getUR", "pass");
                                     }
                                 } else {
@@ -113,6 +123,54 @@
                         }
                     }
                 } break;
+            } case "record": {
+                if (!preg_match("/^[0-9A-Za-z]{4,7}$/", $attr))
+                    errorMessage("0");
+                else {
+                    $datid = escapeSQL(decryptNID($attr));
+                    // Check timerange
+                    $getdata = $db -> query("SELECT a.amsid, a.choose, a.filetype, b.start, b.stop FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.datid=$datid");
+                    if (!($getdata && $getdata -> num_rows == 1)) {
+                        errorMessage("1"); // No user
+                        slog($datid, "admission", $type, $command, "getDt", "fail", "", "InvalidQuery");
+                    } else {
+                        $readdata = $getdata -> fetch_array(MYSQLI_ASSOC);
+                        $inTime = inTimerange($readdata["start"], $readdata["stop"]);
+                        $hasFile = (!empty($readdata["filetype"]));
+                        $allowFile = ($readdata["choose"] <> "Y" && !$hasFile);
+                        if ($hasFile) {
+                            errorMessage("2");
+                            slog($datid, "admission", $type, $command, "getDt", "fail", "", "Duplicate");
+                        } else if (!$inTime) {
+                            errorMessage("3");
+                            slog($datid, "admission", $type, $command, "getDt", "fail", "", "Timeout");
+                        } else if (!$allowFile) {
+                            errorMessage("4");
+                            slog($datid, "admission", $type, $command, "getDt", "fail", "", "NotAccept");
+                        } else if (!isset($_FILES['usf'])) {
+                            errorMessage("5"); // No file
+                            slog($authuser, "admission", $command, $type, $attr, "fail", "", "NoFile");
+                        } else {
+                            $target_dir = "../upload/newstd/"; $fileType = strtolower(pathinfo(basename($_FILES['usf']["name"]), PATHINFO_EXTENSION));
+                            $newFileName = $readdata["amsid"].".$fileType"; $target_file = $target_dir.$newFileName;
+                            $uploadOk = ($_FILES['usf']["size"] > 0 && $_FILES['usf']["size"] <= 10240000); // 10 MB
+                            if (!in_array($fileType, array("png", "jpg", "jpeg", "gif", "heic", "pdf"))) $uploadOk = false;
+                            if ($uploadOk) {
+                                if (file_exists($target_file)) unlink($target_file);
+                                if (move_uploaded_file($_FILES['usf']["tmp_name"], $target_file)) {
+                                    slog($authuser, "admission", $command, $type, "", "pass");
+                                    die('<script type="text/javascript">top.cnf.recieved("'.$fileType.'");</script>');
+                                } else {
+                                    errorMessage("7"); // Upload error
+                                    slog($authuser, "admission", $command, $type, "uf", "fail", "", "UploadError");
+                                }
+                            } else {
+                                errorMessage("6"); // Ineligible file
+                                slog($authuser, "admission", $command, $type, "uf", "fail", "", "FileIneligible");
+                            }
+                        }
+                    }
+                } header("Location: /e/enroll/new-swefur".(!empty($return["reason"] ?? null) ? "#msgID=".implode("", $return["reason"]) : ""));
             } default: array_push($return["reason"], array(1, "Invalid command")); break; } break;
         } case "save": {
             $authuser = $_SESSION['auth']['user'] ?? null;

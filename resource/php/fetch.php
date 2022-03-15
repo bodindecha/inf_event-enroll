@@ -30,6 +30,7 @@
         // Configuration
         if (isset($_REQUEST['list'])) { $list = trim($_REQUEST['list']); switch ($list) {
             case "new": {
+                $dirname = "newstd";
                 $colcode = array( // (colName, sortable, Display, Link)
                     "A" => array("amsid", true, "เลขประจำตัว", false, "a.amsid"),
                     "B" => array("namef", true, "ชื่อ", false, "CONCAT(a.namepth,a.namefth)"),
@@ -38,10 +39,11 @@
                     "D" => array("choose2", true, "เลือก", false, "(CASE a.choose WHEN 'Y' THEN 'ยืนยันสิทธิ์' WHEN 'N' THEN 'สละสิทธิ์' ELSE 'ยังไม่ใช้สิทธิ์' END)"),
                     "E" => array("namefen", true, "ชื่ออังกฤษ", false, "a.namefen"),
                     "F" => array("namelen", true, "สกุลอังกฤษ", false, "a.namelen"),
+                    "X" => array("filetype", true, "หมายเหตุ", false, "a.filetype"),
                     "W" => array("time", true, "แก้ไขล่าสุด", false, "a.time")
-                ); $queryBegin = "SELECT a.amsid,CONCAT(a.namepth,a.namefth) AS namef,a.namelth,a.type,(CASE a.choose WHEN 'Y' THEN 'ยืนยันสิทธิ์' WHEN 'N' THEN 'สละสิทธิ์' ELSE 'ยังไม่ใช้สิทธิ์' END) AS choose2,a.namefen,a.namelen FROM admission_newstd a";
+                ); $queryBegin = "SELECT a.amsid,CONCAT(a.namepth,a.namefth) AS namef,a.namelth,a.type,(CASE a.choose WHEN 'Y' THEN 'ยืนยันสิทธิ์' WHEN 'N' THEN 'สละสิทธิ์' ELSE 'ยังไม่ใช้สิทธิ์' END) AS choose2,a.filetype,a.namefen,a.namelen FROM admission_newstd a";
                 $intype = array("ม.1 ทั่วไป ในเขต", "ม.1 ทั่วไป ในเขต-ไม่ครบ", "ม.1 ทั่วไป นอกเขต", "ม.1 พิเศษคณิตศาสตร์", "ม.1 พิเศษวิทยาศาสตร์ฯ", "ม.4 พิเศษวิทย์-คณิตฯ", "ม.4 ทั่วไป", "ม.4 พสวท.");
-                $col = array("A", "B", "C", "Z", "D", "E", "F");
+                $col = array("A", "B", "C", "Z", "D", "E", "F", "X");
                 $searchable = array("A", "B", "C", "D", "E", "F");
                 break;
             } case "prs": {
@@ -107,15 +109,64 @@
                 $sql = $queryPreset;
                 if ($pt[1] == "new") {
                     if (isset($pt[2])) {
-                        if ($pt[2] == "ans") {
+                        if (substr($pt[2], 0, 1) == "r") {
+                            switch (intval(substr($pt[2], 1))) {
+                                case 1: $pt[2] = "6 AND 11"; break;
+                                case 2: $pt[2] = "12 AND 14"; break;
+                                case 3: $pt[2] = "15 AND 17"; break;
+                            } $sql .= " AND a.timerange BETWEEN ".$pt[2];
+                        } else if ($pt[2] == "ans") {
                             $sql .= " AND a.choose IS NOT NULL";
                             if (isset($pt[3])) {
                                 $sql = "$queryPreset AND a.choose='".$pt[3]."'";
-                                if (isset($pt[4])) $sql .= " AND a.type=".$pt[4];
+                                if ($pt[3] == "Y") $col = array("A", "B", "C", "Z", "D", "E", "F");
+                                else if ($pt[3] == "N") $col = array("A", "B", "C", "Z", "D", "X");
+                                else if (substr($pt[3], 0, 1) == "r") {
+                                    switch (intval(substr($pt[3], 1))) {
+                                        case 1: $pt[3] = "6 AND 11"; break;
+                                        case 2: $pt[3] = "12 AND 14"; break;
+                                        case 3: $pt[3] = "15 AND 17"; break;
+                                    } $sql .= " AND a.timerange BETWEEN ".$pt[3];
+                                } if (isset($pt[4])) {
+                                    if (substr($pt[4], 0, 1) == "r") {
+                                        switch (intval(substr($pt[4], 1))) {
+                                            case 1: $pt[4] = "6 AND 11"; break;
+                                            case 2: $pt[4] = "12 AND 14"; break;
+                                            case 3: $pt[4] = "15 AND 17"; break;
+                                        } $sql .= " AND a.timerange BETWEEN ".$pt[4];
+                                    } else {
+                                        $sql .= " AND a.type=".$pt[4];
+                                        if (isset($pt[5]) && substr($pt[5], 0, 1) == "r") {
+                                            switch (intval(substr($pt[5], 1))) {
+                                                case 1: $pt[5] = "6 AND 11"; break;
+                                                case 2: $pt[5] = "12 AND 14"; break;
+                                                case 3: $pt[5] = "15 AND 17"; break;
+                                            } $sql .= " AND a.timerange BETWEEN ".$pt[5];
+                                        }
+                                    }
+                                }
                             }
                         } else if ($pt[2] == "una") {
+                            $col = array("A", "B", "C", "Z", "D");
                             $sql .= " AND a.choose IS NULL";
-                            if (isset($pt[3])) $sql .= " AND a.type=".$pt[3];
+                            if (isset($pt[3])) {
+                                if (substr($pt[3], 0, 1) == "r") {
+                                    switch (intval(substr($pt[5], 1))) {
+                                        case 1: $pt[3] = "6 AND 11"; break;
+                                        case 2: $pt[3] = "12 AND 14"; break;
+                                        case 3: $pt[3] = "15 AND 17"; break;
+                                    } $sql .= " AND a.timerange BETWEEN ".$pt[3];
+                                } else {
+                                    $sql .= " AND a.type=".$pt[3];
+                                    if (isset($pt[4])) {
+                                        switch (intval($pt[4])) {
+                                            case 1: $pt[4] = "6 AND 11"; break;
+                                            case 2: $pt[4] = "12 AND 14"; break;
+                                            case 3: $pt[4] = "15 AND 17"; break;
+                                        } $sql .= " AND a.timerange BETWEEN ".$pt[4];
+                                    }
+                                }
+                            }
                         }
                     }
                 } else if ($pt[1] == "prs") {
@@ -123,31 +174,41 @@
                         if ($pt[2] == "ans") {
                             $sql .= " AND a.choose IS NOT NULL";
                             if (isset($pt[3])) {
-                                $sql = "$queryPreset AND a.choose='".$pt[3]."'";
-                                if (isset($pt[4])) $sql .= " AND a.timerange=".$pt[4];
+                                if (preg_match("/^\d+$/", $pt[3])) $sql .= " AND a.timerange=".$pt[3];
+                                else {
+                                    $sql = "$queryPreset AND a.choose='".$pt[3]."'";
+                                    if ($pt[3] == "N") $col = array("E", "A", "B", "C", "Y", "D");
+                                    if (isset($pt[4])) $sql .= " AND a.timerange=".$pt[4];
+                                }
                             }
                         } else if ($pt[2] == "una") {
                             $sql .= " AND a.choose IS NULL";
+                            $col = array("E", "A", "B", "C", "Y", "D");
                             if (isset($pt[3])) $sql .= " AND a.timerange=".$pt[3];
-                        }
+                        } else if (is_int($pt[2])) $sql .= " AND a.timerange=".$pt[2];
                     }
                 } else if ($pt[1] == "cng") {
                     if (isset($pt[2])) {
-                        if ($pt[2] == "ans") $sql .= " AND a.times > 0";
+                        if (preg_match("/^[A-G]$/", $pt[2])) $sql .= " AND a.type='".$pt[2]."'";
+                        else if ($pt[2] == "ans") $sql .= " AND a.times > 0";
                         else if ($pt[2] == "una") $sql .= " AND a.times=0";
-                        if (isset($pt[3])) $sql .= " AND a.type=".$pt[3];
+                        if (isset($pt[3])) $sql .= " AND a.type='".$pt[3]."'";
                     }
                 } else if ($pt[1] == "cnf") {
                     if (isset($pt[2])) {
-                        if ($pt[2] == "ans") {
+                        if (preg_match("/^[A-G]$/", $pt[2])) $sql .= " AND a.type='".$pt[2]."'";
+                        else if ($pt[2] == "ans") {
                             $sql .= " AND a.choose IS NOT NULL";
                             if (isset($pt[3])) {
-                                $sql = "$queryPreset AND a.choose='".$pt[3]."'";
-                                if (isset($pt[4])) $sql .= " AND a.type=".$pt[4];
+                                if (preg_match("/^[A-G]$/", $pt[3])) $sql .= " AND a.type='".$pt[3]."'";
+                                else {
+                                    $sql = "$queryPreset AND a.choose='".$pt[3]."'";
+                                    if (isset($pt[4])) $sql .= " AND a.type='".$pt[4]."'";
+                                }
                             }
                         } else if ($pt[2] == "una") {
                             $sql .= " AND a.choose IS NULL";
-                            if (isset($pt[3])) $sql .= " AND a.type=".$pt[3];
+                            if (isset($pt[3])) $sql .= " AND a.type='".$pt[3]."'";
                         }
                     }
                 }

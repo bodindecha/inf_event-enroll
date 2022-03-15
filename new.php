@@ -98,9 +98,12 @@
 										$('main form output[name="dsctime"]').val(dat.info.decidetime);
 										$('main form output[name="IPaddr"]').val(dat.info.IPaddr);
 										$('form[name="complete"]').toggle("blind");
-										if (dat.info.choice=="Y") {
+										if (dat.info.choice == "Y") {
 											$('form[name="instruction"]').toggle("blind");
 											$('form a[target="dlframe"][download]').attr("href", cv.dlURL+cv.dlFile(dat.info.type - 1)+"&authuser="+dat.info.authuser);
+										} else if (dat.info.choice == "N" && dat.info.evfile) {
+											$('form[name="complete"] > center').removeClass("last");
+											$('form[name="complete"]').append('<center class="last"><a href="/e/enroll/resource/upload/view?type=newstd&authuser='+dat.info.evfile+'" onClick="return cnf.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a></center>');
 										}
 									} else if (dat.info.inTime) {
 										sv.ID = dat.info.returnTo;
@@ -117,20 +120,13 @@
 				};
 				var choose = function(select) {
 					(function(select) {
-						if (typeof sv.ID === "undefined") {
-							app.ui.notify(1, [3, "There's an error."]);
-							$('form[name="authenticate"]').show();
-							$('form[name="bio"]').hide();
-							$('form[name="choose"]').hide();
-							$('form[name="timeout"]').hide();
-							$('form[name="complete"]').hide();
-							$('form[name="instruction"]').hide();
-							document.querySelector('main .form button[name="authen"]').disabled = false;
-						} else {
+						if (typeof sv.ID === "undefined") restartOnError();
+						else {
 							let msg = "คุณต้องการ" + (select ? "ยืนยัน" : "สละสิทธิ์") + "สิทธิ์การเข้าศึกษาต่อใช่หรือไม่ ?";
 							var data = { type: "new", act: "decide", param: {
 								user: sv.ID,
-								choose: select ? "Y" : "N"
+								choose: select ? "Y" : "N",
+								"file-ext": null
 							} }, collect = true;
 							if (select) {
 								data.param["namefen"] = document.querySelector('main .form [name="firstname"]').value.trim();
@@ -142,37 +138,81 @@
 									app.ui.notify(1, [2, "รูปแบบนามสกุลภาษาอังกฤษไม่ถูกต้อง"]);
 									$('main .form [name="lastname"]').focus(); collect = false;
 								} if (!collect) app.ui.notify(1, [1, "กรุณาพิมพ์ชื่อในรูป proper-case (Aaa)"]);
-							} if (collect && confirm(msg)) {
-								$('main .form div[name="decide"]').attr("disabled", "");
-								$.post(cv.APIurl, data, function(res, hsc) {
-									var dat = JSON.parse(res);
-									if (dat.success) {
-										$('form[name="choose"]').toggle("blind");
-										if (dat.info.result) {
-											$('main form output[name="choice"]').val(dat.info.choice=="Y" ? "ยืนยัน" : "สละ");
-											$('main form output[name="dsctime"]').val(dat.info.decidetime);
-											$('main form output[name="IPaddr"]').val(dat.info.IPaddr);
-											$('form[name="complete"]').toggle("blind");
-											if (dat.info.choice=="Y") {
-												$('form[name="instruction"]').toggle("blind");
-												$('form a[target="dlframe"][download]').attr("href", cv.dlURL+cv.dlFile(sv.type - 1)+"&authuser="+sv.ID);
-											}
-										} else $('form[name="timeout"]').toggle("blind");
-										delete sv.ID, sv.type;
-									} else {
-										dat.reason.forEach(em => app.ui.notify(1, em));
-										$('main .form div[name="decide"]').removeAttr("disabled");
-									}
-								});
-							}
+							} if (collect && confirm(msg)) select ? proceed(data) : getFile(data);
 						}
 					}(select)); return false;
 				};
+				var restartOnError = function() {
+					app.ui.notify(1, [3, "There's an error."]);
+					$('form[name="authenticate"]').show();
+					$('form[name="bio"]').hide();
+					$('form[name="choose"]').hide();
+					$('form[name="timeout"]').hide();
+					$('form[name="complete"]').hide();
+					$('form[name="instruction"]').hide();
+					document.querySelector('main .form button[name="authen"]').disabled = false;
+				};
+				var proceed = function(data) {
+					$('main .form div[name="decide"]').attr("disabled", "");
+					$.post(cv.APIurl, data, function(res, hsc) {
+						var dat = JSON.parse(res);
+						if (dat.success) {
+							$('form[name="choose"]').toggle("blind");
+							if (dat.info.result) {
+								$('main form output[name="choice"]').val(dat.info.choice=="Y" ? "ยืนยัน" : "สละ");
+								$('main form output[name="dsctime"]').val(dat.info.decidetime);
+								$('main form output[name="IPaddr"]').val(dat.info.IPaddr);
+								$('form[name="complete"]').toggle("blind");
+								if (dat.info.choice=="Y") {
+									$('form[name="instruction"]').toggle("blind");
+									$('form a[target="dlframe"][download]').attr("href", cv.dlURL+cv.dlFile(sv.type - 1)+"&authuser="+sv.ID);
+								} else if (dat.info.choice == "N" && dat.info.evfile) {
+									$('form[name="complete"] > center').removeClass("last");
+									$('form[name="complete"]').append('<center class="last"><a href="/e/enroll/resource/upload/view?type=newstd&authuser='+dat.info.evfile+'" onClick="return cnf.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a></center>');
+								}
+							} else $('form[name="timeout"]').toggle("blind");
+							delete sv.ID, sv.type;
+						} else {
+							dat.reason.forEach(em => app.ui.notify(1, em));
+							$('main .form div[name="decide"]').removeAttr("disabled");
+						}
+					});
+				};
+				var getFile = function(parseDat) {
+					sv.parseDat = parseDat;
+					app.ui.lightbox.open("mid", {title: "กรุณาอัปโหลดไฟล์หลักฐานการสละสิทธิ์", allowclose: false,
+						html: '<iframe name="fr" src="new-swefur?a='+sv.ID+'" style="width:90vw;height:80vh;border:none">Loading...</iframe>'
+					});
+				};
+				var has_file = function(ft) {
+					if (typeof sv.parseDat === "undefined") restartOnError();
+					else if (!["png", "jpg", "jpeg", "heic", "gif", "pdf"].includes(ft)) {
+						app.ui.notify(1, [2, "กรุณาตรวจสอบว่าภาพของคุณเป็นประเภท PNG/JPG/GIF/HEIF/PDF และมีขนาดไม่เกิน 10 MB"]);
+						document.querySelector('body .lightbox iframe[name="fr"]').src = "new-swefur?a="+sv.ID;
+					} else {
+						app.ui.notify(1, [0, "อัปโหลดไฟล์สำเร็จ"]);
+						app.ui.lightbox.close();
+						sv.parseDat.param["file-ext"] = ft;
+						proceed(sv.parseDat);
+						delete sv.parseDat
+					}
+				};
+				var show_example = function(m, e) {
+					(function() {
+						// e.preventDefault();
+						if (e.ctrlKey) window.open(m.href);
+						else app.ui.lightbox.open("mid", {title: m.innerText.substring(12, m.innerText.length-2), allowclose: true, autoclose: 300000,
+							html: '<iframe src="'+m.href+'" style="width:90vw;height:80vh;border:none">Loading...</iframe>'
+						});
+					}()); return false;
+				};
 				return {
 					check: authen,
-					choose: choose
+					choose: choose,
+					recieved: has_file,
+					intercept: show_example
 				};
-			}();
+			}(); top.cnf = cnf;
 			function validate_field() {
 				document.querySelectorAll('form input').forEach((eio) => {
 					var ei = $(eio);
@@ -186,7 +226,8 @@
 		<main shrink="<?php echo($_COOKIE['sui_open-nt'])??"false"; ?>">
 			<div class="container">
 				<h2>ระบบรายงานตัว/ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
-				<form class="form modern" name="authenticate">
+				<!--center class="message red">ขณะนี้ระบบอยู่ระหว่างการปรับปรุง กรุณาเข้ามาใหม่หลัง 10.15น.</center-->
+				<form class="form modern --message-black" name="authenticate">
 					<input type="number" name="sid" maxlength="6" autofocus><label>เลขประจำตัวผู้สมัคร 5-6 หลัก</label>
 					<input type="number" name="cid" maxlength="13"><label>เลขประจำตัวประชาชน 13 หลัก</label>
 					<p>ใส่เลขประจำตัวผู้สมัครและเลขประจำตัวประชาชนโดยไม่ต้องมีขีดกลางหรือเว้นวรรค<br>หากมีข้อสงสัยหรือมีข้อผิดพลาดในการใช้งาน กรุณาติดต่อ <a href="/go?url=tel%3A0965636455" target="_blank">096 563 6455</a></p>

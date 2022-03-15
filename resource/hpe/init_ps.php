@@ -20,7 +20,7 @@
             $usr = "(\d{5}|[a-z]{3,28}\.[a-z]{1,2}|(?!(archive|error|account))[a-zA-Z]{3,30}\d{0,3})";
             $require_sso = false; if (!isset($_SESSION['auth']) && isset($_COOKIE['bdSSOv1a']) && $_COOKIE['bdSSOv1a']<>"") $require_sso = true;
             // Require basic authen
-            else if (!isset($_SESSION['auth']) && preg_match("/^\/e\/enroll\/((M4|report)\/.*|resource\/upload\/view)$/", $url)) {
+            else if (!isset($_SESSION['auth']) && preg_match("/^\/e\/enroll\/((M4|report)\/.*)$/", $url)) {
                 /* if (!preg_match("/^\/d\/sandbox\/.*$/", $url)) */ header("Location: /$my_url");
             } else if (isset($_SESSION['auth']['type'])) {
                 if ($_SESSION['auth']['req_CP'] && !preg_match("/^\/(account\/complete(\?return_url=.+)?)$/", $url)) {

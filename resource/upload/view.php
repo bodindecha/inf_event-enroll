@@ -3,10 +3,11 @@
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 
 	if (isset($_REQUEST["type"])) {
-		require($dirPWroot."e/resource/db_connect.php");
-		$authuser = $_SESSION['auth']['user'];
+		require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
+		$authuser = $_SESSION['auth']['user'] ?? decryptNID($_REQUEST["authuser"]);
 		$dir = $db -> real_escape_string(trim($_REQUEST["type"]));
-		$getExtn = $db -> query("SELECT filetype FROM admission_$dir WHERE stdid=$authuser");
+		$field = ($dir == "newstd" ? "amsid" : "stdid");
+		$getExtn = $db -> query("SELECT filetype FROM admission_$dir WHERE $field=$authuser");
 		if ($getExtn) {
 			if ($getExtn -> num_rows == 1) {
 				$extension = ($getExtn -> fetch_array(MYSQLI_ASSOC))["filetype"];

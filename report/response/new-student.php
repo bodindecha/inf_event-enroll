@@ -22,7 +22,7 @@
 			$(document).ready(function() {
 				// $(sS.slt.d).on("change", sS.complete);
 				$(sS.slt.v).on("input change", sS.find);
-				$("div.group.f div.dir div.wrapper").load("/e/enroll/resource/html/_dirTree-new.html", function() {
+				$("div.group.f div.dir div.wrapper").load("/e/enroll/resource/html/_dirTree-new.min.html", function() {
 					// Fill patterned elements
 					$('div.group.f div.dir div.wrapper .tree.ctrl').prepend('<label class="tree accd"><input type="checkbox"></label>');
 					$('div.group.f div.dir div.wrapper .tree.mbr:not([expand])').attr("expand", "false");
@@ -111,7 +111,7 @@
 							let newHTML = "<tr>";
 							sF.ctrl.colList.forEach(function(bc) {
 								newHTML += "<td>";
-								if (typeof eu[bc].link === "string") newHTML += '<a href="'+eu[bc].link+'" draggable="false">';
+								if (typeof eu[bc].link === "string") newHTML += '<a href="'+eu[bc].link+'" onClick="return intercept(this,event)" draggable="false">';
 								newHTML += eu[bc].val;
 								if (typeof eu[bc].link === "string") newHTML += '</a>';
 								newHTML += "</td>";
@@ -168,6 +168,15 @@
 						sD.load(null, "show");
 					}
 				}
+			};
+			function intercept(m, e) {
+				(function() {
+					// e.preventDefault();
+					if (e.ctrlKey) window.open(m.href);
+					else app.ui.lightbox.open("mid", {title: "ไฟล์หลักฐานของ \""+m.parentNode.parentNode.children[1].innerText+"\"", allowclose: true, autoclose: 300000,
+						html: '<iframe src="'+m.href+'" style="width:90vw;height:80vh;border:none">Loading...</iframe>'
+					});
+				}()); return false;
 			};
 		</script>
 	</head>

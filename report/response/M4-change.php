@@ -23,7 +23,7 @@
 			$(document).ready(function() {
 				// $(sS.slt.d).on("change", sS.complete);
 				$(sS.slt.v).on("input change", sS.find);
-				$("div.group.f div.dir div.wrapper").load("/e/enroll/resource/html/_dirTree-cng.html", function() {
+				$("div.group.f div.dir div.wrapper").load("/e/enroll/resource/html/_dirTree-cng.min.html", function() {
 					// Fill patterned elements
 					$('div.group.f div.dir div.wrapper .tree.ctrl').prepend('<label class="tree accd"><input type="checkbox"></label>');
 					$('div.group.f div.dir div.wrapper .tree.mbr:not([expand])').attr("expand", "false");
