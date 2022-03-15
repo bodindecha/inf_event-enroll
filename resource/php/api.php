@@ -149,7 +149,7 @@
                             slog($datid, "admission", $type, $command, "getDt", "fail", "", "NotAccept");
                         } else if (!isset($_FILES['usf'])) {
                             errorMessage("5"); // No file
-                            slog($authuser, "admission", $command, $type, $attr, "fail", "", "NoFile");
+                            slog($datid, "admission", $type, $command, "getDt", "fail", "", "NoFile");
                         } else {
                             $target_dir = "../upload/newstd/"; $fileType = strtolower(pathinfo(basename($_FILES['usf']["name"]), PATHINFO_EXTENSION));
                             $newFileName = $readdata["amsid"].".$fileType"; $target_file = $target_dir.$newFileName;
@@ -158,15 +158,15 @@
                             if ($uploadOk) {
                                 if (file_exists($target_file)) unlink($target_file);
                                 if (move_uploaded_file($_FILES['usf']["tmp_name"], $target_file)) {
-                                    slog($authuser, "admission", $command, $type, "", "pass");
+                                    slog($datid, "admission", $type, $command, "uf", "pass");
                                     die('<script type="text/javascript">top.cnf.recieved("'.$fileType.'");</script>');
                                 } else {
                                     errorMessage("7"); // Upload error
-                                    slog($authuser, "admission", $command, $type, "uf", "fail", "", "UploadError");
+                                    slog($datid, "admission", $type, $command, "uf", "fail", "", "UploadError");
                                 }
                             } else {
                                 errorMessage("6"); // Ineligible file
-                                slog($authuser, "admission", $command, $type, "uf", "fail", "", "FileIneligible");
+                                slog($datid, "admission", $type, $command, "uf", "fail", "", "FileIneligible");
                             }
                         }
                     }
