@@ -185,14 +185,16 @@
                             $sql .= " AND a.choose IS NULL";
                             $col = array("E", "A", "B", "C", "Y", "D");
                             if (isset($pt[3])) $sql .= " AND a.timerange=".$pt[3];
-                        } else if (is_int($pt[2])) $sql .= " AND a.timerange=".$pt[2];
+                        } else if (preg_match("/^\d+$/", $pt[2])) $sql .= " AND a.timerange=".$pt[2];
                     }
                 } else if ($pt[1] == "cng") {
                     if (isset($pt[2])) {
                         if (preg_match("/^[A-G]$/", $pt[2])) $sql .= " AND a.type='".$pt[2]."'";
                         else if ($pt[2] == "ans") $sql .= " AND a.times > 0";
-                        else if ($pt[2] == "una") $sql .= " AND a.times=0";
-                        if (isset($pt[3])) $sql .= " AND a.type='".$pt[3]."'";
+                        else if ($pt[2] == "una") {
+                            $col = array("F", "A", "B", "C", "D");
+                            $sql .= " AND a.times=0";
+                        } if (isset($pt[3])) $sql .= " AND a.type='".$pt[3]."'";
                     }
                 } else if ($pt[1] == "cnf") {
                     if (isset($pt[2])) {
@@ -200,13 +202,16 @@
                         else if ($pt[2] == "ans") {
                             $sql .= " AND a.choose IS NOT NULL";
                             if (isset($pt[3])) {
-                                if (preg_match("/^[A-G]$/", $pt[3])) $sql .= " AND a.type='".$pt[3]."'";
-                                else {
+                                if (preg_match("/^[A-G]$/", $pt[3])) {
+                                    $sql .= " AND a.type='".$pt[3]."'";
+                                } else {
+                                    if ($pt[3] == "Y") $col = array("F", "A", "B", "C", "D", "E");
                                     $sql = "$queryPreset AND a.choose='".$pt[3]."'";
                                     if (isset($pt[4])) $sql .= " AND a.type='".$pt[4]."'";
                                 }
                             }
                         } else if ($pt[2] == "una") {
+                            $col = array("F", "A", "B", "C", "D", "E");
                             $sql .= " AND a.choose IS NULL";
                             if (isset($pt[3])) $sql .= " AND a.type='".$pt[3]."'";
                         }

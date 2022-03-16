@@ -23,6 +23,10 @@
 			}
 			main .wrapper .card .action a:not(:last-child) { margin-bottom: 5px; }
 			main #announcement { font-weight: 500; }
+			main ul li.label {
+				margin: 2.5px 0px 1.25px;
+				list-style-type: none;
+			}
 			@media only screen and (max-width: 768px) {
 				main .wrapper { justify-content: center; }
 				main .wrapper .card { width: 275px; min-height: 150px; }
@@ -34,7 +38,7 @@
 	</head>
 	<body>
 		<?php require($dirPWroot."e/enroll/resource/hpe/header.php"); ?>
-		<main shrink="<?php echo($_COOKIE['sui_open-nt'])??"false"; ?>">
+		<main shrink="<?php echo($_COOKIE['sui_open-nt'])??"false"; ?>" class="rainbow-bg">
 			<div class="container">
 				<h2>การเข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 				<div class="wrapper">
@@ -60,17 +64,23 @@
 				<br>
 				<h3 id="announcement">ประกาศผลรายชื่อผู้มีสิทธิ์เข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h3>
 				<ul>
-					<li disabled data-release="30"><a target="_blank" href="<?=$ann_link?>2____">นักเรียนที่ผ่านการคัดเลือกเข้าเรียน<b>ห้องเรียนทั่วไป</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
-					<li data-release="10"><a target="_blank" href="<?=$ann_link?>24337">นักเรียนที่ผ่านการคัดเลือกเข้าเรียน<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
-					<li disabled data-release="31"><a target="_blank" href="<?=$ann_link?>2____">นักเรียนที่ผ่านการคัดเลือกเข้าเรียน<b>ห้องเรียนทั่วไป</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-					<li data-release="11"><a target="_blank" href="<?=$ann_link?>24402">นักเรียนที่ผ่านการคัดเลือกเข้าเรียน<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-					<li data-release="9"><a target="_blank" href="<?=$ann_link?>24322">นักเรียนที่ผ่านการคัดเลือกเข้าเรียน<b>ห้องเรียนพสวท. (สู่ความเป็นเลิศ)</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li class="label">ประกาศผลนักเรียนที่ผ่านการคัดเลือก (สอบเข้าใหม่)</li>
+					<li disabled data-release="30"><a target="_blank" href="<?=$ann_link?>2____">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
+					<li data-release="10"><a target="_blank" href="<?=$ann_link?>24337">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
+					<li disabled data-release="31"><a target="_blank" href="<?=$ann_link?>2____">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li data-release="11"><a target="_blank" href="<?=$ann_link?>24402">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li data-release="9"><a target="_blank" href="<?=$ann_link?>24322">ประเภท<b>ห้องเรียนพสวท. (สู่ความเป็นเลิศ)</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li class="label">การเรียกแทนผู้สละสิทธิ์ในปีการศึกษา 2565</li>
+					<li data-release="14"><a target="_blank" href="<?=$ann_link?>24454">ครั้งที่ <b>1</b>: ประเภท<b>ห้องเรียนพิเศษ</b></a></li>
+					<li data-release="16"><a target="_blank" href="<?=$ann_link?>24500">ครั้งที่ <b>2</b>: ประเภท<b>ห้องเรียนพิเศษ</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li class="label">ประกาศผลนักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 โรงเรียนเดิม</li>
+					<li data-release="1"><a target="_blank" href="<?=$ann_link?>24209">ประเภทห้องเรียนปกติ (<b>รอบ 1</b>)</a></li>
+					<li data-release="3"><a target="_blank" href="<?=$ann_link?>24248">ประเภทห้องเรียนปกติ (<b>รอบ 2</b>)</a></li>
+					<li data-release="16"><a target="_blank" href="<?=$ann_link?>24500">ประเภทห้องเรียนปกติ (<b>รอบ 3</b>)</a></li>
 					<hr>
-					<li data-release="1"><a target="_blank" href="<?=$ann_link?>24209">นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 (<b>รอบ 1</b>)</a></li>
-					<li data-release="3"><a target="_blank" href="<?=$ann_link?>24248">นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 (<b>รอบ 2</b>)</a></li>
-					<li disabled data-release="17"><a target="_blank" href="<?=$ann_link?>2____">นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 (<b>รอบ 3</b>)</a></li>
 					<li data-release="8"><a target="_blank" href="<?=$ann_link?>24314">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4</a></li>
 				</ul>
+				<center class="message black">ศึกษารายระเอียดทั้งหมดที่ <a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fadmission">งานรับนักเรียน</a><hr><a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fcostume">เครื่องแบบและระเบียบการแต่งกาย</a>โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</center>
 			</div>
 		</main>
 		<?php require($dirPWroot."resource/hpe/material.php"); ?>
