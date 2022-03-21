@@ -108,40 +108,34 @@
             if (isset($pt[1])) {
                 $sql = $queryPreset;
                 if ($pt[1] == "new") {
-                    if (isset($pt[2])) {
-                        if (substr($pt[2], 0, 1) == "r") {
-                            switch (intval(substr($pt[2], 1))) {
-                                case 1: $pt[2] = "6 AND 11"; break;
-                                case 2: $pt[2] = "12 AND 14"; break;
-                                case 3: $pt[2] = "15 AND 17"; break;
-                            } $sql .= " AND a.timerange BETWEEN ".$pt[2];
-                        } else if ($pt[2] == "ans") {
+                    function tr_range($zone) {
+                        switch (intval(substr($zone, 1))) {
+                            case 1: $zone = "7 AND 12"; break;
+                            case 2: $zone = "13 AND 18"; break;
+                            case 3: $zone = "19 AND 24"; break;
+                            case 4: $zone = "25 AND 30"; break;
+                            case 5: $zone = "31 AND 36"; break;
+                            case 6: $zone = "37 AND 46"; break;
+                        } return $zone;
+                    } if (isset($pt[2])) {
+                        if (substr($pt[2], 0, 1) == "r")
+                            $sql .= " AND a.timerange BETWEEN ".tr_range($pt[2]);
+                        else if ($pt[2] == "ans") {
                             $sql .= " AND a.choose IS NOT NULL";
                             if (isset($pt[3])) {
-                                $sql = "$queryPreset AND a.choose='".$pt[3]."'";
-                                if ($pt[3] == "Y") $col = array("A", "B", "C", "Z", "D", "E", "F");
-                                else if ($pt[3] == "N") $col = array("A", "B", "C", "Z", "D", "X");
-                                else if (substr($pt[3], 0, 1) == "r") {
-                                    switch (intval(substr($pt[3], 1))) {
-                                        case 1: $pt[3] = "6 AND 11"; break;
-                                        case 2: $pt[3] = "12 AND 14"; break;
-                                        case 3: $pt[3] = "15 AND 17"; break;
-                                    } $sql .= " AND a.timerange BETWEEN ".$pt[3];
-                                } if (isset($pt[4])) {
-                                    if (substr($pt[4], 0, 1) == "r") {
-                                        switch (intval(substr($pt[4], 1))) {
-                                            case 1: $pt[4] = "6 AND 11"; break;
-                                            case 2: $pt[4] = "12 AND 14"; break;
-                                            case 3: $pt[4] = "15 AND 17"; break;
-                                        } $sql .= " AND a.timerange BETWEEN ".$pt[4];
-                                    } else {
-                                        $sql .= " AND a.type=".$pt[4];
-                                        if (isset($pt[5]) && substr($pt[5], 0, 1) == "r") {
-                                            switch (intval(substr($pt[5], 1))) {
-                                                case 1: $pt[5] = "6 AND 11"; break;
-                                                case 2: $pt[5] = "12 AND 14"; break;
-                                                case 3: $pt[5] = "15 AND 17"; break;
-                                            } $sql .= " AND a.timerange BETWEEN ".$pt[5];
+                                $sql = $queryPreset;
+                                if (substr($pt[3], 0, 1) == "r")
+                                    $sql .= " AND a.timerange BETWEEN ".tr_range($pt[3]);
+                                else {
+                                    $sql .= " AND a.choose='".$pt[3]."'";
+                                    if ($pt[3] == "Y") $col = array("A", "B", "C", "Z", "D", "E", "F");
+                                    else if ($pt[3] == "N") $col = array("A", "B", "C", "Z", "D", "X");
+                                    if (isset($pt[4])) {
+                                        if (substr($pt[4], 0, 1) == "r")
+                                            $sql .= " AND a.timerange BETWEEN ".tr_range($pt[4]);
+                                        else {
+                                            $sql .= " AND a.type=".$pt[4];
+                                            if (substr($pt[5], 0, 1) == "r") $sql .= " AND a.timerange BETWEEN ".tr_range($pt[5]);
                                         }
                                     }
                                 }
@@ -150,21 +144,11 @@
                             $col = array("A", "B", "C", "Z", "D");
                             $sql .= " AND a.choose IS NULL";
                             if (isset($pt[3])) {
-                                if (substr($pt[3], 0, 1) == "r") {
-                                    switch (intval(substr($pt[5], 1))) {
-                                        case 1: $pt[3] = "6 AND 11"; break;
-                                        case 2: $pt[3] = "12 AND 14"; break;
-                                        case 3: $pt[3] = "15 AND 17"; break;
-                                    } $sql .= " AND a.timerange BETWEEN ".$pt[3];
-                                } else {
+                                if (substr($pt[3], 0, 1) == "r")
+                                    $sql .= " AND a.timerange BETWEEN ".tr_range($pt[3]);
+                                else {
                                     $sql .= " AND a.type=".$pt[3];
-                                    if (isset($pt[4])) {
-                                        switch (intval($pt[4])) {
-                                            case 1: $pt[4] = "6 AND 11"; break;
-                                            case 2: $pt[4] = "12 AND 14"; break;
-                                            case 3: $pt[4] = "15 AND 17"; break;
-                                        } $sql .= " AND a.timerange BETWEEN ".$pt[4];
-                                    }
+                                    if (substr($pt[4], 0, 1) == "r") $sql .= " AND a.timerange BETWEEN ".tr_range($pt[4]);
                                 }
                             }
                         }

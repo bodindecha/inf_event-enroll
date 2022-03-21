@@ -73,6 +73,7 @@
 					<li class="label">การเรียกแทนผู้สละสิทธิ์ในปีการศึกษา 2565</li>
 					<li data-release="14"><a target="_blank" href="<?=$ann_link?>24454">ครั้งที่ <b>1</b>: ประเภท<b>ห้องเรียนพิเศษ</b></a></li>
 					<li data-release="16"><a target="_blank" href="<?=$ann_link?>24500">ครั้งที่ <b>2</b>: ประเภท<b>ห้องเรียนพิเศษ</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li data-release="21"><a target="_blank" href="<?=$ann_link?>24551">ครั้งที่ <b>3</b>: ประเภท<b>ห้องเรียนพิเศษ</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
 					<li class="label">ประกาศผลนักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 โรงเรียนเดิม</li>
 					<li data-release="1"><a target="_blank" href="<?=$ann_link?>24209">ประเภทห้องเรียนปกติ (<b>รอบ 1</b>)</a></li>
 					<li data-release="3"><a target="_blank" href="<?=$ann_link?>24248">ประเภทห้องเรียนปกติ (<b>รอบ 2</b>)</a></li>
