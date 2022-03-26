@@ -82,6 +82,7 @@
 					<li data-release="16"><a target="_blank" href="<?=$ann_link?>24500">ประเภทห้องเรียนปกติ (<b>รอบ 3</b>)</a></li>
 					<hr>
 					<li data-release="8"><a target="_blank" href="<?=$ann_link?>24314">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4</a></li>
+					<li data-release="25"><a target="_blank" href="<?=$ann_link?>24643">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 (<b>ครั้งที่ 2</b>)</a></li>
 				</ul>
 				<center class="message black">ศึกษารายระเอียดทั้งหมดที่ <a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fadmission">งานรับนักเรียน</a><hr><a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fcostume">เครื่องแบบและระเบียบการแต่งกาย</a>โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</center>
 			</div>
