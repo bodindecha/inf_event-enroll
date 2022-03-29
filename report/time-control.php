@@ -58,7 +58,28 @@
 	<head>
 		<?php require($dirPWroot."resource/hpe/heading.php"); require($dirPWroot."resource/hpe/init_ss.php"); ?>
 		<style type="text/css">
-			
+			html body main div.container div.filter {
+				width: 100%; height: 100%;
+				border-radius: 20px; box-shadow: 0px 2.5px 2.5px 2.5px rgb(0, 0, 0, 0.25);
+				overflow: hidden;
+			}
+			html body main div.container div.filter *:not(i) { font-size: 15px; line-height: 20px; font-family: "THKodchasal", serif; }
+			html body main div.container div.filter input {
+				padding: 10px 55px 10px 15px;
+				width: 100%;
+			}
+			html body main div.container div.filter input::-webkit-search-cancel-button {
+				transform: scale(2.5) translateY(-1.25px);
+				cursor: pointer;
+			}
+			html body main div.container div.filter i {
+				position: absolute; right: 17.5px;
+				width: 40px; height: 40px;
+				font-size: 36px; line-height: 40px;
+				color: var(--clr-gg-grey-500); text-align: center;
+				pointer-events: none;
+			}
+			main .table td:nth-child(1) { text-align: right; }
 		</style>
 		<script type="text/javascript">
 			$(document).ready(function() {
@@ -69,7 +90,15 @@
 					}
 				?>
 			});
+			function fd() {
+				var txt = $("html body main div.container div.filter input").val().trim();
+				w3.filterHTML(".table table tbody", "tr", txt);
+			}
+			function ro(col) {
+				w3.sortHTML(".table table tbody", "tr", "td:nth-child("+col.toString()+")");
+			}
 		</script>
+		<script type="text/javascript" src="/resource/js/lib/w3.min.js"></script>
 	</head>
 	<body>
 		<?php require($dirPWroot."e/enroll/resource/hpe/header.php"); ?>
@@ -77,11 +106,16 @@
 			<div class="container">
 				<h2>การตั้งค่าเวลา</h2>
 				<?php if (!$has_result) echo '<center class="message red">ไม่พบรายการกำหนดการเวลา. กรุณาแจ้งผู้ดูแลระบบให้เพิ่มค่าเริ่มต้นให้.</center>'; else { ?>
+					<div class="filter"><input type="search" placeholder="Filter ... (ตัวกรอง)" onInput="fd()"/><i class="material-icons">filter_list</i></div>
 					<form class="form table extend" method="post"><table><thead><tr>
-						<th>กิจกรรม</th><th>เริ่มต้น (เปิด)</th><th>สิ้นสุด (ปิด)</th>
+						<th onClick="ro(1)">REF</th>
+						<th onClick="ro(2)">กิจกรรม</th>
+						<th>เริ่มต้น (เปิด)</th>
+						<th>สิ้นสุด (ปิด)</th>
 					</tr></thead><tbody>
 						<?php while ($es = $getset -> fetch_assoc()) { ?>
 						<tr>
+							<td><?=$es["trid"]?>&nbsp;</td>
 							<td><?=$es["name"]?></td>
 							<td><input type="text" maxlength="19" pattern="<?=$tsRegex?>" required value="<?=$es["start"]?>" name="<?=encryptNID($es["trid"])?>_start"></td>
 							<td><input type="text" maxlength="19" pattern="<?=$tsRegex?>" required value="<?=$es["stop"]?>" name="<?=encryptNID($es["trid"])?>_stop"></td>
