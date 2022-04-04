@@ -7,7 +7,10 @@
 	# $forceExternalBrowser = true;
 	$permitted = has_perm("admission"); if ($permitted) {
 		require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
-		$authuser = $_SESSION['auth']['user'];
+		function escapeSQL($input) {
+			global $db;
+			return $db -> real_escape_string($input);
+		} $authuser = $_SESSION['auth']['user'];
 		$tsRegex = '20\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1]) ([0-1]\d|2[0-3])(:([0-5]\d)){2}';
 		// Update
 		if (isset($_POST['save'])) {
@@ -49,7 +52,7 @@
 			} header("Refresh: 0");
 		}
 		// Load
-		$getset = $db -> query("SELECT trid,name,start,stop FROM admission_timerange WHERE year=2565");
+		$getset = $db -> query("SELECT trid,name,start,stop FROM admission_timerange WHERE NOT trid=0 AND year=2565");
 		$has_result = ($getset && $getset -> num_rows);
 	}
 ?>
