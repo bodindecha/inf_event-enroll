@@ -145,6 +145,7 @@
                         case "csv": case "tsv": {
                             $delimeter = ($reqType == "tsv" ? "\t" : ",");
                             $outputData = "\"ประทับเวลา\"$delimeter\"เลขประจำตัวผู้สมัคร\"$delimeter\"เลขประจำตัวประชาชน\"$delimeter\"คำนำหน้า\"$delimeter\"ชื่อจริง\"$delimeter\"นามสกุล\"$delimeter\"ประเภทห้องเรียน\"$delimeter\"การเลือกใช้สิทธิ์\"$delimeter\"ชื่อจริงภาษาอังกฤษ\"$delimeter\"นามสกุลภาษาอังกฤษ\"";
+							if ($evdLink) $outputData .= "$delimeter\"ไฟล์หลักฐาน\"";
                             if ($has_result) { while ($er = $result -> fetch_assoc()) {
                                 // Modify
                                 $er["type"] = $intype[intval($er["type"])-1];
