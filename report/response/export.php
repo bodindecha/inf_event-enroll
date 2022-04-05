@@ -140,7 +140,7 @@
                         "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 4
                         "โครงการห้องเรียน พสวท. (สู่ความเป็นเลิศ)" // ชั้นมัธยมศึกษาปีที่ 4
                     );
-                    $result = $db -> query("SELECT amsid,natid,namepth,namefth,namelth,type,COALESCE(time,lastupdate) AS time,choose,namefen,namelen FROM admission_newstd ORDER BY time ASC");
+                    $result = $db -> query("SELECT amsid,natid,namepth,namefth,namelth,type,COALESCE(time,lastupdate) AS time,choose,filetype,namefen,namelen FROM admission_newstd ORDER BY time ASC");
                     $has_result = ($result && $result -> num_rows); switch ($reqType) {
                         case "csv": case "tsv": {
                             $delimeter = ($reqType == "tsv" ? "\t" : ",");
@@ -149,8 +149,10 @@
                                 // Modify
                                 $er["type"] = $intype[intval($er["type"])-1];
                                 $er["choose"] = (empty($er["choose"]) ? "ยังไม่ใช้สิทธิ์" : ($er["choose"]=="Y" ? "ยืนยันสิทธิ์" : "สละสิทธิ์"));
+                                $er["filetype"] = (empty($er["filetype"]) ? "" : $linkPrefix.$er["amsid"]."&type=newstd");
                                 // Concat
                                 $outputData .= "\n\"".$er["time"]."\"$delimeter\"".$er["amsid"]."\"$delimeter\"".$er["natid"]."\"$delimeter\"".$er["namepth"]."\"$delimeter\"".$er["namefth"]."\"$delimeter\"".$er["namelth"]."\"$delimeter\"".$er["type"]."\"$delimeter\"".$er["choose"]."\"$delimeter\"".$er["namefen"]."\"$delimeter\"".$er["namelen"]."\"";
+                                if ($evdLink) $outputData .= "$delimeter\"".$er["filetype"]."\"";
                             } }
                             break;
                         } case "json": {
@@ -159,6 +161,7 @@
                                 // Modify
                                 $er["type"] = $intype[intval($er["type"])-1];
                                 $er["choose"] = (empty($er["choose"]) ? "ยังไม่ใช้สิทธิ์" : ($er["choose"]=="Y" ? "ยืนยันสิทธิ์" : "สละสิทธิ์"));
+                                $er["filetype"] = (empty($er["filetype"]) ? "" : $linkPrefix.$er["amsid"]."&type=newstd");
                                 // Concat
                                 $rowdata = array(
                                     "ประทับเวลา" => $er["time"],
@@ -171,7 +174,8 @@
                                     "การเลือกใช้สิทธิ์" => $er["choose"],
                                     "ชื่อจริงภาษาอังกฤษ" => $er["namefen"],
                                     "นามสกุลภาษาอังกฤษ" => $er["namelen"]
-                                ); array_push($outputData, $rowdata);
+                                ); if ($evdLink) $rowdata["ไฟล์หลักฐาน"] = $er["filetype"];
+                                array_push($outputData, $rowdata);
                             } }
                             break;
                     } } break;

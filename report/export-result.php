@@ -76,7 +76,7 @@
 					<!div class="group-inline"><label class="cb">
 						<div><input type="checkbox" name="evdLink" class="switch"></div>
 						<span>&nbsp; ใส่ลิงก์ไฟล์หลักฐาน (ถ้ามี)</span>
-						<font style="color: var(--clr-bs-gray-dark)">&nbsp; เฉพาะประเภทนักเรียนเดิม</font>
+						<!--font style="color: var(--clr-bs-gray-dark)">&nbsp; เฉพาะประเภทนักเรียนเดิม</font-->
 					</label><!/div>
 					<input type="hidden" name="start">
                     <center><button class="yellow" onClick="return verify()">นำอออก (Export)</button></center>
