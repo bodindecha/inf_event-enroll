@@ -24,14 +24,14 @@
 			}
 			main .form.modern input + label {
 				padding: 2.5px 5px;
-				position: absolute; left: 15px; transform: translate(calc(var(--mvlbt) + 12.5px), -41px);
+				position: absolute; left: 15px; transform: translate(calc(var(--mvlbt) + 12.5px), 10px /*-41px*/);
 				height: var(--txt-ipt-h);
 				font-size: 18.75px; font-family: 'Sarabun', sans-serif; color: gray; line-height: var(--txt-ipt-h);
 				transition: calc(var(--time-tst-xfast)/1.5); pointer-events: none;
 			}
 			main .form.modern input[required] + label { color: var(--clr-bs-red); }
 			main .form.modern input:focus + label, main .form.modern input[filled="true"] + label {
-				transform: translate(var(--mvlbt), -59px) scale(0.75);
+				transform: translate(var(--mvlbt), -7px /*-59px*/) scale(0.75);
 				color: var(--clr-main-black-absolute);
 				background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 42.4%, rgba(255,255,255,1) 42.5%, rgba(255,255,255,1) 55%, rgba(255,255,255,0) 55.1%);
 			}
