@@ -3,7 +3,7 @@
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "ระบบยืนยันสิทธิ์การเข้าศึกษาต่อ";
 
-	$ann_link = "/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2F2022%2F03%2F";
+	$ann_link = "/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2F2022%2F0";
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -65,25 +65,26 @@
 				<h3 id="announcement">ประกาศผลรายชื่อผู้มีสิทธิ์เข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h3>
 				<ul>
 					<li class="label">ประกาศผลนักเรียนที่ผ่านการคัดเลือก (สอบเข้าใหม่)</li>
-					<li data-release="03-30"><a target="_blank" href="<?=$ann_link?>24687">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
-					<li data-release="03-23"><a target="_blank" href="<?=$ann_link?>24588">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b> (<b>ความสามารถพิเศษ</b>)</a></li>
-					<li data-release="03-10"><a target="_blank" href="<?=$ann_link?>24337">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
-					<li data-release="03-31"><a target="_blank" href="<?=$ann_link?>24689">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-					<li data-release="03-11"><a target="_blank" href="<?=$ann_link?>24402">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-					<li data-release="03-09"><a target="_blank" href="<?=$ann_link?>24322">ประเภท<b>ห้องเรียนพสวท. (สู่ความเป็นเลิศ)</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li data-release="03-30"><a target="_blank" href="<?=$ann_link?>3%2F24687">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
+					<li data-release="03-23"><a target="_blank" href="<?=$ann_link?>3%2F24588">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b> (<b>ความสามารถพิเศษ</b>)</a></li>
+					<li data-release="03-10"><a target="_blank" href="<?=$ann_link?>3%2F24337">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
+					<li data-release="03-31"><a target="_blank" href="<?=$ann_link?>3%2F24689">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li data-release="03-11"><a target="_blank" href="<?=$ann_link?>3%2F24402">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li data-release="03-09"><a target="_blank" href="<?=$ann_link?>3%2F24322">ประเภท<b>ห้องเรียนพสวท. (สู่ความเป็นเลิศ)</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
 					<li class="label">การเรียกแทนผู้สละสิทธิ์ในปีการศึกษา 2565</li>
-					<li data-release="03-14"><a target="_blank" href="<?=$ann_link?>24454">ครั้งที่ <b>1</b>: ประเภท<b>ห้องเรียนพิเศษ</b></a></li>
-					<li data-release="03-16"><a target="_blank" href="<?=$ann_link?>24500">ครั้งที่ <b>2</b>: ประเภท<b>ห้องเรียนพิเศษ</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-					<li data-release="03-21"><a target="_blank" href="<?=$ann_link?>24551">ครั้งที่ <b>3</b>: ประเภท<b>ห้องเรียนพิเศษ</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-					<li data-release="03-23"><a target="_blank" href="<?=$ann_link?>24612">ครั้งที่ <b>4</b>: ประเภท<b>ห้องเรียนพิเศษ</b></a></li>
-					<li data-release="03-28"><a target="_blank" href="<?=$ann_link?>24672">ครั้งที่ <b>5</b>: ประเภท<b>ห้องเรียนพิเศษ</b></a></li>
-					<li data-release="04-03"><a target="_blank" href="<?=$ann_link?>24834">ครั้งที่ <b>6</b>: ชั้นมัธยมศึกษาปีที่ <b>1</b> และประเภท<b>ห้องเรียนพิเศษ</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-					<li data-release="04-04"><a target="_blank" href="<?=$ann_link?>24874">ครั้งที่ <b>7</b>: ประเภท<b>ห้องเรียนปกติ</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-					<li data-release="04-05"><a target="_blank" href="<?=$ann_link?>24896">ครั้งที่ <b>8</b>: ชั้นมัธยมศึกษาปีที่ <b>1</b> และ <b>4</b> ห้องเรียน<b>ทุกประเภท</b></a></li>
+					<li data-release="03-14"><a target="_blank" href="<?=$ann_link?>3%2F24454">ครั้งที่ <b>1</b>: ประเภท<b>ห้องเรียนพิเศษ</b></a></li>
+					<li data-release="03-16"><a target="_blank" href="<?=$ann_link?>3%2F24500">ครั้งที่ <b>2</b>: ประเภท<b>ห้องเรียนพิเศษ</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li data-release="03-21"><a target="_blank" href="<?=$ann_link?>3%2F24551">ครั้งที่ <b>3</b>: ประเภท<b>ห้องเรียนพิเศษ</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li data-release="03-23"><a target="_blank" href="<?=$ann_link?>3%2F24612">ครั้งที่ <b>4</b>: ประเภท<b>ห้องเรียนพิเศษ</b></a></li>
+					<li data-release="03-28"><a target="_blank" href="<?=$ann_link?>3%2F24672">ครั้งที่ <b>5</b>: ประเภท<b>ห้องเรียนพิเศษ</b></a></li>
+					<li data-release="04-03"><a target="_blank" href="<?=$ann_link?>4%2F24834">ครั้งที่ <b>6</b>: ชั้นมัธยมศึกษาปีที่ <b>1</b> และประเภท<b>ห้องเรียนพิเศษ</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li data-release="04-04"><a target="_blank" href="<?=$ann_link?>4%2F24874">ครั้งที่ <b>7</b>: ประเภท<b>ห้องเรียนปกติ</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li data-release="04-05"><a target="_blank" href="<?=$ann_link?>4%2F24896">ครั้งที่ <b>8</b>: ชั้นมัธยมศึกษาปีที่ <b>1</b> และ <b>4</b> <b>ทุกประเภท</b>ห้องเรียน</a></li>
+					<li data-release="04-12"><a target="_blank" href="<?=$ann_link?>4%2F24945">ครั้งที่ <b>9</b>: <b>ทุกประเภท</b>ห้องเรียน ยกเว้นประเภท<b>ห้องเรียนพิเศษวิทยาศาสตร์ฯ</b> ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
 					<li class="label">ประกาศผลนักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 โรงเรียนเดิม</li>
-					<li data-release="03-01"><a target="_blank" href="<?=$ann_link?>24209">ประเภทห้องเรียนปกติ (<b>รอบ 1</b>)</a></li>
-					<li data-release="03-03"><a target="_blank" href="<?=$ann_link?>24248">ประเภทห้องเรียนปกติ (<b>รอบ 2</b>)</a></li>
-					<li data-release="03-16"><a target="_blank" href="<?=$ann_link?>24500">ประเภทห้องเรียนปกติ (<b>รอบ 3</b>)</a></li>
+					<li data-release="03-01"><a target="_blank" href="<?=$ann_link?>3%2F24209">ประเภทห้องเรียนปกติ (<b>รอบ 1</b>)</a></li>
+					<li data-release="03-03"><a target="_blank" href="<?=$ann_link?>3%2F24248">ประเภทห้องเรียนปกติ (<b>รอบ 2</b>)</a></li>
+					<li data-release="03-16"><a target="_blank" href="<?=$ann_link?>3%2F24500">ประเภทห้องเรียนปกติ (<b>รอบ 3</b>)</a></li>
 					<hr>
 					<li data-release="8"><a target="_blank" href="<?=$ann_link?>24314">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4</a></li>
 					<li data-release="25"><a target="_blank" href="<?=$ann_link?>24643">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 (<b>ครั้งที่ 2</b>)</a></li>
