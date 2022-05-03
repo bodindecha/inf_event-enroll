@@ -22,7 +22,7 @@
 				justify-content: center;
 			}
 			main .wrapper .card .action a:not(:last-child) { margin-bottom: 5px; }
-			main #announcement { font-weight: 500; }
+			main h3[id] { font-weight: 500; }
 			main ul li.label {
 				margin: 2.5px 0px 1.25px;
 				list-style-type: none;
@@ -41,6 +41,8 @@
 		<main shrink="<?php echo($_COOKIE['sui_open-nt'])??"false"; ?>" class="rainbow-bg">
 			<div class="container">
 				<h2>การเข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
+				<p>ติดตามข่าว<a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fcategory%2Fnewstudent-2565">การเข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ในปีการศึกษา 2565</a> ได้ที่นี่</p>
+				<br>
 				<div class="wrapper">
 					<div class="card message cyan">
 						<div class="info">
@@ -62,6 +64,12 @@
 					</div>
 				</div>
 				<br>
+				<h3 id="important">ประกาศสำคัญ</h3>
+				<ul>
+					<li class="label">ปีการศึกษา 2565</li>
+					<li data-release="05-01"><a target="_blank" href="<?=$ann_link?>5%2F25061">การเปิดใช้งานบัญชีผู้ใช้งานเครือข่าย สำหรับนักเรียนใหม่ </a></li>
+					<li data-release="05-02"><a target="_blank" href="<?=$ann_link?>5%2F25068">กิจกรรมเตรียมความพร้อมความเป็นลูกบดินทร</a></li>
+				</ul>
 				<h3 id="announcement">ประกาศผลรายชื่อผู้มีสิทธิ์เข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h3>
 				<ul>
 					<li class="label">ประกาศผลนักเรียนที่ผ่านการคัดเลือก (สอบเข้าใหม่)</li>
@@ -82,13 +90,17 @@
 					<li data-release="04-05"><a target="_blank" href="<?=$ann_link?>4%2F24896">ครั้งที่ <b>8</b>: ชั้นมัธยมศึกษาปีที่ <b>1</b> และ <b>4</b> <b>ทุกประเภท</b>ห้องเรียน</a></li>
 					<li data-release="04-12"><a target="_blank" href="<?=$ann_link?>4%2F24945">ครั้งที่ <b>9</b>: <b>ทุกประเภท</b>ห้องเรียน ยกเว้นประเภท<b>ห้องเรียนพิเศษวิทยาศาสตร์ฯ</b> ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
 					<li data-release="04-19"><a target="_blank" href="<?=$ann_link?>4%2F24975">ครั้งที่ <b>9</b>: ชั้นมัธยมศึกษาปีที่ <b>1</b> และ <b>4</b> <b>ทุกประเภท</b>ห้องเรียน</a></li>
+					<li data-release="04-26"><a target="_blank" href="<?=$ann_link?>4%2F25206">ครั้งที่ <b>10</b>: ประเภท<b>ห้องเรียนปกติ</b> ชั้นมัธยมศึกษาปีที่ <b>1</b> และชั้นมัธยมศึกษาปีที่ <b>4</b> <b>ทุกประเภท</b>ห้องเรียน</a></li>
+					<li data-release="05-04"><a target="_blank" href="<?=$ann_link?>5%2F25092">ครั้งที่ <b>11</b>: ชั้นมัธยมศึกษาปีที่ <b>1</b> และ <b>4</b></a></li>
 					<li class="label">ประกาศผลนักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 โรงเรียนเดิม</li>
 					<li data-release="03-01"><a target="_blank" href="<?=$ann_link?>3%2F24209">ประเภทห้องเรียนปกติ (<b>รอบ 1</b>)</a></li>
 					<li data-release="03-03"><a target="_blank" href="<?=$ann_link?>3%2F24248">ประเภทห้องเรียนปกติ (<b>รอบ 2</b>)</a></li>
 					<li data-release="03-16"><a target="_blank" href="<?=$ann_link?>3%2F24500">ประเภทห้องเรียนปกติ (<b>รอบ 3</b>)</a></li>
 					<hr>
-					<li data-release="8"><a target="_blank" href="<?=$ann_link?>3%2F24314">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4</a></li>
-					<li data-release="25"><a target="_blank" href="<?=$ann_link?>3%2F24643">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 (<b>ครั้งที่ 2</b>)</a></li>
+					<li data-release="03-08"><a target="_blank" href="<?=$ann_link?>3%2F24314">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+					<li data-release="03-25"><a target="_blank" href="<?=$ann_link?>3%2F24643">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ <b>4</b> (<b>ครั้งที่ 2</b>)</a></li>
+					<li data-release="03-31"><a target="_blank" href="<?=$ann_link?>3%2F24798">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
+					<li data-release="04-02"><a target="_blank" href="<?=$ann_link?>4%2F24822">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ <b>4</b> (<b>ครั้งที่ 3</b>)</a></li>
 				</ul>
 				<center class="message black">ศึกษารายระเอียดทั้งหมดที่ <a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fadmission">งานรับนักเรียน</a><hr><a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fcostume">เครื่องแบบและระเบียบการแต่งกาย</a>โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</center>
 			</div>
