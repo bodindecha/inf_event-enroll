@@ -115,7 +115,7 @@
                             case 3: $zone = "19 AND 24"; break;
                             case 4: $zone = "25 AND 30"; break;
                             case 5: $zone = "31 AND 36"; break;
-                            case 6: $zone = "37 AND 46"; break;
+                            case 6: $zone = "37 AND 66"; break;
                         } return $zone;
                     } if (isset($pt[2])) {
                         if (substr($pt[2], 0, 1) == "r")
