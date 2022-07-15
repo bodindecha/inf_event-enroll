@@ -13,11 +13,11 @@
     function escapeSQL($input) {
         global $db;
         return $db -> real_escape_string($input);
-    } function successState($output) {
+    } function successState($output = null) {
         global $return;
         $return["success"] = true; unset($return["reason"]);
         if (!empty($output)) $return["info"] = $output;
-    } function errorMessage($type, $text=null) {
+    } function errorMessage($type, $text = null) {
         global $return;
         array_push($return["reason"], (empty($text) ? $type : array($type, $text)));
     } function has_perm($what, $mods = true) {
