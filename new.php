@@ -5,6 +5,7 @@
 	$header_desc = "นักเรียนใหม่";
 
 	$forceExternalBrowser = true;
+	require_once($dirPWroot."e/enroll/resource/php/config.php");
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -49,24 +50,17 @@
 			const cnf = function() {
 				const cv = {
 					APIurl: "/e/enroll/resource/php/api",
-					group: [
-						"ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ
-						"ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ (คุณสมบัติไม่ครบ) [deprecated]
-						"ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // นอกเขตพื้นที่บริการ
-						"ห้องเรียนพิเศษคณิตศาสตร์", // ชั้นมัธยมศึกษาปีที่ 1
-						"ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม ตามแนวทาง สสวท. และ สอวน.", // ชั้นมัธยมศึกษาปีที่ 1
-						"ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม", // ชั้นมัธยมศึกษาปีที่ 4
-						"ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 4
-						"โครงการห้องเรียน พสวท. (สู่ความเป็นเลิศ)" // ชั้นมัธยมศึกษาปีที่ 4
-					], dlURL: "/e/enroll/resource/file/dl?name=sef-",
+					group: <?=arrDump($CV_groupAdm)?>,
+					dlURL: "/e/enroll/resource/file/dl?name=sef-",
 					dlFile: function(type) {
 						switch (parseInt(type)) {
-							case 0: case 1: case 2: type = "1n"; break;
-							case 3: type = "1m"; break;
-							case 4: type = "1s"; break;
-							case 5: type = "4s"; break;
-							case 6: type = "4n"; break;
-							case 7: type = "4d"; break;
+							case 5: case 6: case 7: type = "1n"; break;
+							case 0: type = "1m"; break;
+							case 1: type = "1s"; break;
+							case 3: type = "4s"; break;
+							case 8: type = "4n"; break;
+							case 4: type = "4d"; break;
+							case 2: type = "1e"; break;
 						} return type;
 					}
 				};
@@ -77,7 +71,7 @@
 							type: "new", act: "authen", param: {
 								user: document.querySelector('main .form [name="sid"]').value.trim(),
 								pswd: document.querySelector('main .form [name="cid"]').value.trim()
-						} }; if (!/^([13-8]\d{4}|8\d{5}|9{5})$/.test(data.param.user)) {
+						} }; if (!/^[1-9]\d{5}$/.test(data.param.user)) {
 							app.ui.notify(1, [2, "รูปแบบเลขประจำตัวผู้สมัครไม่ถูกต้อง"]);
 							$('main .form [name="sid"]').focus();
 						} else if (!/^\d{13}$/.test(data.param.pswd)) {
@@ -228,18 +222,18 @@
 				<h2>ระบบรายงานตัว/ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 				<!--center class="message red">ขณะนี้ระบบอยู่ระหว่างการปรับปรุง กรุณาเข้ามาใหม่หลัง 10.15น.</center-->
 				<form class="form modern --message-black" name="authenticate">
-					<input type="number" name="sid" maxlength="6" autofocus><label>เลขประจำตัวผู้สมัคร 5-6 หลัก</label>
+					<input type="number" name="sid" maxlength="6" autofocus><label>เลขประจำตัวผู้สมัคร 6 หลัก</label>
 					<input type="number" name="cid" maxlength="13"><label>เลขประจำตัวประชาชน 13 หลัก</label>
 					<p>ใส่เลขประจำตัวผู้สมัครและเลขประจำตัวประชาชนโดยไม่ต้องมีขีดกลางหรือเว้นวรรค<br>หากมีข้อสงสัยหรือมีข้อผิดพลาดในการใช้งาน กรุณาติดต่อ <a href="/go?url=tel%3A0965636455" target="_blank">096 563 6455</a></p>
 					<button class="blue full-x last" onClick="return cnf.check()" name="authen">ตรวจสอบสิทธิ์</button>
 				</form>
 				<form name="bio" style="display: none;">
-					<center class="message cyan">การรายงานตัว/ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภท<u><output name="rtype"></output></u> ปีการศึกษา 2565<br><output name="fullname"></output></center>
+					<center class="message cyan">การรายงานตัว/ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภท<u><output name="rtype"></output></u> ปีการศึกษา 2566<br><output name="fullname"></output></center>
 				</form>
 				<form class="form" name="choose" style="display: none;">
 					<center class="message yellow">นักเรียนสามารถเลือกได้เพียง 1 ครั้งเท่านั้น ภายใน<output name="closetime"></output></center>
 					<div class="message blue last">
-						<center>กรุณาศึกษารายละเอียดการเข้าศึกษาต่ออย่างถี่ถ้วน แล้วกรอกข้อมูลด้านล่าง และกดปุ่มเพื่อยืนยัน หรือ สละสิทธิ์ เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภท<u><output name="rtype"></output></u> ปีการศึกษา 2565</center>
+						<center>กรุณาศึกษารายละเอียดการเข้าศึกษาต่ออย่างถี่ถ้วน แล้วกรอกข้อมูลด้านล่าง และกดปุ่มเพื่อยืนยันหรือสละสิทธิ์ เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภท<u><output name="rtype"></output></u> ปีการศึกษา 2566</center>
 						<fieldset>
 							<legend>กรณียืนยันสิทธิ์ กรุณากรอกข้อมูล</legend>
 							<div class="group">
@@ -268,7 +262,7 @@
 					<ol class="last">
 						<li>หากนักเรียนต้องการสละสิทธิ์ในภายหลัง ขอความร่วมมือติดต่องานทะเบียน โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</li>
 						<li>พิมพ์ใบมอบตัวนักเรียนลงบนกระดาษ A4 สีขาว แล้วกรอกข้อมูลให้ครบถ้วน พร้อมแบบหลักฐานตามคำชี้แจงการมอบตัว และนำมายื่นในวันมอบตัว</li>
-						<li>ติดตามกำหนดการเปิดภาคเรียนที่ 1 ปีการศึกษา 2565 อย่างต่อเนื่องที่<a href="/go?url=https%3A%2F%2Fbodin.ac.th" target="_blank">เว็บไซต์โรงเรียน</a></li>
+						<li>ติดตามกำหนดการเปิดภาคเรียนที่ 1 ปีการศึกษา 2566 อย่างต่อเนื่องที่<a href="/go?url=https%3A%2F%2Fbodin.ac.th" target="_blank">เว็บไซต์โรงเรียน</a></li>
 					</ol>
 					<center><a href="javascript:void(0)" target="dlframe" download="ใบมอบตัว.pdf">[<i class="material-icons">download</i> ใบมอบตัว ]</a></center>
 				</form>

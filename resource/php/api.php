@@ -10,6 +10,7 @@
     $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
     require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
     require($dirPWroot."resource/php/core/getip.php");
+    require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
     function escapeSQL($input) {
         global $db;
         return $db -> real_escape_string($input);
@@ -29,7 +30,7 @@
     switch ($type) {
         case "new": { switch ($command) {
             case "authen": {
-                if (!preg_match("/^([13-8]\d{4}|8\d{5}|9{5})$/", $attr["user"]) || !preg_match("/^\d{13}$/", $attr["pswd"]))
+                if (!preg_match("/^[1-9]\d{5}$/", $attr["user"]) || !preg_match("/^\d{13}$/", $attr["pswd"]))
                     errorMessage(2, "รูปแบบเลขประจำตัวผู้สมัครหรือเลขประจำตัวประชาชนไม่ถูกต้อง");
                 else {
                     $amsid = escapeSQL($attr["user"]); $natid = escapeSQL($attr["pswd"]);
@@ -41,15 +42,15 @@
                                 "name" => $read["nameath"],
                                 "expire" => date("วันที่ d/m/Y เวลา H:iน.", strtotime($read["stop"])),
                                 "done" => !empty($read["choose"]),
-                                "evfile" => (($read["choose"] == "N" && !empty($read["filetype"])) ? encryptNID($read["amsid"]) : null)
+                                "evfile" => (($read["choose"] == "N" && !empty($read["filetype"])) ? $vToken -> create($read["amsid"]) : null)
                             ); if ($data["done"]) {
                                 $data["choice"] = $read["choose"];
                                 $data["decidetime"] = date("วันที่ d/m/Y เวลา H:i:s", strtotime($read["time"]));
                                 $data["IPaddr"] = $read["ip"];
-                                $data["authuser"] = encryptNID($read["datid"]);
+                                $data["authuser"] = $vToken -> create($read["datid"]);
                             } else {
                                 $data["inTime"] = inTimerange($read["start"], $read["stop"]);
-                                if ($data["inTime"]) $data["returnTo"] = encryptNID($read["datid"]);
+                                if ($data["inTime"]) $data["returnTo"] = $vToken -> create($read["datid"]);
                             } successState($data);
                             slog($read["datid"], "admission", $type, $command, "", "pass");
                         } else if ($get -> num_rows > 1) {
@@ -70,7 +71,7 @@
                 else if (!preg_match("/^(Y|N)$/", $attr["choose"]))
                     errorMessage(1, "รูปแบบคำตอบไม่ถูกต้อง. กรุณาลองใหม่อีกครั้ง.");
                 else {
-                    $datid = escapeSQL(decryptNID($attr["user"])); $choose = escapeSQL($attr["choose"]);
+                    $datid = escapeSQL($vToken -> read($attr["user"])); $choose = escapeSQL($attr["choose"]);
                     // Check timerange
                     $getTR = $db -> query("SELECT b.start, b.stop FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.datid=$datid");
                     if (!($getTR && $getTR -> num_rows == 1)) {
@@ -109,7 +110,7 @@
                                             "choice" => $readbio["choose"],
                                             "decidetime" => date("วันที่ d/m/Y เวลา H:i:s", strtotime($readbio["time"])),
                                             "IPaddr" => $readbio["ip"],
-                                            "evfile" => (($readbio["choose"] == "N" && !empty($readbio["filetype"])) ? encryptNID($readbio["amsid"]) : null)
+                                            "evfile" => (($readbio["choose"] == "N" && !empty($readbio["filetype"])) ? $vToken -> create($readbio["amsid"]) : null)
                                         )); slog($datid, "admission", $type, $command, "getUR", "pass");
                                     }
                                 } else {
@@ -127,7 +128,7 @@
                 if (!preg_match("/^[0-9A-Za-z]{4,7}$/", $attr))
                     errorMessage("0");
                 else {
-                    $datid = escapeSQL(decryptNID($attr));
+                    $datid = escapeSQL($vToken -> read($attr));
                     // Check timerange
                     $getdata = $db -> query("SELECT a.amsid, a.choose, a.filetype, b.start, b.stop FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.datid=$datid");
                     if (!($getdata && $getdata -> num_rows == 1)) {
@@ -171,17 +172,18 @@
                         }
                     }
                 } header("Location: /e/enroll/new-swefur".(!empty($return["reason"] ?? null) ? "#msgID=".implode("", $return["reason"]) : ""));
-            } default: array_push($return["reason"], array(1, "Invalid command")); break; } break;
+            } default: errorMessage(1, "Invalid command"); break; } break;
         } case "save": {
             $authuser = $_SESSION['auth']['user'] ?? null;
-            $options = ($command == "cng" ? str_split("ABCDEFG") : array("Y", "N"));
+            $options = ($command == "cng" ? "/^[A-H]$/" : "/^[YN]$/");
+            $name = "";
             if (empty($authuser)) {
                 errorMessage("0"); // Unauthorized
                 slog("webForm", "admission", $command, $type, $attr, "fail", "", "Unauthorized");
             } else if ($_SESSION['auth']['type'] <> "s") {
                 errorMessage("1"); // Not student
                 slog($authuser, "admission", $command, $type, $attr, "fail", "", "NotStudentUserType");
-            } else if (!in_array($attr, $options)) {
+            } else if (!preg_match($options, $attr)) {
                 errorMessage("2"); // Invalid option
                 slog($authuser, "admission", $command, $type, $attr, "fail", "", "InvalidOption");
             } else {
@@ -203,7 +205,7 @@
                         errorMessage("8"); // Ineligible file
                         slog($authuser, "admission", $command, $type, $attr, "fail", "", "FileIneligible");
                     } return false;
-                } $name = ""; $sqlTail = "a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.stdid=$authuser";
+                } $sqlTail = "a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.stdid=$authuser";
                 switch ($command) {
                     case "prs": {
                         $name = "present";
@@ -246,6 +248,7 @@
                             slog($authuser, "admission", $command, $type, $attr, "fail", "", "InvalidQueryG");
                         } else if ($getchk -> num_rows == 1) {
                             $readchk = $getchk -> fetch_array(MYSQLI_ASSOC);
+                            $choose = escapeSQL($attr);
                             if (!inTimerange($readchk["start"], $readchk["stop"])) {
                                 errorMessage("6"); // Timeout
                                 slog($authuser, "admission", $command, $type, $attr, "fail", "", "Timeout");
@@ -256,7 +259,6 @@
                                 errorMessage("7"); // No file
                                 slog($authuser, "admission", $command, $type, $attr, "fail", "", "NoFile");
                             } else if (try_upload_file($name)) {
-                                $choose = escapeSQL($attr);
                                 $success = $db -> query("UPDATE admission_$name SET times=times+1,choose='$choose',filetype='$fileType',ip='$ip' WHERE stdid=$authuser");
                                 if ($success) {
                                     successState(null);
@@ -304,7 +306,7 @@
                             slog($authuser, "admission", $command, $type, $attr, "fail", "", "InvalidResponse");
                         }
                         break;
-                    } default: array_push($return["reason"], array(1, "Invalid command")); break;
+                    } default: errorMessage(1, "Invalid command"); break;
                 }
             } header("Location: /e/enroll/M4/$name".(!empty($return["reason"] ?? null) ? "#msgID=".implode("", $return["reason"]) : ""));
             break;
@@ -318,7 +320,7 @@
                 switch ($command) {
                     case "find": {
                         $user = escapeSQL($attr['user']); $group = $attr['group'];
-                        if (!preg_match("/^([13-7]\d{4}|8\d{5}|9{5})$/", $user))
+                        if (!preg_match("/^[1-9]\d{4,5}$/", $user))
                             errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
                         else {
                             switch ($group) {
@@ -341,21 +343,12 @@
                                     $readinfo = $getinfo -> fetch_array(MYSQLI_ASSOC); $data = array(
                                         "msgType" => "cyan",
                                         "action" => intval(!empty($readinfo["choose"])) + intval(!empty($readinfo["filetype"] ?? null)),
-                                        "impact" => encryptNID($readinfo[($group=="new" ? "datid" : "stdid")])."+".strrev(str_rot13(encryptNID($rtype)))
-                                    ); $intype = array(
-                                        "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ
-                                        "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ (คุณสมบัติไม่ครบ) [deprecated]
-                                        "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // นอกเขตพื้นที่บริการ
-                                        "ห้องเรียนพิเศษคณิตศาสตร์", // ชั้นมัธยมศึกษาปีที่ 1
-                                        "ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม ตามแนวทาง สสวท. และ สอวน.", // ชั้นมัธยมศึกษาปีที่ 1
-                                        "ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม", // ชั้นมัธยมศึกษาปีที่ 4
-                                        "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 4
-                                        "โครงการห้องเรียน พสวท. (สู่ความเป็นเลิศ)" // ชั้นมัธยมศึกษาปีที่ 4
+                                        "impact" => $vToken -> create($readinfo[($group=="new" ? "datid" : "stdid")])."+".strrev(str_rot13($vToken -> create($rtype)))
                                     ); function ts() {
                                         global $readinfo;
                                         return (!empty($readinfo["choose"]) ? " เมื่อ".date("วันที่ d/m/Y เวลา H:i:s", strtotime($readinfo["time"]))." ผ่านที่อยู่ IP ".$readinfo["ip"] : "");
                                     } switch ($group) {
-                                        case "new": $data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานตัวประเภท<u>".$intype[intval($readinfo["type"])-1]."</u>".ts(); break;
+                                        case "new": $data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานตัวประเภท<u>".$CV_groupAdm[intval($readinfo["type"])-1]."</u>".ts(); break;
                                         case "prs": $data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานคัวเข้ารับการศึกษาชั้นมัธยมศึกษาปีที่ 4 โรงเรียนเดิม".ts(); break;
                                         case "cng": $data["message"] = $readinfo["nameath"].(empty($readinfo["choose"]) ? "ไม่ได้ยื่นคำชอเปลี่ยนแปลงกลุ่มการเรียน" : "ยื่นคำขอเปลี่ยนแปลงกลุ่มการเรียนจากเดิมกลุ่มการเรียน<u>".$readinfo["name1"]."</u> เป็นกลุ่มการเรียน<u>".$readinfo["name2"]."</u>"); break;
                                         case "cnf": $data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การเข้าเรียนกลุ่มการเรียน<u>".$readinfo["name"]."</u>".ts(); break;
@@ -371,7 +364,7 @@
                             errorMessage(2, "เกิดข้อผิดพลาด. กรุณาลองใหม่อีกครั้ง.");
                         else {
                             $attr = explode("+", $attr);
-                            $user = decryptNID($attr[0]); $group = decryptNID(str_rot13(strrev($attr[1])));
+                            $user = $vToken -> read($attr[0]); $group = $vToken -> read(str_rot13(strrev($attr[1])));
                             switch ($group) {
                                 case 1: $group = "new"; $sqlchk = "SELECT choose FROM admission_newstd WHERE datid=$user"; break;
                                 case 2: $group = "prs"; $sqlchk = "SELECT choose FROM admission_present WHERE stdid=$user"; break;
@@ -412,7 +405,7 @@
                         } } break;
                     } case "check": {
                         $user = escapeSQL($attr['user']); $group = $attr['group'];
-                        if (!preg_match("/^([13-7]\d{4}|8\d{5}|9{5})$/", $user))
+                        if (!preg_match("/^[1-9]\d{4,5}$/", $user))
                             errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
                         else {
                             switch ($group) {
@@ -429,19 +422,9 @@
                                 } else {
                                     $readinfo = $getinfo -> fetch_array(MYSQLI_ASSOC); $data = array(
                                         "action" => $readinfo["choose"] == "Y",
-                                        "impact" => encryptNID($readinfo["datid"])."+".strrev(str_rot13(encryptNID($group == "new" ? intval($readinfo["type"]) : 7)))
-                                    ); if ($group == "new") {
-                                        $intype = array(
-                                            "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ
-                                            "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ (คุณสมบัติไม่ครบ) [deprecated]
-                                            "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // นอกเขตพื้นที่บริการ
-                                            "ห้องเรียนพิเศษคณิตศาสตร์", // ชั้นมัธยมศึกษาปีที่ 1
-                                            "ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม ตามแนวทาง สสวท. และ สอวน.", // ชั้นมัธยมศึกษาปีที่ 1
-                                            "ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม", // ชั้นมัธยมศึกษาปีที่ 4
-                                            "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 4
-                                            "โครงการห้องเรียน พสวท. (สู่ความเป็นเลิศ)" // ชั้นมัธยมศึกษาปีที่ 4
-                                        ); $readinfo["type"] = $intype[intval($readinfo["type"]) - 1];
-                                    } $data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานตัว".($group == "new" ? "ประเภท" : "กลุ่มการเรียน")."<u>".$readinfo["type"]."</u>";
+                                        "impact" => $vToken -> create($readinfo["datid"])."+".strrev(str_rot13($vToken -> create($group == "new" ? intval($readinfo["type"]) : 9)))
+                                    ); if ($group == "new") $readinfo["type"] = $CV_groupAdm[intval($readinfo["type"]) - 1];
+                                    $data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานตัว".($group == "new" ? "ประเภท" : "กลุ่มการเรียน")."<u>".$readinfo["type"]."</u>";
                                     successState($data);
                                     slog($authuser, "admission", $type, $command, "$user,$group", "pass");
                                 }
@@ -449,10 +432,50 @@
                                 errorMessage(2, "ตัวเลือกหมวดหมู่ไม่ถูกต้อง");
                                 slog($authuser, "admission", $type, $command, "$user,$group", "fail", "", "InvalidOption");
                         } } break;
-                    } default: array_push($return["reason"], array(1, "Invalid command")); break;
+                    } case "newTime": {
+                        $name = escapeSQL($attr["name"]);
+                        $start = escapeSQL($attr["start"]); $hasStart = strlen($start) ? ",start" : ""; $recStart = strlen($start) ? ",'$start'" : "";
+                        $stop = escapeSQL($attr["stop"]); $hasStop = strlen($stop) ? ",stop" : ""; $recStop = strlen($stop) ? ",'$stop'" : "";
+                        $success = $db -> query("INSERT INTO admission_timerange (name$hasStart$hasStop) VALUES ('$name'$recStart$recStop)");
+                        if ($success) {
+                            slog($authuser, "admission", $type, $command, "$name,$start,$stop", "pass", "", "", true);
+                            header("Location: /e/enroll/report/time-control");
+                            exit(0);
+                        } else {
+                            errorMessage(3, "Unable to add timerange.");
+                            slog($authuser, "admission", $type, $command, "$name,$start,$stop", "fail", "", "InvalidQuery");
+                        }
+                        break;
+                    } default: errorMessage(1, "Invalid command"); break;
                 } break;
             }
-        } default: array_push($return["reason"], array(1, "Invalid type")); break;
+        } case "app": {
+            switch ($command) {
+                case "loadFilterOpt": {
+                    if ($attr == "new") {
+                        $options = array(); $idx = 1;
+                        foreach ($CV_groupAdmShort as $type) array_push($options, array("ref" => strval($idx++), "title" => $type));
+                        successState($options);
+                    } else {
+                        switch ($attr) {
+                            case "new": $query = "SELECT a.timerange,b.name FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid GROUP BY a.timerange ORDER BY a.timerange"; break;
+                            case "prs": $query = "SELECT a.timerange,b.name FROM admission_present a INNER JOIN admission_timerange b ON a.timerange=b.trid GROUP BY a.timerange ORDER BY a.timerange"; break;
+                            case "cng": case "cnf": $query = "SELECT code,name FROM admission_sgroup ORDER BY code"; break;
+                        } if (!isset($query)) errorMessage(3, "Invalid type.");
+                        $get = $db -> query($query);
+                        if (!$get) errorMessage(3, "Unable to get options.");
+                        $options = array();
+                        if ($get -> num_rows) while ($eo = $get -> fetch_assoc()) {
+                            if ($attr == "prs" || $attr == "new")
+                                array_push($options, array("ref" => $eo["timerange"], "title" => $eo["name"]));
+                            else if ($attr == "cng" || $attr == "cnf")
+                                array_push($options, array("ref" => $eo["code"], "title" => $eo["name"]));
+                        } successState($options);
+                    }
+                    break;
+                } default: errorMessage(1, "Invalid command"); break;
+            } break;
+        } default: errorMessage(1, "Invalid type"); break;
     } $db -> close();
     echo json_encode($return);
 ?>

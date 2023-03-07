@@ -2,10 +2,10 @@
     session_start();
     $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
 	// Inputs
-    if (isset($_REQUEST['pathTree']) && isset($_REQUEST['page']) && isset($_REQUEST['show']) && isset($_REQUEST['sortBy']) && isset($_REQUEST['sortOrder'])) {
-        require($dirPWroot."e/resource/db_connect.php");
+    if (isset($_REQUEST['filter']) && isset($_REQUEST['page']) && isset($_REQUEST['show']) && isset($_REQUEST['sortBy']) && isset($_REQUEST['sortOrder'])) {
+        require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
         // Clean up
-        $pathTree = trim($_REQUEST['pathTree']);
+        $filter = trim($_REQUEST['filter']);
         $page = trim($_REQUEST['page']);
         $show = trim($_REQUEST['show']);
         $sortBy = trim($_REQUEST['sortBy']);
@@ -13,7 +13,7 @@
         // Calculate
         if (isset($_REQUEST['change'])) {
             $change = trim($_REQUEST['change']); switch ($change) {
-                case "pathTree": $page = "1"; $sortBy = "W"; $sortOrder = "DESC"; break;
+                case "filter": $page = "1"; $sortBy = "W"; $sortOrder = "DESC"; break;
                 case "show": $page = strval(floor($_SESSION['var']['mUser_set']['page']*$_SESSION['var']['mUser_set']['show']/intval($show))+1); break;
                 case "sortBy": $page = "1"; $sortOrder = "ASC"; break;
                 case "sortOrder": $page = "1"; break;
@@ -21,7 +21,7 @@
             }
         } if (!isset($_SESSION['var'])) $_SESSION['var'] = array();
         $_SESSION['var']['mUser_set'] = array( // Save for compare
-            "pathTree" => $pathTree,
+            "filter" => $filter,
             "page" => intval($page)-1,
             "show" => intval($show),
             "sortBy" => $sortBy,
@@ -42,7 +42,6 @@
                     "X" => array("filetype", true, "หมายเหตุ", false, "a.filetype"),
                     "W" => array("time", true, "แก้ไขล่าสุด", false, "a.time")
                 ); $queryBegin = "SELECT a.amsid,CONCAT(a.namepth,a.namefth) AS namef,a.namelth,a.type,(CASE a.choose WHEN 'Y' THEN 'ยืนยันสิทธิ์' WHEN 'N' THEN 'สละสิทธิ์' ELSE 'ยังไม่ใช้สิทธิ์' END) AS choose2,a.filetype,a.namefen,a.namelen FROM admission_newstd a";
-                $intype = array("ม.1 ทั่วไป ในเขต", "ม.1 ทั่วไป ในเขต-ไม่ครบ", "ม.1 ทั่วไป นอกเขต", "ม.1 พิเศษคณิตศาสตร์", "ม.1 พิเศษวิทยาศาสตร์ฯ", "ม.4 พิเศษวิทย์-คณิตฯ", "ม.4 ทั่วไป", "ม.4 พสวท.");
                 $col = array("A", "B", "C", "Z", "D", "E", "F", "X");
                 $searchable = array("A", "B", "C", "D", "E", "F");
                 break;
@@ -103,107 +102,38 @@
             $searchQuery = rtrim($searchQuery, " OR ").")";
         } else $searchQuery = "";
         // Translate
-        $pt = explode("\\", $pathTree);
-        $regex_sgroup = "/^[A-Z]$/";
-        if ($pt[0] == "enroll") {
-            if (isset($pt[1])) {
-                $sql = $queryPreset;
-                if ($pt[1] == "new") {
-                    function tr_range($zone) {
-                        switch (intval(substr($zone, 1))) {
-                            case 1: $zone = "7 AND 12"; break;
-                            case 2: $zone = "13 AND 18"; break;
-                            case 3: $zone = "19 AND 24"; break;
-                            case 4: $zone = "25 AND 30"; break;
-                            case 5: $zone = "31 AND 36"; break;
-                            case 6: $zone = "37 AND 66"; break;
-                        } return $zone;
-                    } if (isset($pt[2])) {
-                        if (substr($pt[2], 0, 1) == "r")
-                            $sql .= " AND a.timerange BETWEEN ".tr_range($pt[2]);
-                        else if ($pt[2] == "ans") {
-                            $sql .= " AND a.choose IS NOT NULL";
-                            if (isset($pt[3])) {
-                                $sql = $queryPreset;
-                                if (substr($pt[3], 0, 1) == "r")
-                                    $sql .= " AND a.timerange BETWEEN ".tr_range($pt[3]);
-                                else {
-                                    $sql .= " AND a.choose='".$pt[3]."'";
-                                    if ($pt[3] == "Y") $col = array("A", "B", "C", "Z", "D", "E", "F");
-                                    else if ($pt[3] == "N") $col = array("A", "B", "C", "Z", "D", "X");
-                                    if (isset($pt[4])) {
-                                        if (substr($pt[4], 0, 1) == "r")
-                                            $sql .= " AND a.timerange BETWEEN ".tr_range($pt[4]);
-                                        else {
-                                            $sql .= " AND a.type=".$pt[4];
-                                            if (substr($pt[5], 0, 1) == "r") $sql .= " AND a.timerange BETWEEN ".tr_range($pt[5]);
-                                        }
-                                    }
-                                }
-                            }
-                        } else if ($pt[2] == "una") {
-                            $col = array("A", "B", "C", "Z", "D");
-                            $sql .= " AND a.choose IS NULL";
-                            if (isset($pt[3])) {
-                                if (substr($pt[3], 0, 1) == "r")
-                                    $sql .= " AND a.timerange BETWEEN ".tr_range($pt[3]);
-                                else {
-                                    $sql .= " AND a.type=".$pt[3];
-                                    if (substr($pt[4], 0, 1) == "r") $sql .= " AND a.timerange BETWEEN ".tr_range($pt[4]);
-                                }
-                            }
-                        }
-                    }
-                } else if ($pt[1] == "prs") {
-                    if (isset($pt[2])) {
-                        if ($pt[2] == "ans") {
-                            $sql .= " AND a.choose IS NOT NULL";
-                            if (isset($pt[3])) {
-                                if (preg_match("/^\d+$/", $pt[3])) $sql .= " AND a.timerange=".$pt[3];
-                                else {
-                                    $sql = "$queryPreset AND a.choose='".$pt[3]."'";
-                                    if ($pt[3] == "N") $col = array("E", "A", "B", "C", "Y", "D");
-                                    if (isset($pt[4])) $sql .= " AND a.timerange=".$pt[4];
-                                }
-                            }
-                        } else if ($pt[2] == "una") {
-                            $sql .= " AND a.choose IS NULL";
-                            $col = array("E", "A", "B", "C", "Y", "D");
-                            if (isset($pt[3])) $sql .= " AND a.timerange=".$pt[3];
-                        } else if (preg_match("/^\d+$/", $pt[2])) $sql .= " AND a.timerange=".$pt[2];
-                    }
-                } else if ($pt[1] == "cng") {
-                    if (isset($pt[2])) {
-                        if (preg_match($regex_sgroup, $pt[2])) $sql .= " AND a.type='".$pt[2]."'";
-                        else if ($pt[2] == "ans") $sql .= " AND a.times > 0";
-                        else if ($pt[2] == "una") {
-                            $col = array("F", "A", "B", "C", "D");
-                            $sql .= " AND a.times=0";
-                        } if (isset($pt[3])) $sql .= " AND a.type='".$pt[3]."'";
-                    }
-                } else if ($pt[1] == "cnf") {
-                    if (isset($pt[2])) {
-                        if (preg_match($regex_sgroup, $pt[2])) $sql .= " AND a.type='".$pt[2]."'";
-                        else if ($pt[2] == "ans") {
-                            $sql .= " AND a.choose IS NOT NULL";
-                            if (isset($pt[3])) {
-                                if (preg_match($regex_sgroup, $pt[3])) {
-                                    $sql .= " AND a.type='".$pt[3]."'";
-                                } else {
-                                    if ($pt[3] == "Y") $col = array("F", "A", "B", "C", "D", "E");
-                                    $sql = "$queryPreset AND a.choose='".$pt[3]."'";
-                                    if (isset($pt[4])) $sql .= " AND a.type='".$pt[4]."'";
-                                }
-                            }
-                        } else if ($pt[2] == "una") {
-                            $col = array("F", "A", "B", "C", "D", "E");
-                            $sql .= " AND a.choose IS NULL";
-                            if (isset($pt[3])) $sql .= " AND a.type='".$pt[3]."'";
-                        }
-                    }
-                }
-            } else $sql = $queryPreset;
-        } if (!empty($sql)) {
+        $regex_sgroup = "/^[A-H]$/";
+        $class = $_REQUEST["filter"]["class"];
+        $group = $db -> real_escape_string(trim($_REQUEST["filter"]["group"]));
+        $sql = $queryPreset;
+        if ($list == "new") {
+            if ($class<>"*") switch ($class) {
+                case "ans": $sql .= " AND a.choose IS NOT NULL"; break;
+                case "Y": $sql .= " AND a.choose='Y'"; $col = array("A", "B", "C", "Z", "D", "E", "F"); break;
+                case "N": $sql .= " AND a.choose='N'"; $col = array("A", "B", "C", "Z", "D", "X"); break;
+                case "una": $sql .= " AND a.choose IS NULL"; $col = array("A", "B", "C", "Z", "D"); break;
+            } if ($group<>"*") $sql .= " AND a.timerange=$group";
+        } else if ($list == "prs") {
+            if ($class<>"*") switch ($class) {
+                case "ans": $sql .= " AND a.choose IS NOT NULL"; break;
+                case "Y": $sql .= " AND a.choose='Y'"; break;
+                case "N": $sql .= " AND a.choose='N'"; $col = array("E", "A", "B", "C", "Y", "D"); break;
+                case "una": $sql .= " AND a.choose IS NULL"; $col = array("E", "A", "B", "C", "Y", "D"); break;
+            } if ($group<>"*") $sql .= " AND a.timerange=$group";
+        } else if ($list == "cng") {
+            if ($class<>"*") switch ($class) {
+                case "ans": $sql .= " AND a.times>0"; break;
+                case "una": $sql .= " AND a.times=0"; $col = array("F", "A", "B", "C", "D"); break;
+            } if ($group<>"*") $sql .= " AND a.type='$group'";
+        } else if ($list == "cnf") {
+            if ($class<>"*") switch ($class) {
+                case "ans": $sql .= " AND a.choose IS NOT NULL"; break;
+                case "Y": $sql .= " AND a.choose='Y'"; $col = array("F", "A", "B", "C", "D", "E"); break;
+                case "N": $sql .= " AND a.choose='N'"; break;
+                case "una": $sql .= " AND a.choose IS NULL"; $col = array("F", "A", "B", "C", "D", "E"); break;
+            } if ($group<>"*") $sql .= " AND a.type=$group";
+        }
+        if (!empty($sql)) {
             // Process
             # require($dirPWroot."e/resource/db_connect.php");
             $result = $db -> query("$sql $searchQuery $queryEnd");
@@ -225,7 +155,7 @@
                 while ($eu = $result -> fetch_assoc()) {
                     $send .= '{ ';
                     foreach ($col as $ec) {
-                        if ($list == "new" && $ec == "Z") $send .= '"'.$ec.'": { "val": "'.$intype[intval($eu[$colcode[$ec][0]])-1].'" },';
+                        if ($list == "new" && $ec == "Z") $send .= '"'.$ec.'": { "val": "'.$CV_groupAdmShort[intval($eu[$colcode[$ec][0]])-1].'" },';
                         else if ($ec == "X") {
                             if (!empty($eu[$colcode[$ec][0]])) $send .= '"'.$ec.'": { "val": "ดูไฟล์หลักฐาน", "link": "/e/enroll/report/response/file?of='.$eu[$colcode['A'][0]].'&type='.$dirname.'" },';
                             else $send .= '"'.$ec.'": { "val": "" },';

@@ -4,6 +4,7 @@
     $normalized_control = false;
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 
+	require_once($dirPWroot."e/enroll/resource/php/config.php");
     require($dirPWroot."e/resource/db_connect.php");
     $authuser = $_SESSION['auth']['user'] ?? "";
     if (empty($authuser)) {
@@ -130,16 +131,7 @@
                             break;
                     } } break;
                 } case "new": {
-                    $name = "รายงานตัวนักเรียนใหม่"; $intype = array(
-                        "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ
-                        "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // ในเขตพื้นที่บริการ (คุณสมบัติไม่ครบ) [deprecated]
-                        "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 1 // นอกเขตพื้นที่บริการ
-                        "ห้องเรียนพิเศษคณิตศาสตร์", // ชั้นมัธยมศึกษาปีที่ 1
-                        "ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม ตามแนวทาง สสวท. และ สอวน.", // ชั้นมัธยมศึกษาปีที่ 1
-                        "ห้องเรียนพิเศษวิทยาศาสตร์ คณิตศาสตร์ เทคโนโลยี และสิ่งแวดล้อม", // ชั้นมัธยมศึกษาปีที่ 4
-                        "ห้องเรียนทั่วไป", // ชั้นมัธยมศึกษาปีที่ 4
-                        "โครงการห้องเรียน พสวท. (สู่ความเป็นเลิศ)" // ชั้นมัธยมศึกษาปีที่ 4
-                    );
+                    $name = "รายงานตัวนักเรียนใหม่";
                     $result = $db -> query("SELECT amsid,natid,namepth,namefth,namelth,type,COALESCE(time,lastupdate) AS time,choose,filetype,namefen,namelen FROM admission_newstd ORDER BY time ASC");
                     $has_result = ($result && $result -> num_rows); switch ($reqType) {
                         case "csv": case "tsv": {
@@ -148,7 +140,7 @@
 							if ($evdLink) $outputData .= "$delimeter\"ไฟล์หลักฐาน\"";
                             if ($has_result) { while ($er = $result -> fetch_assoc()) {
                                 // Modify
-                                $er["type"] = $intype[intval($er["type"])-1];
+                                $er["type"] = $CV_groupAdm[intval($er["type"])-1];
                                 $er["choose"] = (empty($er["choose"]) ? "ยังไม่ใช้สิทธิ์" : ($er["choose"]=="Y" ? "ยืนยันสิทธิ์" : "สละสิทธิ์"));
                                 $er["filetype"] = (empty($er["filetype"]) ? "" : $linkPrefix.$er["amsid"]."&type=newstd");
                                 // Concat
@@ -160,7 +152,7 @@
                             $outputData = array();
                             if ($has_result) { while ($er = $result -> fetch_assoc()) {
                                 // Modify
-                                $er["type"] = $intype[intval($er["type"])-1];
+                                $er["type"] = $CV_groupAdm[intval($er["type"])-1];
                                 $er["choose"] = (empty($er["choose"]) ? "ยังไม่ใช้สิทธิ์" : ($er["choose"]=="Y" ? "ยืนยันสิทธิ์" : "สละสิทธิ์"));
                                 $er["filetype"] = (empty($er["filetype"]) ? "" : $linkPrefix.$er["amsid"]."&type=newstd");
                                 // Concat
@@ -229,7 +221,7 @@
 
     if (isset($error)) {
         $header_title = "การนำออกข้อมูล";
-        $home_menu = "mod";
+        $home_menu = "settings";
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">

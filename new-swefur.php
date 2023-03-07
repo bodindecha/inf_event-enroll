@@ -6,7 +6,8 @@
 	if (!isset($_REQUEST["a"]) || !preg_match("/^[0-9A-Za-z]{4,7}$/", $_REQUEST["a"])) $error = "902";
 	else {
 		require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
-		$datid = $db -> real_escape_string(decryptNID(trim($_REQUEST["a"])));
+		require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
+		$datid = $db -> real_escape_string($vToken -> read(trim($_REQUEST["a"])));
 		$getinfo = $db -> query("SELECT a.choose,a.filetype,b.start,b.stop FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.datid=$datid");
 		if (!$getinfo) $error = "905";
 		else if ($getinfo -> num_rows <> 1) $error = "900";

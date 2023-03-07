@@ -19,18 +19,22 @@
 				<p><?php echo ($_COOKIE['set_lang']=="en"?"Welcome ":"ยินดีต้อนรับ ").$_SESSION['auth']['name'][$_COOKIE['set_lang']]['a']; ?></p>
 				<p><?php echo ($_COOKIE['set_lang']=="en"?"to Bodindecha (Sing Singhaseni) School admission system":"เข้าสู่ระบบจัดการงานรับนักเรียนโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)"); ?></p><br>
 				<p>คุณสามารถเลือกดูรายงานการตอบกลับได้จากเมนูด้านบนหรือตัวเลือกด้านล่าง</p>
-				<input name="new" type="checkbox" id="ref_menu-a"><label for="ref_menu-a">นักเรียนใหม่</label><ul>
-					<li><a href="response/new-student">รายงานตัว</a></li>
+				<input name="response" type="checkbox" id="ref_menu-a"><label for="ref_menu-a">การตอบกลับ</label><ul>
+					<li class="dt">นักเรียนเดิม</li>
+					<li><a href="response/M4-present-v2">รายงานตัว</a></li>
+					<li><a href="response/M4-change-v2">เปลี่ยนกลุ่มการเรียน</a></li>
+					<li><a href="response/M4-confirm-v2">ยืนยันสิทธิ์</a></li>
+					<li class="dt">นักเรียนใหม่</li>
+					<li><a href="response/new-student-v2">รายงานตัว</a></li>
 				</ul>
-				<input name="old" type="checkbox" id="ref_menu-b"><label for="ref_menu-b">นักเรียนเดิม</label><ul>
-					<li><a href="response/M4-present">รายงานตัว</a></li>
-					<li><a href="response/M4-change">เปลี่ยนกลุ่มการเรียน</a></li>
-					<li><a href="response/M4-confirm">ยืนยันสิทธิ์</a></li>
-				</ul>
-				<input name="mod" type="checkbox" id="ref_menu-c"><label for="ref_menu-c">การจัดการ</label><ul>
-					<li><a href="time-control">ตั้งค่าเวลา</a></li>
+				<input name="manage" type="checkbox" id="ref_menu-b"><label for="ref_menu-b">จัดการข้อมูล</label><ul>
 					<li><a href="print-form">พิมพ์เอกสารใบมอบตัว</a></li>
 					<li><a href="delete-response">ลบรายการการตอบกลับ</a></li>
+				</ul>
+				<input name="settings" type="checkbox" id="ref_menu-c"><label for="ref_menu-c">กระทำการ</label><ul>
+					<li><a href="time-control">ตั้งค่าเวลา</a></li>
+					<li class="dl">&nbsp;</li>
+					<li><a href="import-data">นำเข้าข้อมูล</a></li>
 					<li><a href="export-result">นำออกข้อมูล</a></li>
 				</ul>
 			</div>

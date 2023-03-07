@@ -64,32 +64,52 @@
             <label>เจ้าหน้าที่</label>
             <ul><?php if (has_perm("admission")) { ?>
 		    	<li><a href="/e/enroll/report/"><span>เมนูหลัก</span></a></li>
-                <li><a href="/e/enroll/report/print-form"><span>พิมพ์เอกสารใบมอบตัว</span></a></li>
-                <li><a href="/e/enroll/report/time-control"><span>ตั้งค่าเวลา</span></a></li>
                 <li class="epdb"><details open>
                     <summary>รายงานการตอบกลับ</summary>
                     <ul>
                         <li class="epdb"><details open>
                             <summary>นักเรียนเดิม</summary>
                             <ul>
-                                <li><a href="/e/enroll/report/response/M4-present"><span>รายงานตัว</span></a></li>
-                                <li><a href="/e/enroll/report/response/M4-change"><span>เปลี่ยนกลุ่มการเรียน</span></a></li>
-                                <li><a href="/e/enroll/report/response/M4-confirm"><span>ยืนยันสิทธิ์</span></a></li>
+                                <li><a href="/e/enroll/report/response/M4-present-v2"><span>รายงานตัว</span></a></li>
+                                <li><a href="/e/enroll/report/response/M4-change-v2"><span>เปลี่ยนกลุ่มการเรียน</span></a></li>
+                                <li><a href="/e/enroll/report/response/M4-confirm-v2"><span>ยืนยันสิทธิ์</span></a></li>
                             </ul>
                         </details></li>
-                        <li><a href="/e/enroll/report/response/new-student"><span>นักเรียนใหม่</span></a></li>
+                        <li class="epdb"><details open>
+                            <summary>นักเรียนใหม่</summary>
+                            <ul>
+                                <li><a href="/e/enroll/report/response/new-student-v2"><span>รายงานตัว</span></a></li>
+                            </ul>
+                        </details></li>
                     </ul>
                 </details></li>
-                <li><a href="/e/enroll/report/delete-response"><span>ลบรายการการตอบกลับ</span></a></li>
-                <li><a href="/e/enroll/report/export-result"><span>นำออกข้อมูล</span></a></li>
-                <li class="seperator">&nbsp;</li>
-                <li><a href="/t/"><span>เว็บทะเบียนเสริม</span></a></li>
-                <li><a href="/go?url=http%3A%2F%2Freg.bodin.ac.th"><span>เว็บทะเบียนหลัก</span></a></li>
-                <li class="seperator">&nbsp;</li>
+                <li class="epdb"><details open>
+                    <summary>จัดการข้อมูล</summary>
+                    <ul>
+                        <li><a href="/e/enroll/report/print-form"><span>พิมพ์เอกสารใบมอบตัว</span></a></li>
+                        <li><a href="/e/enroll/report/delete-response"><span>ลบรายการการตอบกลับ</span></a></li>
+                    </ul>
+                </details></li>
+                <li class="epdb"><details open>
+                    <summary>กระทำการ</summary>
+                    <ul>
+                        <li><a href="/e/enroll/report/time-control"><span>ตั้งค่าเวลา</span></a></li>
+                        <li class="seperator">&nbsp;</li>
+                        <li><a href="/e/enroll/report/import-data"><span>นำเข้าข้อมูล</span></a></li>
+                        <li><a href="/e/enroll/report/export-result"><span>นำออกข้อมูล</span></a></li>
+                    </ul>
+                </details></li>
                 <li><a onClick="sys.auth.out()" href="javascript:void(0)"><span>ออกจากระบบ</span></a></li>
             <?php } else { ?>
 		    	<li><a onClick="sys.auth.orize('e%2Fenroll%2Freport%2F')" href="javascript:void(0)"><span>เข้าสู่ระบบ</span></a></li>
             <?php } ?>
+            </ul>
+        </div>
+        <div class="group">
+            <label>กลับสู่</label>
+            <ul>
+                <li><a href="/"><span>เว็บสารสนเทศ</span></a></li>
+                <li><a href="/go?url=http%3A%2F%2Freg.bodin.ac.th"><span>เว็บทะเบียน</span></a></li>
             </ul>
         </div>
     </ul>

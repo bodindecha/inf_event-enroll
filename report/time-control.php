@@ -2,11 +2,12 @@
     $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "การตั้งค่าเวลา";
-	$home_menu = "mod";
+	$home_menu = "settings";
 	
 	# $forceExternalBrowser = true;
 	$permitted = has_perm("admission"); if ($permitted) {
 		require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
+		require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
 		function escapeSQL($input) {
 			global $db;
 			return $db -> real_escape_string($input);
@@ -23,7 +24,7 @@
 						slog($authuser, "admission", "mod", "setTime", "", "fail", "", "Ineligible");
 						break;
 					} $act = explode("_", $act);
-					$rid = decryptNID($act[0]);
+					$rid = $vToken -> read($act[0]);
 					if (is_nan($rid)) {
 						$error = "902";
 						slog($authuser, "admission", "mod", "setTime", "", "fail", "", "InvalidOption");
@@ -52,7 +53,7 @@
 			} header("Refresh: 0");
 		}
 		// Load
-		$getset = $db -> query("SELECT trid,name,start,stop FROM admission_timerange WHERE NOT trid=0 AND year=2565");
+		$getset = $db -> query("SELECT trid,name,start,stop FROM admission_timerange WHERE NOT trid=0");
 		$has_result = ($getset && $getset -> num_rows);
 	}
 ?>
@@ -82,6 +83,14 @@
 				color: var(--clr-gg-grey-500); text-align: center;
 				pointer-events: none;
 			}
+			main .nform summary {
+				margin: -0.5em -0.5em 0; padding: 0.5em 0.5em 0;
+				/* list-style-type: none; */
+			}
+			main .nform[open] summary {
+				margin-bottom: 1rem; padding-bottom: 0.5em;
+				border-bottom: 1px solid var(--msg-bdc);
+			}
 			main .table td:nth-child(1) { text-align: right; }
 		</style>
 		<script type="text/javascript">
@@ -100,36 +109,66 @@
 			function ro(col) {
 				w3.sortHTML(".table table tbody", "tr", "td:nth-child("+col.toString()+")");
 			}
+			function terms() {
+				return confirm("This action can't be undone.\nInformations can't be edited later except for times.\n\nAre you sure you want to add this new timerange ?");
+			}
 		</script>
 		<script type="text/javascript" src="/resource/js/lib/w3.min.js"></script>
 	</head>
 	<body>
 		<?php require($dirPWroot."e/enroll/resource/hpe/header.php"); ?>
 		<main shrink="<?php echo($_COOKIE['sui_open-nt'])??"false"; ?>">
+			<?php if (!$permitted) echo '<iframe src="/error/901">901: No Permission</iframe>'; else { ?>
 			<div class="container">
 				<h2>การตั้งค่าเวลา</h2>
-				<?php if (!$has_result) echo '<center class="message red">ไม่พบรายการกำหนดการเวลา. กรุณาแจ้งผู้ดูแลระบบให้เพิ่มค่าเริ่มต้นให้.</center>'; else { ?>
+				<details class="message cyan nform" <?=($has_result?"":"open")?>>
+					<summary>เพิ่มช่วงเวลา</summary>
+					<form class="form" method="post" action="/e/enroll/resource/php/api">
+						<input type="hidden" name="type" value="mod" />
+						<input type="hidden" name="act" value="newTime" />
+						<div class="group">
+							<span>ชื่อช่วงเวลา</span>
+							<input type="text" name="param[name]" maxlength="50" required placeholder="เช่น รายงานตัวนักเรียนใหม่รอบ 1" />
+						</div>
+						<div class="group">
+							<span>เริ่มต้น</span>
+							<input type="text" maxlength="19" pattern="<?=$tsRegex?>" name="param[start]" placeholder="YYYY-MM-DD HH:MM:SS" />
+						</div>
+						<div class="group">
+							<span>สิ้นสุด</span>
+							<input type="text" maxlength="19" pattern="<?=$tsRegex?>" name="param[stop]" placeholder="2023-03-12 09:30:00" />
+						</div>
+						<div class="group spread">
+							<button type="reset" class="red hollow">&emsp;รีเซ็ต&emsp;</button>
+							<button type="submit" class="blue" onClick="return terms()">&emsp;เพิ่มรายการ&emsp;</button>
+						</div>
+					</form>
+				</details>
+				<?php if (!$has_result) echo '<center class="message red">ไม่พบรายการกำหนดการเวลา.</center>'; else { ?>
 					<div class="filter"><input type="search" placeholder="Filter ... (ตัวกรอง)" onInput="fd()"/><i class="material-icons">filter_list</i></div>
-					<form class="form table extend" method="post"><table><thead><tr>
-						<th onClick="ro(1)">REF</th>
-						<th onClick="ro(2)">กิจกรรม</th>
-						<th>เริ่มต้น (เปิด)</th>
-						<th>สิ้นสุด (ปิด)</th>
-					</tr></thead><tbody>
-						<?php while ($es = $getset -> fetch_assoc()) { ?>
-						<tr>
-							<td><?=$es["trid"]?>&nbsp;</td>
-							<td><?=$es["name"]?></td>
-							<td><input type="text" maxlength="19" pattern="<?=$tsRegex?>" required value="<?=$es["start"]?>" name="<?=encryptNID($es["trid"])?>_start"></td>
-							<td><input type="text" maxlength="19" pattern="<?=$tsRegex?>" required value="<?=$es["stop"]?>" name="<?=encryptNID($es["trid"])?>_stop"></td>
-						</tr>
-						<?php } ?>
-					</tbody></table><div class="group spread">
-						<a role="button" class="red hollow" onClick="location.reload()" href="javascript:void(0)">&emsp;รีเซ็ต&emsp;</a>
-						<button class="blue" name="save">&emsp;บันทึก&emsp;</button>
-					</div></form>
+					<form class="form" method="post">
+						<div class="table"><table><thead><tr>
+							<th onClick="ro(1)">REF</th>
+							<th onClick="ro(2)">กิจกรรม</th>
+							<th>เริ่มต้น (เปิด)</th>
+							<th>สิ้นสุด (ปิด)</th>
+						</tr></thead><tbody>
+							<?php while ($es = $getset -> fetch_assoc()) { ?>
+							<tr>
+								<td><?=$es["trid"]?>&nbsp;</td>
+								<td><?=$es["name"]?></td>
+								<td><input type="text" maxlength="19" pattern="<?=$tsRegex?>" required value="<?=$es["start"]?>" name="<?=$vToken -> create($es["trid"])?>_start" /></td>
+								<td><input type="text" maxlength="19" pattern="<?=$tsRegex?>" required value="<?=$es["stop"]?>" name="<?=$vToken -> create($es["trid"])?>_stop" /></td>
+							</tr>
+							<?php } ?>
+						</tbody></table></div>
+						<div class="group spread">
+							<a role="button" class="red hollow" onClick="location.reload()" href="javascript:void(0)">&emsp;รีเซ็ต&emsp;</a>
+							<button class="green" name="save">&emsp;บันทึก&emsp;</button>
+						</div>
+					</form>
 				<?php } ?>
-			</div>
+			</div><?php } ?>
 		</main>
 		<?php require($dirPWroot."resource/hpe/material.php"); ?>
 		<footer>

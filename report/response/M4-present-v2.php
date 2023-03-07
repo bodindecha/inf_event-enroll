@@ -3,7 +3,7 @@
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "การตอบกลับ - งานรับนักเรียน";
 	$header_desc = "นักเรียนเดิม: รายงานตัว";
-	$home_menu = "old";
+	$home_menu = "response";
 
 	$forceExternalBrowser = true;
 	$permitted = has_perm("admission");
@@ -18,65 +18,45 @@
 			div.group.s div.list div.table tr td:nth-child(5),
 			div.group.s div.list div.table tr td:nth-child(6),
 			div.group.s div.list div.table tr td:nth-child(7) { text-align: center; }
+			main .form select option:checked { font-weight: bold; }
 		</style>
 		<link rel="stylesheet" href="/resource/css/extend/mod-directory.css">
 		<script type="text/javascript">
 			$(document).ready(function() {
-				// $(sS.slt.d).on("change", sS.complete);
-				$(sS.slt.v).on("input change", sS.find);
-				$("div.group.f div.dir div.wrapper").load("/e/enroll/resource/html/_dirTree-prs.min.html", function() {
-					// Fill patterned elements
-					$('div.group.f div.dir div.wrapper .tree.ctrl').prepend('<label class="tree accd"><input type="checkbox"></label>');
-					$('div.group.f div.dir div.wrapper .tree.mbr:not([expand])').attr("expand", "false");
-					// Add event listener
-					$('div.group.f div.dir div.wrapper .tree.accd input[type="checkbox"]').on("click", function() { sD.tree(this); });
-					$("div.group.f div.dir div.wrapper .tree.accd + label").on("click", function() { sD.load(this); });
-					// Select default
-					$('div.group.f div.dir div.wrapper .tree.accd + label[data-info="pre-select"]').click();
-					$('div.group.f div.dir div.wrapper .tree.accd + label[data-info="pre-select"]').removeAttr("data-info");
+				$(document).on("keypress", function(e) {
+					let prik = e.which || e.keyCode, ckeyp = String.fromCharCode(prik) || e.key || e.code, isCrtling = e.ctrlKey, isShifting = e.shiftKey, isAlting = e.altKey;
+					if (prik == 47 && !$(":focus").is(sS.slt.v)) {
+						if (e.preventDefault) e.preventDefault();
+						$(sS.slt.v).focus();
+					}
 				});
+				$(sS.slt.v).on("input change", sS.find);
+				ajax("/e/enroll/resource/php/api", {type: "app", act: "loadFilterOpt", param: "prs"}).then(function(dat) {
+					if (dat && dat.length) dat.forEach(eo => $('main .form [name="group"]').append('<option value="'+eo.ref+'">'+eo.title+'</option>') );
+				});
+				// Add event listener
+				$('div.group.f .form').on("change", () => { sD.load("filter"); });
+				// Initialize
+				sD.load();
 			});
 			var sv = { sq: null };
 			const sS = {
 				slt: {
 					v: 'div.group.f div.search div.live input[name="search"]'
-					// d: 'div.group.f div.search div.live input[name="search"] + input[type="search"]',
 				}, find: function() {
-					/* setTimeout(function() {
-						fsa.start("ค้นหาบัญชีผู้ใช้งานทั้งหมด", sS.slt.v, sS.slt.d, "", "all");
-					}, 50); */
 					var search_for = document.querySelector(sS.slt.v).value.trim();
 					sv.sq = (/^[^%_+]{1,75}$/.test(search_for) ? search_for : null);
-					sD.load(null, "search");
-				}, /* complete: function() {
-					if (document.querySelector(sS.slt.v).value != "") {
-						$("div.group.f div.dir div.wrapper .tree.accd + label[selected]").attr("data-info", "last-select");
-						$("div.group.f div.dir div.wrapper .tree.accd + label[selected]").removeAttr("selected");
-						document.querySelector(sF.slt).innerHTML = '<iframe src="edit-info?of='+document.querySelector(sS.slt.v).value+'">Loading...</iframe>';
-					} else {
-						$('div.group.f div.dir div.wrapper .tree.accd + label[data-info="last-select"]').click();
-						$('div.group.f div.dir div.wrapper .tree.accd + label[data-info="last-select"]').removeAttr("data-info");
-					}
-				}, */ clear: function() {
+					sD.load("search");
+				}, clear: function() {
 					document.querySelector(sS.slt.v).value = "";
-					// document.querySelector(sS.slt.d).value = "";
 				}
 			};
 			const sD = {
 				slt: "",
-				tree: function(me) {
-					var ctrler = $(me.parentNode.parentNode.parentNode.parentNode);
-					let newattr = ( (ctrler.attr("expand") == "true") ? "false" : "true" );
-					ctrler.attr("expand", newattr);
-				}, load: function(me=null, change="pathTree") {
-					if (me == null) me = "div.group.f div.dir div.wrapper .tree.accd + label[selected]";
-					else {
-						$("div.group.f div.dir div.wrapper .tree.accd + label[selected]").removeAttr("selected");
-						me.setAttribute("selected", "");
-					} var dir = $(me).attr("data-tree");
+				load: function(change="filter") {
 					document.querySelector("div.group.s div.list").disabled = true;
-					$.post("/e/enroll/resource/php/fetch?list=prs&change="+change+(sv.sq!=null?("&q="+encodeURIComponent(sv.sq)):""), {
-						pathTree: dir,
+					$.post("/e/enroll/resource/php/response?list=prs&change="+change+(sv.sq!=null?("&q="+encodeURIComponent(sv.sq)):""), {
+						filter: {class: $('main .form [name="class"]').val(), group: $('main .form [name="group"]').val()},
 						page: sF.ctrl.page.current,
 						show: sF.ctrl.page.disp,
 						sortBy: sF.ctrl.sort.col,
@@ -86,9 +66,9 @@
 						if (dat.success) {
 							sF.ctrl = dat.intl;
 							sF.render(dat.info);
-						} else document.querySelector(sF.slt).innerHTML = '<div class="msg"><center class="message red"><?=$_COOKIE['set_lang']=="th"?"เกิดปัญหาระหว่างการโหลกรายชื่อ":"Error while trying to fetch user list."?></center></div>';
+						} else document.querySelector(sF.slt).innerHTML = '<div class="msg"><center class="message red"><?=$_COOKIE['set_lang']=="th"?"เกิดปัญหาระหว่างการโหลดรายชื่อ":"Error while trying to fetch user list."?></center></div>';
 						document.querySelector("div.group.s div.list").disabled = false;
-					}); // sS.clear();
+					});
 				}
 			};
 			const sF = {
@@ -152,10 +132,10 @@
 					sort: function(col) {
 						if (col != sF.ctrl.sort.col) {
 							sF.ctrl.sort.col = col;
-							sD.load(null, "sortBy");
+							sD.load("sortBy");
 						} else {
 							sF.ctrl.sort.order = (sF.ctrl.sort.order ? 0 : 1);
-							sD.load(null, "sortOrder");
+							sD.load("sortOrder");
 						}
 					}, page: function(pgn) {
 						switch (pgn) {
@@ -164,10 +144,10 @@
 							case "next": sF.ctrl.page.current += 1; break;
 							case "last": sF.ctrl.page.current = sF.ctrl.page.max; break;
 							default: sF.ctrl.page.current = pgn; break;
-						} sD.load(null, "page");
+						} sD.load("page");
 					}, disp: function(amt) {
 						sF.ctrl.page.disp = amt;
-						sD.load(null, "show");
+						sD.load("show");
 					}
 				}
 			};
@@ -196,8 +176,17 @@
 							</div>
 						</div>
 						<div class="dir slider">
-							<div class="wrapper">
-								<!-- JS load here -->
+							<div class="form">
+								<select name="class">
+									<option value="*" selected>*นักเรียนที่มีสิทธิ์ทุกสถานะ*</option>
+									<option value="ans">ใช้สิทธิ์แล้ว</option>
+									<option value="Y">- ยืนยันสิทธิ์</option>
+									<option value="N">- สละสิทธิ์</option>
+									<option value="una">ยังไม่ใช้สิทธิ์</option>
+								</select>
+								<select name="group">
+									<option value="*" selected>*ทุกรอบ*</option>
+								</select>
 							</div>
 						</div>
 					</div>

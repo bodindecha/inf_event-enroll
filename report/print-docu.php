@@ -4,30 +4,34 @@
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
     
 	require_once($dirPWroot."resource/php/core/config.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
+	require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
 	if (isset($_REQUEST["ment"]) && !empty($_REQUEST["ment"]) && isset($_REQUEST["ID"]) && !empty($_REQUEST["ID"])) {
-		$group = intval(decryptNID(str_rot13(strrev(trim($_REQUEST["ment"]))))); $authuser = decryptNID(trim($_REQUEST["ID"]));
+		$group = intval($vToken -> read(str_rot13(strrev(trim($_REQUEST["ment"]))))); $authuser = $vToken -> read(trim($_REQUEST["ID"]));
 	}
 
     if (isset($group)) {
 		switch ($group - 1) {
-			case 0: case 1: case 2: $type = "pdf"; $path = "ใบมอบตัว ห้องเรียนทั่วไป ม.1.$type"; $pages = 1; break;
-			case 3: $type = "pdf"; $path = "ใบมอบตัว ห้องเรียนคณิต ม.1.$type"; $pages = 1; break;
-			case 4: $type = "pdf"; $path = "ใบมอบตัว ห้องเรียนวิทย์ ม.1.$type"; $pages = 1; break;
-			case 5: $type = "pdf"; $path = "ใบมอบตัว ห้องเรียนพิเศษ ม.4.$type"; $pages = 1; break;
-			case 6: $type = "pdf"; $path = "ใบมอบตัว ห้องเรียนทั่วไป ม.4.$type"; $pages = 1; break;
-			case 7: $type = "pdf"; $path = "ใบมอบตัว ห้องเรียนพสวท ม.4.$type"; $pages = 1; break;
+			case 5: case 6: case 7: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนทั่วไป ม.1.$type"; $pages = 1; break;
+			case 0: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนคณิต ม.1.$type"; $pages = 1; break;
+			case 1: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนวิทย์ ม.1.$type"; $pages = 1; break;
+			case 3: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนพิเศษ ม.4.$type"; $pages = 1; break;
+			case 8: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนทั่วไป ม.4.$type"; $pages = 1; break;
+			case 4: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนพสวท ม.4.$type"; $pages = 1; break;
+			case 2: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียน EP ม.1.$type"; $pages = 1; break;
             default: $error = "900"; $errorMsg = '2, "ประเภทเอกสารไม่ถูกต้อง"'; break;
 		} if (!isset($error) && !file_exists($dirPWroot."e/enroll/resource/file/$path")) { $error = "404"; $errorMsg = '3, "ไม่มีไฟล์ต้นฉบับ"'; }
+		$name = end(explode("/", $path));
+		preg_match("/(\ v(\d|\-)+)\./", $name, $versioning); $versioning = count($versioning) ? strlen($versioning[1]) : 0;
     } else { $error = "902"; $errorMsg = '1, "ไม่พบข้อมูลเอกสาร"'; }
 
     if (!isset($error)) {
-		if (!isset($authuser) || empty($authuser)) { $error = "901"; $errorMsg = '2, "เลขประจำตัวผู้สมัครไม่ถูกต้อง"'; }
+		if (!isset($authuser) || !strlen($authuser)) { $error = "901"; $errorMsg = '2, "เลขประจำตัวผู้สมัครไม่ถูกต้อง"'; }
 		else {
 			/* --- PDF generation --- (BEGIN) */
 			require_once($dirPWroot."resource/php/lib/tcpdf/tcpdf.php"); require_once($dirPWroot."resource/php/lib/fpdi/fpdi.php");
 			$exportfile = new FPDI("P", PDF_UNIT, "A4", true, 'UTF-8', false);
 			// Configuration
-			$fileTitle = "งานรับนักเรียน รร.บ.ด. - ".substr($path, 0, strlen($path)-strlen($type)-1);
+			$fileTitle = "งานรับนักเรียน รร.บ.ด. - ".substr($name, 0, strlen($name)-strlen($type)-1-$versioning);
 			# $exportfile -> SetProtection(array("modify", "copy", "annot-forms", "fill-forms", "extract", "assemble"), "", null, 0, null);
 			$exportfile -> SetCreator("Bodindecha (Sing Singhaseni) School: INF-Webapp");
 			$exportfile -> SetAuthor("งานรับนักเรียน โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)");
@@ -47,7 +51,7 @@
 				$exportfile -> useTemplate($temppage);
 				if ($pageno == 1) { // Write PDF for confirm
 					$exportfile -> SetTextColor(0, 0, 0);
-					$is_oldstd = ($group == 7 && substr($authuser, 0, 1) == "4");
+					$is_oldstd = ($group == 9 && substr($authuser, 0, 1) == "4") || $authuser == "99999";
 					// Fetch biological information
 					if ($is_oldstd) {
 						$pathToDB = "resource/php/core";
@@ -62,7 +66,7 @@
 					$stdbio['nameaen'] = prefixcode2text($stdbio['namep'] ?? "")['en']." ".($stdbio['nameaen'] ?? "");
 					// Change file name
 					if (isset($stdbio['amsid'])) $authuser = $stdbio['amsid'];
-					$dlname = substr($path, 0, strlen($path)-strlen($type)-1)." - $authuser.$type";
+					$dlname = substr($name, 0, strlen($name)-strlen($type)-1-$versioning)." - $authuser.$type";
 					// Add student ID
 					if ($is_oldstd) {
 						$exportfile -> SetFont("thsarabun", "B", 22);
@@ -106,7 +110,8 @@
 			EOD : 'window.print();';
 			# $exportfile -> IncludeJS($script);
 			// Send out file
-			$exportfile -> Output($dlname ?? $path, "I");
+			if (!isset($dlname)) $dlname = substr($name, 0, strlen($name)-strlen($type)-1-$versioning).".$type";
+			$exportfile -> Output($dlname, "I");
 			/* --- PDF generation --- (END) */
 		}
     } else {

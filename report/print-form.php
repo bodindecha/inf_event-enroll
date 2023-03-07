@@ -2,7 +2,7 @@
     $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "พิมพ์เอกสารใบมอบตัว";
-	$home_menu = "mod";
+	$home_menu = "manage";
 	
 	$permitted = has_perm("admission");
 ?>
@@ -25,7 +25,7 @@
 							type: "mod", act: "check", param: {
 								user: document.querySelector('main .form [name="sid"]').value.trim(),
 								group: document.querySelector('main .form [name="system"] option:checked').value.trim()
-						} }; if (!/^([13-7]\d{4}|8\d{5}|9{5})$/.test(data.param.user)) {
+						} }; if (!/^[1-9]\d{4,5}$/.test(data.param.user)) {
 							app.ui.notify(1, [2, "รูปแบบเลขประจำตัวไม่ถูกต้อง"]);
 							$('main .form [name="sid"]').focus();
 						} else if (!/^(old|new)$/.test(data.param.group)) {

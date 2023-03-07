@@ -7,25 +7,30 @@
         $file = trim($_REQUEST["name"]);
         switch ($file) {
             case "sggtmf": $type = "jpg"; $dl = false; $path = "ตัวอย่างใบรับรองผลการสมัครเข้าศึกษาต่อระดับชั้นมัธยมศึกษาปีที่ 4.$type"; break;
-            case "csgrf": $type = "pdf"; $dl = true; $path = "ใบยื่นคำร้องขอเปลี่ยนกลุ่มการเรียน.$type"; $pages = 1; break;
-            case "waiver": $type = "pdf"; $dl = true; $path = "คำร้องขอสละสิทธิ์.$type"; $pages = 1; break;
-            case "sef-1n": $type = "pdf"; $dl = true; $path = "ใบมอบตัว ห้องเรียนทั่วไป ม.1.$type"; $pages = 1; break;
-            case "sef-1m": $type = "pdf"; $dl = true; $path = "ใบมอบตัว ห้องเรียนคณิต ม.1.$type"; $pages = 1; break;
-            case "sef-1s": $type = "pdf"; $dl = true; $path = "ใบมอบตัว ห้องเรียนวิทย์ ม.1.$type"; $pages = 1; break;
-            case "sef-4n": $type = "pdf"; $dl = true; $path = "ใบมอบตัว ห้องเรียนทั่วไป ม.4.$type"; $pages = 1; break;
-            case "sef-4s": $type = "pdf"; $dl = true; $path = "ใบมอบตัว ห้องเรียนพิเศษ ม.4.$type"; $pages = 1; break;
-            case "sef-4d": $type = "pdf"; $dl = true; $path = "ใบมอบตัว ห้องเรียนพสวท ม.4.$type"; $pages = 1; break;
+            case "csgrf": $type = "pdf"; $dl = true; $path = "2566/ใบยื่นคำร้องขอเปลี่ยนกลุ่มการเรียน.$type"; $pages = 1; break;
+            case "waiver": $type = "pdf"; $dl = true; $path = "2566/คำร้องขอสละสิทธิ์ v2.$type"; $pages = 1; break;
+            case "sef-1n": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนทั่วไป ม.1.$type"; $pages = 1; break;
+            case "sef-1m": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนคณิต ม.1.$type"; $pages = 1; break;
+            case "sef-1s": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนวิทย์ ม.1.$type"; $pages = 1; break;
+            case "sef-4n": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนทั่วไป ม.4.$type"; $pages = 1; break;
+            case "sef-4s": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนพิเศษ ม.4.$type"; $pages = 1; break;
+            case "sef-4d": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนพสวท ม.4.$type"; $pages = 1; break;
+            case "sef-1e": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียน EP ม.1.$type"; $pages = 1; break;
+            case "eioad": $type = "pdf"; $dl = false; $path = "2566/คำชี้แจงเอกสารการมอบตัว v2.$type"; $pages = 1; break;
             default: $error = "900"; break;
         } if (!isset($error) && !file_exists($path)) $error = "404";
+		$name = end(explode("/", $path));
+		preg_match("/(\ v(\d|\-)+)\./", $name, $versioning); $versioning = count($versioning) ? strlen($versioning[1]) : 0;
     } else $error = "902";
 
     if (!isset($error) && $type == "pdf") {
         /* --- PDF generation --- (BEGIN) */
 		require_once($dirPWroot."resource/php/core/config.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
+		require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
         require_once($dirPWroot."resource/php/lib/tcpdf/tcpdf.php"); require_once($dirPWroot."resource/php/lib/fpdi/fpdi.php");
         $exportfile = new FPDI("P", PDF_UNIT, "A4", true, 'UTF-8', false);
         // Configuration
-		$fileTitle = "งานรับนักเรียน รร.บ.ด. - ".substr($path, 0, strlen($path)-strlen($type)-1);
+		$fileTitle = "งานรับนักเรียน รร.บ.ด. - ".substr($name, 0, strlen($name)-strlen($type)-1-$versioning);
         # $exportfile -> SetProtection(array("modify", "copy", "annot-forms", "fill-forms", "extract", "assemble"), "", null, 0, null);
         $exportfile -> SetCreator("Bodindecha (Sing Singhaseni) School: INF-Webapp");
         $exportfile -> SetAuthor("งานรับนักเรียน โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)");
@@ -43,19 +48,19 @@
 			$tempinfo = $exportfile -> getTemplateSize($temppage);
 			$exportfile -> addPage($tempinfo['h'] > $tempinfo['w'] ? "P" : "L");
 			$exportfile -> useTemplate($temppage);
-			if (preg_match("/^sef\-(1[nms]|4[dns])$/", $file) && $pageno == 1) { // Write PDF for confirm
+			if (preg_match("/^sef\-(1[nmse]|4[dns])$/", $file) && $pageno == 1) { // Write PDF for confirm
 				$exportfile -> SetTextColor(0, 0, 0);
 				// Get student data
-				$authuser = $_SESSION['auth']['user'] ?? ""; if (empty($authuser) && isset($_REQUEST['authuser'])) $authuser = decryptNID(trim($_REQUEST['authuser']));
-				if ($authuser <> "" && (isset($_REQUEST['authuser']) || $_SESSION['auth']['type']=="s")) {
-					$is_oldstd = ($file == "sef-4n" && substr($authuser, 0, 1) == "4");
+				$authuser = $_SESSION['auth']['user'] ?? ""; if (!strlen($authuser) && isset($_REQUEST['authuser'])) $authuser = $vToken -> read(trim($_REQUEST['authuser']));
+				if (strlen($authuser) && (isset($_REQUEST['authuser']) || $_SESSION['auth']['type']=="s")) {
+					$is_oldstd = ($file == "sef-4n" && substr($authuser, 0, 1) == "4") || $authuser == "99999";
 					// Fetch biological information
 					if ($is_oldstd) {
 						$pathToDB = "resource/php/core";
 						$sqlbio = "SELECT citizen_id,birthy+543 AS birthy,birthm,birthd FROM user_s WHERE stdid=$authuser";
 					} else {
 						$pathToDB = "e/resource";
-						$sqlbio = "SELECT amsid,CONCAT(namepth,namefth,' ',namelth) AS nameath,natid AS citizen_id,CONCAT(namefen,' ',namelen) AS nameaen FROM admission_newstd WHERE datid=$authuser";
+						$sqlbio = "SELECT amsid,CONCAT(namepth,namefth,'  ',namelth) AS nameath,natid AS citizen_id,CONCAT(namefen,' ',namelen) AS nameaen FROM admission_newstd WHERE datid=$authuser";
 					} require($dirPWroot."$pathToDB/db_connect.php");
 					$stdbio = $db -> query($sqlbio) -> fetch_array(MYSQLI_ASSOC);
 					$db -> close();
@@ -63,7 +68,7 @@
 					$stdbio['nameaen'] = $_SESSION['auth']['name']['en']['a'] ?? $stdbio['nameaen'] ?? "";
 					// Change file name
 					if (isset($stdbio['amsid'])) $authuser = $stdbio['amsid'];
-					$dlname = substr($path, 0, strlen($path)-strlen($type)-1)." - $authuser.$type";
+					$dlname = substr($name, 0, strlen($name)-strlen($type)-1-$versioning)." - $authuser.$type";
 					// Add student ID
 					if ($is_oldstd) {
 						$exportfile -> SetFont("thsarabun", "B", 22);
@@ -101,11 +106,12 @@
 				}
 			}
 		} // Send out file
-        $exportfile -> Output($dlname ?? $path, ($dl ? "D": "I"));
+		if (!isset($dlname)) $dlname = substr($name, 0, strlen($name)-strlen($type)-1-$versioning).".$type";
+        $exportfile -> Output($dlname, ($dl && ($_GET["output"]??"file")<>"web" ? "D": "I"));
         /* --- PDF generation --- (END) */
     } else {
         $header_title = (isset($error) ? "Error: $error" : "ใบมอบตัวนักเรียน");
-        if (!$dl && $type <> "pdf") $size = getimagesize($path);
+        if (!$dl && $type <> "pdf") $size = getimagesize("./$path");
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -329,7 +335,7 @@
 				<div class="container">
                     <div class="message yellow"><?=$_COOKIE['set_lang']=="th"?'หากไม่มีภาพปรากฏขึ้นใน 5 วินาที กรุณากดปิดหน้านี้และเปิดใหม่':'If the nothing shows up within 5 seconds. Please re-open this viewer.'?></div>
                 </div>
-				<iframe src="https://docs.google.com/gview?embedded=true&url=https%3A%2F%2Finf.bodin.ac.th%2Fe%2Fenroll%2Fresource%2Ffile%2F<?=$path?>">Loading...</iframe>
+				<iframe src="https://docs.google.com/gview?embedded=true&url=https%3A%2F%2Finf.bodin.ac.th%2Fe%2Fenroll%2Fresource%2Ffile%2F<?=urlencode($path)?>">Loading...</iframe>
 			<?php } else { ?>
 			<div class="container">
 				<div class="wrapper">

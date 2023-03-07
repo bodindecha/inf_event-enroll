@@ -2,8 +2,8 @@
     $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "การตอบกลับ - งานรับนักเรียน";
-	$header_desc = "นักเรียนเดิม: เปลี่ยนสายการเรียน";
-	$home_menu = "old";
+	$header_desc = "นักเรียนใหม่";
+	$home_menu = "response";
 
 	$forceExternalBrowser = true;
 	$permitted = has_perm("admission");
@@ -13,17 +13,16 @@
 	<head>
 		<?php require($dirPWroot."resource/hpe/heading.php"); require($dirPWroot."resource/hpe/init_ss.php"); ?>
 		<style type="text/css">
-			div.group.s div.list div.table tr td:nth-child(1),
-			div.group.s div.list div.table tr td:nth-child(2),
-			div.group.s div.list div.table tr td:nth-child(5),
-			div.group.s div.list div.table tr td:nth-child(6) { text-align: center; }
+			div.group.s div.list div.table tr td:nth-of-type(1),
+			div.group.s div.list div.table tr td:nth-of-type(4),
+			div.group.s div.list div.table tr td:nth-of-type(5) { text-align: center; }
 		</style>
 		<link rel="stylesheet" href="/resource/css/extend/mod-directory.css">
 		<script type="text/javascript">
 			$(document).ready(function() {
 				// $(sS.slt.d).on("change", sS.complete);
 				$(sS.slt.v).on("input change", sS.find);
-				$("div.group.f div.dir div.wrapper").load("/e/enroll/resource/html/_dirTree-cng.min.html", function() {
+				$("div.group.f div.dir div.wrapper").load("/e/enroll/resource/html/_dirTree-new.min.html", function() {
 					// Fill patterned elements
 					$('div.group.f div.dir div.wrapper .tree.ctrl').prepend('<label class="tree accd"><input type="checkbox"></label>');
 					$('div.group.f div.dir div.wrapper .tree.mbr:not([expand])').attr("expand", "false");
@@ -74,7 +73,7 @@
 						me.setAttribute("selected", "");
 					} var dir = $(me).attr("data-tree");
 					document.querySelector("div.group.s div.list").disabled = true;
-					$.post("/e/enroll/resource/php/fetch?list=cng&change="+change+(sv.sq!=null?("&q="+encodeURIComponent(sv.sq)):""), {
+					$.post("/e/enroll/resource/php/fetch?list=new&change="+change+(sv.sq!=null?("&q="+encodeURIComponent(sv.sq)):""), {
 						pathTree: dir,
 						page: sF.ctrl.page.current,
 						show: sF.ctrl.page.disp,
