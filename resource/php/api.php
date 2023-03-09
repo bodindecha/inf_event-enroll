@@ -40,7 +40,7 @@
                             $read = $get -> fetch_array(MYSQLI_ASSOC); $data = array(
                                 "type" => intval($read["type"]),
                                 "name" => $read["nameath"],
-                                "expire" => date("วันที่ d/m/Y เวลา H:iน.", strtotime($read["stop"])),
+                                "expire" => date("วันที่ d/m/Y เวลา H:i น.", strtotime($read["stop"])),
                                 "done" => !empty($read["choose"]),
                                 "evfile" => (($read["choose"] == "N" && !empty($read["filetype"])) ? $vToken -> create($read["amsid"]) : null)
                             ); if ($data["done"]) {

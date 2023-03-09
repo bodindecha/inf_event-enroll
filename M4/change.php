@@ -143,7 +143,7 @@
 					<?php if (!empty($readstatus["choose"])) { ?>
 						<center class="message green">นักเรียนได้ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียนเป็น<b><?=$readstatus["name2"]?></b>เรียบร้อยแล้ว ครั้งล่าสุดเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus["time"]))?> ผ่านที่อยู่ IP <?=$readstatus["ip"]?><br><a href="/e/enroll/resource/upload/view?type=change" onClick="return cng.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a></center>
 					<?php } if ($inTime) { ?>
-						<?php if (empty($readstatus["choose"])) { ?><center class="message yellow">นักเรียนสามารถยื่นคำร้องได้ภายใน<?=date("วันที่ d/m/Y เวลา H:iน.", strtotime($readstatus["stop"]))?></center><?php } ?>
+						<?php if (empty($readstatus["choose"])) { ?><center class="message yellow">นักเรียนสามารถยื่นคำร้องได้ภายใน<?=date("วันที่ d/m/Y เวลา H:i น.", strtotime($readstatus["stop"]))?></center><?php } ?>
 						<div class="--message gray" name="instruction">
 							<center><b>ข้อตกลงในการใช้งานระบบยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน</b></center>
 							<ol>
