@@ -1,5 +1,5 @@
 <?php
-    $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
 	$normalized_control = false;
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
     

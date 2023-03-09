@@ -1,7 +1,7 @@
 <?php
-    session_start();
-    $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
-    $normalized_control = false;
+	session_start();
+	$dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$normalized_control = false;
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 
 	require_once($dirPWroot."e/enroll/resource/php/config.php");

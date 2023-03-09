@@ -220,11 +220,11 @@
 		<main shrink="<?php echo($_COOKIE['sui_open-nt'])??"false"; ?>">
 			<div class="container">
 				<h2>ระบบรายงานตัว/ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
-				<!--center class="message red">ขณะนี้ระบบอยู่ระหว่างการปรับปรุง กรุณาเข้ามาใหม่หลัง 10.15น.</center-->
+				<!--center class="message red">ขณะนี้ระบบอยู่ระหว่างการปรับปรุง กรุณาเข้ามาใหม่หลัง 10.15 น.</center-->
 				<form class="form modern --message-black" name="authenticate">
 					<input type="number" name="sid" maxlength="6" autofocus><label>เลขประจำตัวผู้สมัคร 6 หลัก</label>
 					<input type="number" name="cid" maxlength="13"><label>เลขประจำตัวประชาชน 13 หลัก</label>
-					<p>ใส่เลขประจำตัวผู้สมัครและเลขประจำตัวประชาชนโดยไม่ต้องมีขีดกลางหรือเว้นวรรค<br>หากมีข้อสงสัยหรือมีข้อผิดพลาดในการใช้งาน กรุณาติดต่อ <a href="/go?url=tel%3A0965636455" target="_blank">096 563 6455</a></p>
+					<p>ใส่เลขประจำตัวผู้สมัครและเลขประจำตัวประชาชนโดยไม่ต้องมีขีดกลางหรือเว้นวรรค</p>
 					<button class="blue full-x last" onClick="return cnf.check()" name="authen">ตรวจสอบสิทธิ์</button>
 				</form>
 				<form name="bio" style="display: none;">

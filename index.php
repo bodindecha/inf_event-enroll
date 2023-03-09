@@ -74,10 +74,10 @@
 				<ul>
 					<li class="label">ประกาศผลนักเรียนที่ผ่านการคัดเลือก (สอบเข้าใหม่)</li>
 					<!--li data-release=""><a target="_blank" href="<?=$ann_link?>">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
-					<li data-release=""><a target="_blank" href="<?=$ann_link?>">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b> (<b>ความสามารถพิเศษ</b>)</a></li>
-					<li data-release=""><a target="_blank" href="<?=$ann_link?>">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
-					<li data-release=""><a target="_blank" href="<?=$ann_link?>">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-					<li data-release=""><a target="_blank" href="<?=$ann_link?>">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li-->
+					<li data-release=""><a target="_blank" href="<?=$ann_link?>">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b> (<b>ความสามารถพิเศษ</b>)</a></li-->
+					<li data-release="03-07"><a target="_blank" href="<?=$ann_link?>3%2F28317">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
+					<!--lli data-release=""><a target="_blank" href="<?=$ann_link?>">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li-->
+					<li data-release="03-08"><a target="_blank" href="<?=$ann_link?>3%2F28328">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
 					<li data-release="03-06"><a target="_blank" href="<?=$ann_link?>3%2F28281">ประเภท<b>ห้องเรียนพสวท. (สู่ความเป็นเลิศ)</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
 					<!--li class="label">การเรียกแทนผู้สละสิทธิ์ในปีการศึกษา 2566</li>
 					<li data-release=""><a target="_blank" href="<?=$ann_link?>">ครั้งที่ <b>1</b>: ประเภท<b>ห้องเรียนพิเศษ</b></a></li-->
