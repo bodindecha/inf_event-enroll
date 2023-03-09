@@ -18,6 +18,7 @@
 			div.group.s div.list div.table tr td:nth-child(5),
 			div.group.s div.list div.table tr td:nth-child(6),
 			div.group.s div.list div.table tr td:nth-child(7) { text-align: center; }
+			main .form { padding: 10px; }
 			main .form select option:checked { font-weight: bold; }
 		</style>
 		<link rel="stylesheet" href="/resource/css/extend/mod-directory.css">

@@ -75,7 +75,7 @@
                                 // Modify
                                 if (!empty($er["filetype"])) $er["filetype"] = $linkPrefix.$er["stdid"]."&type=change";
                                 // Concat
-                                $outputData .= "\n\"".$er["time"]."\"$delimeter\"".$er["stdid"]."\"$delimeter\"".$er["name1"]."\"$delimeter\"".$er["times"]."\"".$er["name2"]."\"";
+                                $outputData .= "\n\"".$er["time"]."\"$delimeter\"".$er["stdid"]."\"$delimeter\"".$er["name1"]."\"$delimeter\"".$er["times"]."\"$delimeter\"".$er["name2"]."\"";
                                 if ($evdLink) $outputData .= "$delimeter\"".$er["filetype"]."\"";
                             } }
                             break;

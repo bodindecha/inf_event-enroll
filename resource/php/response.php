@@ -112,7 +112,7 @@
                 case "Y": $sql .= " AND a.choose='Y'"; $col = array("A", "B", "C", "Z", "D", "E", "F"); break;
                 case "N": $sql .= " AND a.choose='N'"; $col = array("A", "B", "C", "Z", "D", "X"); break;
                 case "una": $sql .= " AND a.choose IS NULL"; $col = array("A", "B", "C", "Z", "D"); break;
-            } if ($group<>"*") $sql .= " AND a.timerange=$group";
+            } if ($group<>"*") $sql .= " AND a.type=$group";
         } else if ($list == "prs") {
             if ($class<>"*") switch ($class) {
                 case "ans": $sql .= " AND a.choose IS NOT NULL"; break;
