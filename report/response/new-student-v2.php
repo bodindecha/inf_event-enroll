@@ -31,7 +31,8 @@
 				});
 				$(sS.slt.v).on("input change", sS.find);
 				ajax("/e/enroll/resource/php/api", {type: "app", act: "loadFilterOpt", param: "new"}).then(function(dat) {
-					if (dat && dat.length) dat.forEach(eo => $('main .form [name="group"]').append('<option value="'+eo.ref+'">'+eo.title+'</option>') );
+					if (dat && dat[0].length) dat[0].forEach(eo => $('main .form [name="group1"]').append('<option value="'+eo.ref+'">'+eo.title+'</option>') );
+					if (dat && dat[1].length) dat[1].forEach(eo => $('main .form [name="group2"]').append('<option value="'+eo.ref+'">'+eo.title+'</option>') );
 				});
 				// Add event listener
 				$('div.group.f .form').on("change", () => { sD.load("filter"); });
@@ -55,7 +56,7 @@
 				load: function(change="filter") {
 					document.querySelector("div.group.s div.list").disabled = true;
 					$.post("/e/enroll/resource/php/response?list=new&change="+change+(sv.sq!=null?("&q="+encodeURIComponent(sv.sq)):""), {
-						filter: {class: $('main .form [name="class"]').val(), group: $('main .form [name="group"]').val()},
+						filter: {class: $('main .form [name="class"]').val(), group: [$('main .form [name="group1"]').val(), $('main .form [name="group2"]').val()]},
 						page: sF.ctrl.page.current,
 						show: sF.ctrl.page.disp,
 						sortBy: sF.ctrl.sort.col,
@@ -183,8 +184,11 @@
 									<option value="N">- สละสิทธิ์</option>
 									<option value="una">ยังไม่รายงานตัว</option>
 								</select>
-								<select name="group">
+								<select name="group1">
 									<option value="*" selected>*ทุกประเภท*</option>
+								</select>
+								<select name="group2">
+									<option value="*" selected>*ทุกรอบ*</option>
 								</select>
 							</div>
 						</div>

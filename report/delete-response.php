@@ -12,11 +12,9 @@
 	<head>
 		<?php require($dirPWroot."resource/hpe/heading.php"); require($dirPWroot."resource/hpe/init_ss.php"); ?>
 		<style type="text/css">
-			html body main div.container * { margin: 0px 0px 10px; }
+			main div.container > * * { margin: 0; }
 			main .form input[type="number"]::-webkit-inner-spin-button { display: none; }
-			main a > i.material-icons, main button > i.material-icons { transform: translateY(5px); }
 			main .form .group label { display: flex; align-items: center; }
-			main .form .last { margin-bottom: 0px !important; }
 		</style>
 		<script type="text/javascript">
 			const drp = function() {
@@ -53,8 +51,8 @@
 									if (dat.info.action) {
 										sv.ID = data.param.user;
 										sv.action = dat.info.impact;
-										$("main form.result").append('<div class="group split last">&nbsp;<button class="red last" onClick="return drp.delete()" name="danger"><i class="material-icons">delete</i>&nbsp;ลบกรายการนี้</button></div>');
-										if (dat.info.action > 1) $("main form.result .group").prepend('<a role="button" class="gray hollow last" onClick="return drp.intercept(this,event)" href="/e/enroll/report/response/file?of='+sv.ID+'&type='+cv.typeName[data.param.group]+'" draggable="false"><i class="material-icons">visibility</i>&nbsp;ดูไฟล์หลักฐาน</button>');
+										$("main form.result").append('<div class="group split">&nbsp;<button class="red icon" onClick="return drp.delete()" name="danger"><i class="material-icons">delete</i>ลบกรายการนี้</button></div>');
+										if (dat.info.action > 1) $("main form.result .group").prepend('<a role="button" class="gray icon hollow" onClick="return drp.intercept(this,event)" href="/e/enroll/report/response/file?of='+sv.ID+'&type='+cv.typeName[data.param.group]+'" draggable="false"><i class="material-icons">visibility</i>ดูไฟล์หลักฐาน</button>');
 									}
 								} else dat.reason.forEach(em => app.ui.notify(1, em));
 								document.querySelector('main .form button[name="lookup"]').disabled = false;
@@ -138,7 +136,7 @@
 							</optgroup>
 						</select>
 					</div>
-					<div class="group spread last">
+					<div class="group spread">
 						<button name="lookup" class="blue" onClick="return drp.search()">ค้นหาข้อมูล</button>
 					</div>
 				</form>

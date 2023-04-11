@@ -11,10 +11,8 @@
 	<head>
 		<?php require($dirPWroot."resource/hpe/heading.php"); require($dirPWroot."resource/hpe/init_ss.php"); ?>
 		<style type="text/css">
+			main div.container > * * { margin: 0; }
 			main .form input[type="number"]::-webkit-inner-spin-button { display: none; }
-			main div.result > *:not(:last-child) { margin: 0px 0px 10px; }
-			main button > i.material-icons { transform: translateY(5px); }
-			main .last { margin-bottom: 0px !important; }
 		</style>
 		<script type="text/javascript">
 			const psf = function() {
@@ -36,12 +34,12 @@
 							$.post(cv.APIurl, data, function(res, hsc) {
 								var dat = JSON.parse(res);
 								if (dat.success) {
-									$("main div.result").html('<p>'+dat.info.message+'</p><div class="group split last">&nbsp;<button class="red hollow last" onClick="psf.close()" name="danger">ปิด</button></div>');
+									$("main div.result").html('<p>'+dat.info.message+'</p><div class="group split">&nbsp;<button class="red hollow" onClick="psf.close()" name="danger">ปิด</button></div>');
 									if (dat.info.action) {
 										let printData = dat.info.impact.split("+"); 
 										$("main div.result .group")
-											// .prepend('<a role="button" class="gray" href="print-docu?ment='+printData[1]+'&ID='+printData[0]+'" target="dlframe" draggable="false"><i class="material-icons">print</i>&nbsp;พิมพ์ใบมอบตัว</a>');
-											.prepend('<button class="gray" onClick="psf.print(this)" data-href="print-docu?ment='+printData[1]+'&ID='+printData[0]+'"><i class="material-icons">print</i>&nbsp;พิมพ์ใบมอบตัว</button>');
+											// .prepend('<a role="button" class="gray icon" href="print-docu?ment='+printData[1]+'&ID='+printData[0]+'" target="dlframe" draggable="false"><i class="material-icons">print</i>พิมพ์ใบมอบตัว</a>');
+											.prepend('<button class="gray icon" onClick="psf.print(this)" data-href="print-docu?ment='+printData[1]+'&ID='+printData[0]+'"><i class="material-icons">print</i>พิมพ์ใบมอบตัว</button>');
 									} $("main div.result").toggle("slide");
 								} else {
 									dat.reason.forEach(em => app.ui.notify(1, em));

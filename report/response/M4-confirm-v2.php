@@ -180,8 +180,10 @@
 							<div class="form">
 								<select name="class">
 									<option value="*" selected>*นักเรียนที่มีสิทธิ์ทุกสถานะ*</option>
-									<option value="ans">นักเรียนที่ยื่นคำร้อง</option>
-									<option value="una">ไม่มีการยื่นคำร้อง</option>
+									<option value="ans">ใช้สิทธิ์แล้ว</option>
+									<option value="Y">- ยืนยันสิทธิ์</option>
+									<option value="N">- สละสิทธิ์</option>
+									<option value="una">ยังไม่ใช้สิทธิ์</option>
 								</select>
 								<select name="group">
 									<option value="*" selected>*ทุกกลุ่มการเรียน*</option>
