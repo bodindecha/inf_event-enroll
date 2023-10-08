@@ -1,10 +1,10 @@
 <?php
     session_start();
-    $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+    $dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
     require_once($dirPWroot."e/enroll/resource/php/config.php");
 
     // Redirection only
-    if (!isset($_SESSION['auth'])) header("Location: /?return_url=e%2Fenroll%2FM4%2F");
+    if (!isset($_SESSION["auth"])) header("Location: /$my_url");
     /* Academic Year 2565
 	if (time() <= strtotime("2022-03-02 23:59:59") || inDaterange("2022-03-03", "2022-03-04") || inDaterange("2022-03-16", "2022-03-18"))
         header("Location: present");

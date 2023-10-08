@@ -1,9 +1,9 @@
 <?php
-	$dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "แผงควบคุม - งานรับนักเรียน";
 
-	if (!isset($_SESSION['auth'])) header("Location: /?return_url=e%2Fenroll%2Freport%2F");
+	if (!isset($_SESSION["auth"])) header("Location: /$my_url");
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -16,8 +16,8 @@
 		<?php require($dirPWroot."e/enroll/resource/hpe/header.php"); ?>
 		<main shrink="<?php echo($_COOKIE['sui_open-nt'])??"false"; ?>">
 			<div class="container">
-				<p><?php echo ($_COOKIE['set_lang']=="en"?"Welcome ":"ยินดีต้อนรับ ").$_SESSION['auth']['name'][$_COOKIE['set_lang']]['a']; ?></p>
-				<p><?php echo ($_COOKIE['set_lang']=="en"?"to Bodindecha (Sing Singhaseni) School admission system":"เข้าสู่ระบบจัดการงานรับนักเรียนโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)"); ?></p><br>
+				<p><?php echo ($_COOKIE["set_lang"]=="en"?"Welcome ":"ยินดีต้อนรับ ").$_SESSION["auth"]["name"][$_COOKIE["set_lang"]]["a"]; ?></p>
+				<p><?php echo ($_COOKIE["set_lang"]=="en"?"to Bodindecha (Sing Singhaseni) School admission system":"เข้าสู่ระบบจัดการงานรับนักเรียนโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)"); ?></p><br>
 				<p>คุณสามารถเลือกดูรายงานการตอบกลับได้จากเมนูด้านบนหรือตัวเลือกด้านล่าง</p>
 				<input name="response" type="checkbox" id="ref_menu-a"><label for="ref_menu-a">การตอบกลับ</label><ul>
 					<li class="dt">นักเรียนเดิม</li>
