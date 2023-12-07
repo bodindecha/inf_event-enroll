@@ -1,11 +1,11 @@
 <?php
-    $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+    $dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "ระบบยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน";
 	$header_desc = "นักเรียนเดิม";
 
 	require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
-	$authuser = $_SESSION['auth']['user'] ?? "";
+	$authuser = $_SESSION["auth"]["user"] ?? "";
 
 	// Check right
 	$getstatus = $db -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop,c.name AS name1,d.name AS name2 FROM admission_change a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sgroup c ON a.type=c.code LEFT JOIN admission_sgroup d ON a.choose=d.code WHERE a.stdid=$authuser");
@@ -139,7 +139,7 @@
 			<div class="container">
 				<h2>ระบบยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน</h2>
 				<?php if (!$permitted) echo '<center class="message red">นักเรียนไม่มีสิทธิ์ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ประเภทห้องเรียนปกติ</center>'; else { ?>
-					<center class="message cyan">การยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2566<br><?=$_SESSION['auth']['name']['th']['a']?> กลุ่มการเรียน<u><?=$readstatus["name1"]?></u></center>
+					<center class="message cyan">การยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2566<br><?=$_SESSION["auth"]["name"]["th"]["a"]?> กลุ่มการเรียน<u><?=$readstatus["name1"]?></u></center>
 					<?php if (!empty($readstatus["choose"])) { ?>
 						<center class="message green">นักเรียนได้ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียนเป็น<b><?=$readstatus["name2"]?></b>เรียบร้อยแล้ว ครั้งล่าสุดเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus["time"]))?> ผ่านที่อยู่ IP <?=$readstatus["ip"]?><br><a href="/e/enroll/resource/upload/view?type=change" onClick="return cng.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a></center>
 					<?php } if ($inTime) { ?>
@@ -148,7 +148,7 @@
 							<center><b>ข้อตกลงในการใช้งานระบบยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน</b></center>
 							<ol>
 								<li>ก่อนการยื่นคำร้องขอเปลี่ยนกลุ่มการเรียน ขอให้นักเรียนศึกษารายละเอียดของแต่ละกลุ่มการเรียนให้เข้าใจ ปรึกษา และได้รับความเห็นชอบจากผู้ปกครองก่อนดำเนินการ โดยนักเรียนและผู้ปกครองกรอกแบบฟอร์ม</li>
-								<li>กเรียนสามารถยื่นคำร้องของเปลี่ยนแปลงกลุ่มการเรียนผ่านระบบออนไลน์ ได้ตั้งแต่วันที่ 1 มีนาคม 2566 เวลา 09.00 น. ถึงวันที่ 10 มีนาคม 2566 เวลา 15.00 น. ที่เว็บไซต์ <a href="/change">https://inf.bodin.ac.th/e/enroll/M4/change</a> หากนักเรียนไม่ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียนโรงเรียนจะจัดให้นักเรียนเรียนกลุ่มการเรียนตามประกาศผลการจัดกลุ่มการเรียน ครั้งที่ 1 ประกาศภายในวันที่ 28 กุมภาพันธ์ 2566</li>
+								<li>กเรียนสามารถยื่นคำร้องของเปลี่ยนแปลงกลุ่มการเรียนผ่านระบบออนไลน์ ได้ตั้งแต่วันที่ 1 มีนาคม 2566 เวลา 09.00 น. ถึงวันที่ 10 มีนาคม 2566 เวลา 15.00 น. ที่เว็บไซต์ <a href="change">https://inf.bodin.ac.th/e/enroll/M4/change</a> หากนักเรียนไม่ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียนโรงเรียนจะจัดให้นักเรียนเรียนกลุ่มการเรียนตามประกาศผลการจัดกลุ่มการเรียน ครั้งที่ 1 ประกาศภายในวันที่ 28 กุมภาพันธ์ 2566</li>
 								<li>อัปโหลดใบคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน พร้อมลงลายมือนักเรียน และผู้ปกครอง</li>
 								<li>ผลการยื่นคำร้องจะถูกนำไปพิจารณาตามเกณฑ์การตัดสินกลุ่มการเรียน ตามที่ว่างจากผู้สละสิทธิ์ และที่ว่างจากการขอเปลี่ยนแปลงกลุ่มการเรียน</li>
 							</ol>
