@@ -1,11 +1,11 @@
 <?php
-	$dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 
 	if (isset($_REQUEST["type"])) {
 		require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
 		require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
-		$authuser = $_SESSION['auth']['user'] ?? $vToken -> read($_REQUEST["authuser"]);
+		$authuser = $_SESSION["auth"]["user"] ?? $vToken -> read($_REQUEST["authuser"]);
 		$dir = $db -> real_escape_string(trim($_REQUEST["type"]));
 		$field = ($dir == "newstd" ? "amsid" : "stdid");
 		$getExtn = $db -> query("SELECT filetype FROM admission_$dir WHERE $field=$authuser");
@@ -234,7 +234,7 @@
 				} else app.ui.notify(1, [1, "Please wait ... You can download in ("+cooldownload.s+")"]);
 			} var dlbtnfxfix = download;
 		</script><?php } ?>
-		<!--script type="text/javascript" src="/resource/js/lib/grade.min.js"></script-->
+		<!--script type="text/javascript" src="https://cdn.TianTcl.net/static/script/lib/grade.min.js"></script-->
 	</head>
 	<body class="nohbar">
 		<main>
@@ -243,7 +243,7 @@
 				else if ($extension == "pdf") {
 			?>
 				<div class="container">
-                    <div class="message yellow"><?=$_COOKIE['set_lang']=="th"?'หากไม่มีภาพปรากฏขึ้นใน 5 วินาที กรุณากดปิดหน้านี้และเปิดใหม่':'If the nothing shows up within 5 seconds. Please re-open this viewer.'?></div>
+                    <div class="message yellow"><?=$_COOKIE["set_lang"]=="th"?'หากไม่มีภาพปรากฏขึ้นใน 5 วินาที กรุณากดปิดหน้านี้และเปิดใหม่':'If the nothing shows up within 5 seconds. Please re-open this viewer.'?></div>
                 </div>
 				<iframe src="https://docs.google.com/gview?embedded=true&url=https%3A%2F%2Finf.bodin.ac.th%2Fe%2Fenroll%2Fresource%2Fupload%2F<?=$dir?>%2F<?=$authuser.'.'.$extension?>">Loading...</iframe>
 			<?php } else { ?>
@@ -257,15 +257,15 @@
 				<div class="sgt"></div>
 				<div class="bar"><ul>
 					<li>
-						<a onClick="rot.cc()" href="javascript:void(0)"><i class="material-icons">rotate_left</i><span data-title="Rotate counter-clockwise (←)"></span></a>
+						<a onClick="rot.cc()" href="javascript:"><i class="material-icons">rotate_left</i><span data-title="Rotate counter-clockwise (←)"></span></a>
 						<label>Rotate</label>
-						<a onClick="rot.cw()" href="javascript:void(0)"><i class="material-icons">rotate_right</i><span data-title="Rotate clockwise (→)"></span></a>
+						<a onClick="rot.cw()" href="javascript:"><i class="material-icons">rotate_right</i><span data-title="Rotate clockwise (→)"></span></a>
 					</li>
 					<span></span>
 					<li>
-						<a onClick="zoom.dec()" href="javascript:void(0)"><i class="material-icons">zoom_out</i><span data-title="Zoom Out (↓)"></span></a>
+						<a onClick="zoom.dec()" href="javascript:"><i class="material-icons">zoom_out</i><span data-title="Zoom Out (↓)"></span></a>
 						<label>Zoom <select name="zoom"></select></label>
-						<a onClick="zoom.inc()" href="javascript:void(0)"><i class="material-icons">zoom_in</i><span data-title="Zoom In (↑)"></span></a>
+						<a onClick="zoom.inc()" href="javascript:"><i class="material-icons">zoom_in</i><span data-title="Zoom In (↑)"></span></a>
 					</li>
 					<span></span>
 					<li data-title="always show controller (c)">
@@ -273,8 +273,8 @@
 					</li>
 					<span></span>
 					<li>
-						<a onClick="window.print()" href="javascript:void(0)"><i class="material-icons">print</i><span data-title="Print (ctrl+P)"></span></a>
-						<a disabled onClick="dlbtnfxfix()" href="javascript:void(0)"><i class="material-icons">download</i><span data-title="Download (ctrl+D)"></span></a>
+						<a onClick="window.print()" href="javascript:"><i class="material-icons">print</i><span data-title="Print (ctrl+P)"></span></a>
+						<a disabled onClick="dlbtnfxfix()" href="javascript:"><i class="material-icons">download</i><span data-title="Download (ctrl+D)"></span></a>
 						<a class="adlder" download="<?php echo $name??""; ?>" style="display: none;"></a>
 					</li>
 				</ul></div>

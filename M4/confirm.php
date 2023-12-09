@@ -1,18 +1,18 @@
 <?php
-    $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "ระบบยืนยันสิทธิ์เข้าศึกษาต่อ";
 	$header_desc = "นักเรียนเดิม";
 
 	require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
-	$authuser = $_SESSION['auth']['user'] ?? "";
+	$authuser = $_SESSION["auth"]["user"] ?? "";
 
 	// Check right
-	$getstatus = $db -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop,c.name,e.name AS new FROM admission_confirm a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sgroup c ON a.type=c.code INNER JOIN admission_change d ON a.stdid=d.stdid LEFT JOIN admission_sgroup e ON d.choose=e.code WHERE a.stdid=$authuser");
+	$getstatus = $db -> query("SELECT a.choose,a.lastupdate AS time,a.ip,b.start,b.stop,c.name,e.name AS new FROM admission_confirm a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sgroup c ON a.type=c.code LEFT JOIN admission_change d ON a.stdid=d.stdid LEFT JOIN admission_sgroup e ON d.choose=e.code WHERE a.stdid=$authuser");
 	$permitted = ($getstatus && $getstatus -> num_rows == 1);
 	if ($permitted) {
 		$readstatus = $getstatus -> fetch_array(MYSQLI_ASSOC);
-		if (empty($readstatus['choose'])) {
+		if (empty($readstatus["choose"])) {
 		// Check time
 		$inTime = inTimerange($readstatus["start"], $readstatus["stop"]);
 	} } $db -> close();
@@ -22,7 +22,7 @@
 	<head>
 		<?php require($dirPWroot."resource/hpe/heading.php"); require($dirPWroot."resource/hpe/init_ss.php"); ?>
 		<style type="text/css">
-			html body main div.container * { margin: 0px 0px 10px; }
+			html body main div.container *:not(:last-child) { margin: 0px 0px 10px; }
 			main form div.box {
 				margin-bottom: 10px;
 				width: calc(100% - 5px); height: 125px;
@@ -137,10 +137,10 @@
 			<div class="container">
 				<h2>ระบบยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 				<?php if (!$permitted) echo '<center class="message red">นักเรียนไม่มีสิทธิ์ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ</center>'; else { ?>
-					<center class="message cyan">การยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2566<br><?=$_SESSION['auth']['name']['th']['a']?> กลุ่มการเรียน<u><?=$readstatus["name"]?></u>
-						<?php if (!empty($readstatus['new'])) echo '<center class="message blue" style="margin: 10px 0px 0px">คำร้องการขอเปลี่ยนเป็นกลุ่มการเรียน<u>'.$readstatus['new'].'</u>จะได้รับการพิจารณา'.($readstatus['choose'] == "Y" ? "ภายหลัง" : "หลังนักเรียนกดยืนยันสิทธิ์").'</center>'; ?>
+					<center class="message cyan">การยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2566<br><?=$_SESSION["auth"]["name"]["th"]["a"]?> กลุ่มการเรียน<u><?=$readstatus["name"]?></u>
+						<?php if (!empty($readstatus["new"])) echo '<center class="message blue" style="margin: 10px 0px 0px">คำร้องการขอเปลี่ยนเป็นกลุ่มการเรียน<u>'.$readstatus["new"].'</u>จะได้รับการพิจารณา'.($readstatus["choose"] == "Y" ? "ภายหลัง" : "หลังนักเรียนกดยืนยันสิทธิ์").'</center>'; ?>
 					</center>
-					<?php if (empty($readstatus['choose'])) { ?>
+					<?php if (empty($readstatus["choose"])) { ?>
 						<?php if ($inTime) { ?>
 							<center class="message yellow">นักเรียนสามารถเลือกได้เพียง 1 ครั้งเท่านั้น ภายใน<?=date("วันที่ d/m/Y เวลา H:i น.", strtotime($readstatus["stop"]))?></center>
 							<form class="form message blue" name="rights" method="post" enctype="multipart/form-data" action="/e/enroll/resource/php/api">
@@ -149,7 +149,7 @@
 									<legend>กรณีสละสิทธิ์ กรุณาอัปโหลดไฟล์</legend>
 									<div class="box"><input type="file" name="usf" accept=".png, .jpg, .jpeg, .gif, .heic, .pdf" required></div>
 									<div class="group last">
-										<span>ชื่อไฟล์</span>
+										<span class="last">ชื่อไฟล์</span>
 										<input type="text" readonly>
 									</div>
 									<center><a href="/e/enroll/resource/file/dl?name=waiver" target="dlframe" download="ฟอร์มสละสิทธิ์.pdf">[<i class="material-icons">download</i> ฟอร์มสละสิทธิ์ ]</a></center>
@@ -162,8 +162,14 @@
 						<?php } else { ?>
 							<center class="message red">ขณะนี้อยู่นอกช่วงเวลาในการยืนยันสิทธิ์ของนักเรียน</center>
 					<?php } } else { ?>
-						<center class="message green">นักเรียนได้<b><?=$readstatus['choose']=="Y"?"ยืนยัน":"สละ"?>สิทธิ์</b>เรียบร้อยแล้วเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus['time']))?> ผ่านที่อยู่ IP <?=$readstatus['ip']?><?=$readstatus['choose']=="N"?'<br><a href="/e/enroll/resource/upload/view?type=confirm" onClick="return cnf.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a>':""?></center>
-						<?php if ($readstatus['choose'] == "Y") { ?>
+						<center class="message green form">
+							<span style="margin-bottom: 0;">นักเรียนได้<b><?=$readstatus["choose"]=="Y"?"ยืนยัน":"สละ"?>สิทธิ์</b>เรียบร้อยแล้วเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus["time"]))?> ผ่านที่อยู่ IP <?=$readstatus["ip"]?></span>
+							<?php if ($readstatus["choose"] == "N") { ?>
+								<a href="/e/enroll/resource/upload/view?type=confirm" onClick="return cnf.intercept(this, event)" style="margin-bottom: 0;">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a>
+							<?php } ?>
+							<?php if (true || $inTime) { ?><a role="button" class="yellow" href="switch">เปลี่ยนแปลงคำตอบ</a><?php } ?>
+						</center>
+						<?php if ($readstatus["choose"] == "Y") { ?>
 						<div class="message gray" name="instruction">
 							<center><b>คำชี้แจง</b></center>
 							<ol>

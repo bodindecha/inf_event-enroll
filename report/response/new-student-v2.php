@@ -1,5 +1,5 @@
 <?php
-	$dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "การตอบกลับ - งานรับนักเรียน";
 	$header_desc = "นักเรียนใหม่";
@@ -66,7 +66,7 @@
 						if (dat.success) {
 							sF.ctrl = dat.intl;
 							sF.render(dat.info);
-						} else document.querySelector(sF.slt).innerHTML = '<div class="msg"><center class="message red"><?=$_COOKIE['set_lang']=="th"?"เกิดปัญหาระหว่างการโหลดรายชื่อ":"Error while trying to fetch user list."?></center></div>';
+						} else document.querySelector(sF.slt).innerHTML = '<div class="msg"><center class="message red"><?=$_COOKIE["set_lang"]=="th"?"เกิดปัญหาระหว่างการโหลดรายชื่อ":"Error while trying to fetch user list."?></center></div>';
 						document.querySelector("div.group.s div.list").disabled = false;
 					});
 				}
@@ -74,7 +74,7 @@
 			const sF = {
 				slt: "div.group.s div.list",
 				render: function(data) {
-					if (data.users.length == 0) document.querySelector(sF.slt).innerHTML = '<div class="msg"><center class="message gray"><?=$_COOKIE['set_lang']=="th"?"ไม่มีชื่อในหมวดหมู่นี้":"There are no user in this category."?></center></div>';
+					if (data.users.length == 0) document.querySelector(sF.slt).innerHTML = '<div class="msg"><center class="message gray"><?=$_COOKIE["set_lang"]=="th"?"ไม่มีชื่อในหมวดหมู่นี้":"There are no user in this category."?></center></div>';
 					else {
 						var htmlPL = '<div class="table"><table>';
 						if (typeof data.column !== "undefined" && data.column.length > 0) {
@@ -104,11 +104,11 @@
 						[10,20,25,30,50].forEach(function(pa) {
 							let as = pa.toString(), defppv = (pa == sF.ctrl.page.disp);
 							htmlPL += '<option value="'+as+'" '+(defppv ?"selected":"")+'>'+as+'</option>';
-						}); htmlPL += '</select></div><div class="pages"><a onClick="sF.list.page(\'first\')" data-title="First Page" href="javascript:void(0)" draggable="false"><i class="material-icons">first_page</i></a><a onClick="sF.list.page(\'prev\')" data-title="Previous Page" href="javascript:void(0)" draggable="false"><i class="material-icons">chevron_left</i></a><select onChange="sF.list.page(this.value)">';
+						}); htmlPL += '</select></div><div class="pages"><a onClick="sF.list.page(\'first\')" data-title="First Page" href="javascript:" draggable="false"><i class="material-icons">first_page</i></a><a onClick="sF.list.page(\'prev\')" data-title="Previous Page" href="javascript:" draggable="false"><i class="material-icons">chevron_left</i></a><select onChange="sF.list.page(this.value)">';
 						for (let page = 1; page <= sF.ctrl.page.max; page++) {
 							let p = page.toString(), defpgn = (page == sF.ctrl.page.current);
 							htmlPL += '<option value="'+p+'" '+(defpgn ?"selected":"")+'>'+p+'</option>';
-						} htmlPL += '</select><a onClick="sF.list.page(\'next\')" data-title="Next Page" href="javascript:void(0)" draggable="false"><i class="material-icons">chevron_right</i></a><a onClick="sF.list.page(\'last\')" data-title="Last Page" href="javascript:void(0)" draggable="false"><i class="material-icons">last_page</i></a></div></div>';
+						} htmlPL += '</select><a onClick="sF.list.page(\'next\')" data-title="Next Page" href="javascript:" draggable="false"><i class="material-icons">chevron_right</i></a><a onClick="sF.list.page(\'last\')" data-title="Last Page" href="javascript:" draggable="false"><i class="material-icons">last_page</i></a></div></div>';
 						// Display HTML
 						document.querySelector(sF.slt).innerHTML = htmlPL;
 						// Page controller

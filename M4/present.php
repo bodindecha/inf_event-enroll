@@ -1,18 +1,18 @@
 <?php
-    $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+    $dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "ระบบรายงานตัวเข้าศึกษาต่อ";
 	$header_desc = "นักเรียนเดิม";
 
 	require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
-	$authuser = $_SESSION['auth']['user'] ?? "";
+	$authuser = $_SESSION["auth"]["user"] ?? "";
 
 	// Check right
 	$getstatus = $db -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop FROM admission_present a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.stdid=$authuser");
 	$permitted = ($getstatus && $getstatus -> num_rows == 1);
 	if ($permitted) {
 		$readstatus = $getstatus -> fetch_array(MYSQLI_ASSOC);
-		if (empty($readstatus['choose'])) {
+		if (empty($readstatus["choose"])) {
 		// Check time
 		$inTime = inTimerange($readstatus["start"], $readstatus["stop"]);
 	} } $db -> close();
@@ -137,8 +137,8 @@
 			<div class="container">
 				<h2>ระบบรายงานตัวเข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 				<?php if (!$permitted) echo '<center class="message red">นักเรียนไม่มีสิทธิ์รายงานตัวเข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ</center>'; else { ?>
-					<center class="message cyan">การรายงานตัวเข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2566<br><?=$_SESSION['auth']['name']['th']['a']?></center>
-					<?php if (empty($readstatus['choose'])) { ?>
+					<center class="message cyan">การรายงานตัวเข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2566<br><?=$_SESSION["auth"]["name"]["th"]["a"]?></center>
+					<?php if (empty($readstatus["choose"])) { ?>
 						<?php if ($inTime) { ?>
 							<center class="message yellow">นักเรียนสามารถเลือกได้เพียง 1 ครั้งเท่านั้น ภายใน<?=date("วันที่ d/m/Y เวลา H:i น.", strtotime($readstatus["stop"]))?></center>
 							<form class="form message blue" name="rights" method="post" enctype="multipart/form-data" action="/e/enroll/resource/php/api">
@@ -160,8 +160,8 @@
 						<?php } else { ?>
 							<center class="message red">ขณะนี้อยู่นอกช่วงเวลาในการรายงานตัวของนักเรียน</center>
 					<?php } } else { ?>
-						<center class="message green">นักเรียนได้<b><?=$readstatus['choose']=="Y"?"ยืนยัน":"สละ"?>สิทธิ์</b>เรียบร้อยแล้วเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus['time']))?> ผ่านที่อยู่ IP <?=$readstatus['ip']?><?php if ($readstatus['choose'] == "Y") { ?><br><a href="/e/enroll/resource/upload/view?type=present" onClick="return prs.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a><?php } ?></center>
-						<?php if ($readstatus['choose'] == "Y") { ?>
+						<center class="message green">นักเรียนได้<b><?=$readstatus["choose"]=="Y"?"ยืนยัน":"สละ"?>สิทธิ์</b>เรียบร้อยแล้วเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus["time"]))?> ผ่านที่อยู่ IP <?=$readstatus["ip"]?><?php if ($readstatus["choose"] == "Y") { ?><br><a href="/e/enroll/resource/upload/view?type=present" onClick="return prs.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a><?php } ?></center>
+						<?php if ($readstatus["choose"] == "Y") { ?>
 						<div class="message gray" name="instruction">
 							<center><b>คำชี้แจง</b></center>
 							<ol>

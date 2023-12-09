@@ -1,0 +1,12 @@
+# ~~~~~~~~~~ URL edit ~~~~~~~~~~
+
+RewriteOptions Inherit
+RewriteEngine On
+RewriteBase /e/enroll/
+
+### App URLs
+RewriteRule ^$ /e/enroll/2567 [L,QSA]
+
+### App's default
+RewriteCond %{HTTP_USER_AGENT} (Safari){0} [NC]
+RewriteRule ^(.+\.(png|jpg|jpeg|gif|heic|heif))$ /_resx/service/view/image?path=e/enroll/$1 [L,QSA]

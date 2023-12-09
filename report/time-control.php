@@ -1,5 +1,5 @@
 <?php
-	$dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "การตั้งค่าเวลา";
 	$home_menu = "settings";
@@ -11,11 +11,11 @@
 		function escapeSQL($input) {
 			global $db;
 			return $db -> real_escape_string($input);
-		} $authuser = $_SESSION['auth']['user'];
+		} $authuser = $_SESSION["auth"]["user"];
 		$tsRegex = '20\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1]) ([0-1]\d|2[0-3])(:([0-5]\d)){2}';
 		// Update
-		if (isset($_POST['save'])) {
-			unset($_POST['save']);
+		if (isset($_POST["save"])) {
+			unset($_POST["save"]);
 			if (count($_POST)) {
 				$data = array();
 				foreach ($_POST as $act => $ts) {
@@ -38,15 +38,15 @@
 						slog($authuser, "admission", "mod", "setTime", "", "fail", "", "ParamEmpty");
 						break;
 					} $sqlupd .= "$sqlprefix start='".escapeSQL($tss["start"])."',stop='".escapeSQL($tss["stop"])."' WHERE trid=$act; ";
-				} if (!isset($_SESSION['var'])) $_SESSION['var'] = array();
-				if (isset($error)) $_SESSION['var']["tmp-message"] = '3, "There\'s an error. Please try again."';
+				} if (!isset($_SESSION["var"])) $_SESSION["var"] = array();
+				if (isset($error)) $_SESSION["var"]["tmp-message"] = '3, "There\'s an error. Please try again."';
 				else {
 					$success = $db -> multi_query(trim($sqlupd));
 					if ($success) {
-						$_SESSION['var']["tmp-message"] = '0, "New time-range saved (Updated) successfully."';
+						$_SESSION["var"]["tmp-message"] = '0, "New time-range saved (Updated) successfully."';
 						slog($authuser, "admission", "mod", "setTime", "", "pass");
 					} else {
-						$_SESSION['var']["tmp-message"] = '3, "Unable to update time-range. Please try again."';
+						$_SESSION["var"]["tmp-message"] = '3, "Unable to update time-range. Please try again."';
 						slog($authuser, "admission", "mod", "setTime", "", "fail", "", "InvalidQuery");
 					}
 				}
@@ -96,9 +96,9 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 				<?php
-					if (isset($_SESSION['var']["tmp-message"])) {
-						echo 'app.ui.notify(1, ['.$_SESSION['var']["tmp-message"].']);';
-						unset($_SESSION['var']["tmp-message"]);
+					if (isset($_SESSION["var"]["tmp-message"])) {
+						echo 'app.ui.notify(1, ['.$_SESSION["var"]["tmp-message"].']);';
+						unset($_SESSION["var"]["tmp-message"]);
 					}
 				?>
 			});
@@ -113,7 +113,7 @@
 				return confirm("This action can't be undone.\nInformations can't be edited later except for times.\n\nAre you sure you want to add this new timerange ?");
 			}
 		</script>
-		<script type="text/javascript" src="/resource/js/lib/w3.min.js"></script>
+		<script type="text/javascript" src="https://cdn.TianTcl.net/static/script/lib/w3.min.js"></script>
 	</head>
 	<body>
 		<?php require($dirPWroot."e/enroll/resource/hpe/header.php"); ?>
@@ -163,7 +163,7 @@
 							<?php } ?>
 						</tbody></table></div>
 						<div class="group spread">
-							<a role="button" class="red hollow" onClick="location.reload()" href="javascript:void(0)">&emsp;รีเซ็ต&emsp;</a>
+							<a role="button" class="red hollow" onClick="location.reload()" href="javascript:">&emsp;รีเซ็ต&emsp;</a>
 							<button class="green" name="save">&emsp;บันทึก&emsp;</button>
 						</div>
 					</form>

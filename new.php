@@ -1,5 +1,5 @@
 <?php
-    $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "ระบบรายงานตัว/ยืนยันสิทธิ์เข้าศึกษาต่อ";
 	$header_desc = "นักเรียนใหม่";
@@ -40,7 +40,7 @@
 			main .form .last { margin-bottom: 0px !important; }
 			@media only screen and (max-width: 768px) {
 				main .form.modern input + label { transform: translate(calc(var(--mvlbt) + 7.5px), 12.5px); }
-    			main .form.modern input:focus + label, main .form.modern input[filled="true"] + label { transform: translate(calc(var(--mvlbt) - 7.5px), -4px) scale(0.75); }
+				main .form.modern input:focus + label, main .form.modern input[filled="true"] + label { transform: translate(calc(var(--mvlbt) - 7.5px), -4px) scale(0.75); }
 			}
 		</style>
 		<script type="text/javascript">
@@ -264,7 +264,7 @@
 						<li>พิมพ์ใบมอบตัวนักเรียนลงบนกระดาษ A4 สีขาว แล้วกรอกข้อมูลให้ครบถ้วน พร้อมแบบหลักฐานตามคำชี้แจงการมอบตัว และนำมายื่นในวันมอบตัว</li>
 						<li>ติดตามกำหนดการเปิดภาคเรียนที่ 1 ปีการศึกษา 2566 อย่างต่อเนื่องที่<a href="/go?url=https%3A%2F%2Fbodin.ac.th" target="_blank">เว็บไซต์โรงเรียน</a></li>
 					</ol>
-					<center><a href="javascript:void(0)" target="dlframe" download="ใบมอบตัว.pdf">[<i class="material-icons">download</i> ใบมอบตัว ]</a></center>
+					<center><a href="javascript:" target="dlframe" download="ใบมอบตัว.pdf">[<i class="material-icons">download</i> ใบมอบตัว ]</a></center>
 				</form>
 				<iframe name="dlframe" hidden></iframe>
 			</div>

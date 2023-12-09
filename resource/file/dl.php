@@ -1,5 +1,5 @@
 <?php
-    $dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+    $dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	$normalized_control = false;
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
     
@@ -27,8 +27,9 @@
         /* --- PDF generation --- (BEGIN) */
 		require_once($dirPWroot."resource/php/core/config.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
 		require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
-        require_once($dirPWroot."resource/php/lib/tcpdf/tcpdf.php"); require_once($dirPWroot."resource/php/lib/fpdi/fpdi.php");
-        $exportfile = new FPDI("P", PDF_UNIT, "A4", true, 'UTF-8', false);
+		require_once($dirPWroot."resource/php/lib/tcpdf/tcpdf.php"); # require_once($dirPWroot."resource/php/lib/fpdi/fpdi.php");
+		require_once($dirPWroot."resource/php/lib/fpdi/autoload.php"); require_once($dirPWroot."resource/php/lib/fpdi/Tcpdf/Fpdi.php");
+		$exportfile = new setasign\Fpdi\Tcpdf\Fpdi("P", PDF_UNIT, "A4", true, 'UTF-8', false);
         // Configuration
 		$fileTitle = "งานรับนักเรียน รร.บ.ด. - ".substr($name, 0, strlen($name)-strlen($type)-1-$versioning);
         # $exportfile -> SetProtection(array("modify", "copy", "annot-forms", "fill-forms", "extract", "assemble"), "", null, 0, null);
@@ -46,13 +47,13 @@
 			// Get original page
 			$temppage = $exportfile -> importPage($pageno);
 			$tempinfo = $exportfile -> getTemplateSize($temppage);
-			$exportfile -> addPage($tempinfo['h'] > $tempinfo['w'] ? "P" : "L");
+			$exportfile -> addPage($tempinfo["height"] > $tempinfo["width"] ? "P" : "L");
 			$exportfile -> useTemplate($temppage);
 			if (preg_match("/^sef\-(1[nmse]|4[dns])$/", $file) && $pageno == 1) { // Write PDF for confirm
 				$exportfile -> SetTextColor(0, 0, 0);
 				// Get student data
-				$authuser = $_SESSION['auth']['user'] ?? ""; if (!strlen($authuser) && isset($_REQUEST['authuser'])) $authuser = $vToken -> read(trim($_REQUEST['authuser']));
-				if (strlen($authuser) && (isset($_REQUEST['authuser']) || $_SESSION['auth']['type']=="s")) {
+				$authuser = $_SESSION["auth"]["user"] ?? ""; if (!strlen($authuser) && isset($_REQUEST["authuser"])) $authuser = $vToken -> read(trim($_REQUEST["authuser"]));
+				if (strlen($authuser) && (isset($_REQUEST["authuser"]) || $_SESSION["auth"]["type"]=="s")) {
 					$is_oldstd = ($file == "sef-4n" && substr($authuser, 0, 1) == "4") || $authuser == "99999";
 					// Fetch biological information
 					if ($is_oldstd) {
@@ -64,10 +65,10 @@
 					} require($dirPWroot."$pathToDB/db_connect.php");
 					$stdbio = $db -> query($sqlbio) -> fetch_array(MYSQLI_ASSOC);
 					$db -> close();
-					$stdbio['nameath'] = $_SESSION['auth']['name']['th']['a'] ?? $stdbio['nameath'] ?? "";
-					$stdbio['nameaen'] = $_SESSION['auth']['name']['en']['a'] ?? $stdbio['nameaen'] ?? "";
+					$stdbio["nameath"] = $_SESSION["auth"]["name"]["th"]["a"] ?? $stdbio["nameath"] ?? "";
+					$stdbio["nameaen"] = $_SESSION["auth"]["name"]["en"]["a"] ?? $stdbio["nameaen"] ?? "";
 					// Change file name
-					if (isset($stdbio['amsid'])) $authuser = $stdbio['amsid'];
+					if (isset($stdbio["amsid"])) $authuser = $stdbio["amsid"];
 					$dlname = substr($name, 0, strlen($name)-strlen($type)-1-$versioning)." - $authuser.$type";
 					// Add student ID
 					if ($is_oldstd) {
@@ -77,32 +78,32 @@
 					} // Add fullname 1
 					$exportfile -> SetFont("thsarabun", "R", 14);
 					$exportfile -> SetXY(53.5, 53.75);
-					$exportfile -> Cell(81, 0, $stdbio['nameath'], 0, 1, "C", 0, "", 0);
+					$exportfile -> Cell(81, 0, $stdbio["nameath"], 0, 1, "C", 0, "", 0);
 					// Add Citizen ID
-					if (isset($stdbio) && !empty($stdbio['citizen_id'])) $stdbio['citizen_id'] = vsprintf("%s-%s%s%s%s-%s%s%s%s%s-%s%s-%s", str_split($stdbio['citizen_id']));
+					if (isset($stdbio) && !empty($stdbio["citizen_id"])) $stdbio["citizen_id"] = vsprintf("%s-%s%s%s%s-%s%s%s%s%s-%s%s-%s", str_split($stdbio["citizen_id"]));
 					$exportfile -> SetXY(166.5, 53.75);
-					$exportfile -> Cell(33, 0, $stdbio['citizen_id'] ?? "", 0, 1, "C", 0, "", 0);
+					$exportfile -> Cell(33, 0, $stdbio["citizen_id"] ?? "", 0, 1, "C", 0, "", 0);
 					// Add English name
 					$exportfile -> SetXY(77, 59.25);
-					$exportfile -> Cell(123, 0, $stdbio['nameaen'], 0, 1, "L", 0, "", 0);
+					$exportfile -> Cell(123, 0, $stdbio["nameaen"], 0, 1, "L", 0, "", 0);
 					// Add fullname 2
 					$exportfile -> SetXY(66.6, 106.1);
-					$exportfile -> Cell(55.5, 0, $stdbio['nameath'], 0, 1, "C", 0, "", 0);
+					$exportfile -> Cell(55.5, 0, $stdbio["nameath"], 0, 1, "C", 0, "", 0);
 					if ($is_oldstd) {
 						// Add Birthday
 							$exportfile -> SetXY(135, 106.1);
-							$exportfile -> Cell(12, 0, $stdbio['birthd']??"", 0, 1, "C", 0, "", 0);
+							$exportfile -> Cell(12, 0, $stdbio["birthd"]??"", 0, 1, "C", 0, "", 0);
 							$exportfile -> SetXY(155, 106.1);
-							$exportfile -> Cell(20, 0, month2text($stdbio['birthm'])['th'][1], 0, 1, "C", 0, "", 0);
+							$exportfile -> Cell(20, 0, month2text($stdbio["birthm"])["th"][1], 0, 1, "C", 0, "", 0);
 							$exportfile -> SetXY(182.5, 106.1);
-							$exportfile -> Cell(17, 0, $stdbio['birthy']??"", 0, 1, "C", 0, "", 0);
+							$exportfile -> Cell(17, 0, $stdbio["birthy"]??"", 0, 1, "C", 0, "", 0);
 						// Add Academy
 						$exportfile -> SetXY(113, 146.85);
 						$exportfile -> Cell(56, 0, "โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)", 0, 1, "C", 0, "", 0);
 					} // Add Grade
-					$stdbio['oldgrade'] = preg_match("/^sef\-4[dns]$/", $file) ? "ม.3" : "ป.6";
+					$stdbio["oldgrade"] = preg_match("/^sef\-4[dns]$/", $file) ? "ม.3" : "ป.6";
 					$exportfile -> SetXY(190, 146.85);
-					$exportfile -> Cell(10, 0, $stdbio['oldgrade'], 0, 1, "C", 0, "", 0);
+					$exportfile -> Cell(10, 0, $stdbio["oldgrade"], 0, 1, "C", 0, "", 0);
 				}
 			}
 		} // Send out file
@@ -324,7 +325,7 @@
 				} else app.ui.notify(1, [1, "Please wait ... You can download in ("+cooldownload.s+")"]);
 			} var dlbtnfxfix = download;
 		</script><?php } ?>
-		<!--script type="text/javascript" src="/resource/js/lib/grade.min.js"></script-->
+		<!--script type="text/javascript" src="https://cdn.TianTcl.net/static/script/lib/grade.min.js"></script-->
 	</head>
 	<body class="nohbar">
 		<main>
@@ -333,7 +334,7 @@
 				else if ($type == "pdf") {
 			?>
 				<div class="container">
-                    <div class="message yellow"><?=$_COOKIE['set_lang']=="th"?'หากไม่มีภาพปรากฏขึ้นใน 5 วินาที กรุณากดปิดหน้านี้และเปิดใหม่':'If the nothing shows up within 5 seconds. Please re-open this viewer.'?></div>
+                    <div class="message yellow"><?=$_COOKIE["set_lang"]=="th"?'หากไม่มีภาพปรากฏขึ้นใน 5 วินาที กรุณากดปิดหน้านี้และเปิดใหม่':'If the nothing shows up within 5 seconds. Please re-open this viewer.'?></div>
                 </div>
 				<iframe src="https://docs.google.com/gview?embedded=true&url=https%3A%2F%2Finf.bodin.ac.th%2Fe%2Fenroll%2Fresource%2Ffile%2F<?=urlencode($path)?>">Loading...</iframe>
 			<?php } else { ?>
@@ -347,15 +348,15 @@
 				<div class="sgt"></div>
 				<div class="bar"><ul>
 					<li>
-						<a onClick="rot.cc()" href="javascript:void(0)"><i class="material-icons">rotate_left</i><span data-title="Rotate counter-clockwise (←)"></span></a>
+						<a onClick="rot.cc()" href="javascript:"><i class="material-icons">rotate_left</i><span data-title="Rotate counter-clockwise (←)"></span></a>
 						<label>Rotate</label>
-						<a onClick="rot.cw()" href="javascript:void(0)"><i class="material-icons">rotate_right</i><span data-title="Rotate clockwise (→)"></span></a>
+						<a onClick="rot.cw()" href="javascript:"><i class="material-icons">rotate_right</i><span data-title="Rotate clockwise (→)"></span></a>
 					</li>
 					<span></span>
 					<li>
-						<a onClick="zoom.dec()" href="javascript:void(0)"><i class="material-icons">zoom_out</i><span data-title="Zoom Out (↓)"></span></a>
+						<a onClick="zoom.dec()" href="javascript:"><i class="material-icons">zoom_out</i><span data-title="Zoom Out (↓)"></span></a>
 						<label>Zoom <select name="zoom"></select></label>
-						<a onClick="zoom.inc()" href="javascript:void(0)"><i class="material-icons">zoom_in</i><span data-title="Zoom In (↑)"></span></a>
+						<a onClick="zoom.inc()" href="javascript:"><i class="material-icons">zoom_in</i><span data-title="Zoom In (↑)"></span></a>
 					</li>
 					<span></span>
 					<li data-title="always show controller (c)">
@@ -363,8 +364,8 @@
 					</li>
 					<span></span>
 					<li>
-						<a onClick="window.print()" href="javascript:void(0)"><i class="material-icons">print</i><span data-title="Print (ctrl+P)"></span></a>
-						<a disabled onClick="dlbtnfxfix()" href="javascript:void(0)"><i class="material-icons">download</i><span data-title="Download (ctrl+D)"></span></a>
+						<a onClick="window.print()" href="javascript:"><i class="material-icons">print</i><span data-title="Print (ctrl+P)"></span></a>
+						<a disabled onClick="dlbtnfxfix()" href="javascript:"><i class="material-icons">download</i><span data-title="Download (ctrl+D)"></span></a>
 						<a class="adlder" download="<?php echo $name; ?>" style="display: none;"></a>
 					</li>
 				</ul></div>

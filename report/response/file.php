@@ -1,9 +1,9 @@
 <?php
 	session_start();
-	$dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 
-    $permitted = has_perm("admission"); if (!$permitted) $error = "901";
+	$permitted = has_perm("admission"); if (!$permitted) $error = "901";
 	else if (isset($_REQUEST["of"]) && isset($_REQUEST["type"])) {
 		require($dirPWroot."e/resource/db_connect.php");
 		$authuser = $db -> real_escape_string(trim($_REQUEST["of"]));
@@ -235,7 +235,7 @@
 				} else app.ui.notify(1, [1, "Please wait ... You can download in ("+cooldownload.s+")"]);
 			} var dlbtnfxfix = download;
 		</script><?php } ?>
-		<!--script type="text/javascript" src="/resource/js/lib/grade.min.js"></script-->
+		<!--script type="text/javascript" src="https://cdn.TianTcl.net/static/script/lib/grade.min.js"></script-->
 	</head>
 	<body class="nohbar">
 		<main>
@@ -244,8 +244,8 @@
 				else if ($extension == "pdf") {
 			?>
 				<div class="container">
-                    <div class="message yellow"><?=$_COOKIE['set_lang']=="th"?'หากไม่มีภาพปรากฏขึ้นใน 5 วินาที กรุณากดปิดหน้านี้และเปิดใหม่':'If the nothing shows up within 5 seconds. Please re-open this viewer.'?></div>
-                </div>
+					<div class="message yellow"><?=$_COOKIE["set_lang"]=="th"?'หากไม่มีภาพปรากฏขึ้นใน 5 วินาที กรุณากดปิดหน้านี้และเปิดใหม่':'If the nothing shows up within 5 seconds. Please re-open this viewer.'?></div>
+				</div>
 				<iframe src="https://docs.google.com/gview?embedded=true&url=https%3A%2F%2Finf.bodin.ac.th%2Fe%2Fenroll%2Fresource%2Fupload%2F<?=$dir?>%2F<?=$authuser.'.'.$extension?>">Loading...</iframe>
 			<?php } else { ?>
 			<div class="container">
@@ -258,15 +258,15 @@
 				<div class="sgt"></div>
 				<div class="bar"><ul>
 					<li>
-						<a onClick="rot.cc()" href="javascript:void(0)"><i class="material-icons">rotate_left</i><span data-title="Rotate counter-clockwise (←)"></span></a>
+						<a onClick="rot.cc()" href="javascript:"><i class="material-icons">rotate_left</i><span data-title="Rotate counter-clockwise (←)"></span></a>
 						<label>Rotate</label>
-						<a onClick="rot.cw()" href="javascript:void(0)"><i class="material-icons">rotate_right</i><span data-title="Rotate clockwise (→)"></span></a>
+						<a onClick="rot.cw()" href="javascript:"><i class="material-icons">rotate_right</i><span data-title="Rotate clockwise (→)"></span></a>
 					</li>
 					<span></span>
 					<li>
-						<a onClick="zoom.dec()" href="javascript:void(0)"><i class="material-icons">zoom_out</i><span data-title="Zoom Out (↓)"></span></a>
+						<a onClick="zoom.dec()" href="javascript:"><i class="material-icons">zoom_out</i><span data-title="Zoom Out (↓)"></span></a>
 						<label>Zoom <select name="zoom"></select></label>
-						<a onClick="zoom.inc()" href="javascript:void(0)"><i class="material-icons">zoom_in</i><span data-title="Zoom In (↑)"></span></a>
+						<a onClick="zoom.inc()" href="javascript:"><i class="material-icons">zoom_in</i><span data-title="Zoom In (↑)"></span></a>
 					</li>
 					<span></span>
 					<li data-title="always show controller (c)">
@@ -274,8 +274,8 @@
 					</li>
 					<span></span>
 					<li>
-						<a onClick="window.print()" href="javascript:void(0)"><i class="material-icons">print</i><span data-title="Print (ctrl+P)"></span></a>
-						<a disabled onClick="dlbtnfxfix()" href="javascript:void(0)"><i class="material-icons">download</i><span data-title="Download (ctrl+D)"></span></a>
+						<a onClick="window.print()" href="javascript:"><i class="material-icons">print</i><span data-title="Print (ctrl+P)"></span></a>
+						<a disabled onClick="dlbtnfxfix()" href="javascript:"><i class="material-icons">download</i><span data-title="Download (ctrl+D)"></span></a>
 						<a class="adlder" download="<?php echo $name; ?>" style="display: none;"></a>
 					</li>
 				</ul></div>

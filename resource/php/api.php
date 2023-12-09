@@ -7,7 +7,7 @@
 	if (empty($type) || empty($command)) die(json_encode($return));
 	else $return["reason"] = array();
 	// Connect
-	$dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
 	require($dirPWroot."resource/php/core/getip.php");
 	require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
@@ -22,8 +22,8 @@
 		global $return;
 		array_push($return["reason"], (empty($text) ? $type : array($type, $text)));
 	} function has_perm($what, $mods = true) {
-		if (!(isset($_SESSION['auth']) && $_SESSION['auth']['type']=="t")) return false;
-		$mods = ($mods && $_SESSION['auth']['level']>=75); $perm = (in_array("*", $_SESSION['auth']['perm']) || in_array($what, $_SESSION['auth']['perm']));
+		if (!(isset($_SESSION["auth"]) && $_SESSION["auth"]["type"]=="t")) return false;
+		$mods = ($mods && $_SESSION["auth"]["level"]>=75); $perm = (in_array("*", $_SESSION["auth"]["perm"]) || in_array($what, $_SESSION["auth"]["perm"]));
 		return ($perm || $mods);
 	}
 	// Execute
@@ -148,17 +148,17 @@
 						} else if (!$allowFile) {
 							errorMessage("4");
 							slog($datid, "admission", $type, $command, "getDt", "fail", "", "NotAccept");
-						} else if (!isset($_FILES['usf'])) {
+						} else if (!isset($_FILES["usf"])) {
 							errorMessage("5"); // No file
 							slog($datid, "admission", $type, $command, "getDt", "fail", "", "NoFile");
 						} else {
-							$target_dir = "../upload/newstd/"; $fileType = strtolower(pathinfo(basename($_FILES['usf']["name"]), PATHINFO_EXTENSION));
+							$target_dir = "../upload/newstd/"; $fileType = strtolower(pathinfo(basename($_FILES["usf"]["name"]), PATHINFO_EXTENSION));
 							$newFileName = $readdata["amsid"].".$fileType"; $target_file = $target_dir.$newFileName;
-							$uploadOk = ($_FILES['usf']["size"] > 0 && $_FILES['usf']["size"] <= 10240000); // 10 MB
+							$uploadOk = ($_FILES["usf"]["size"] > 0 && $_FILES["usf"]["size"] <= 10240000); // 10 MB
 							if (!in_array($fileType, array("png", "jpg", "jpeg", "gif", "heic", "pdf"))) $uploadOk = false;
 							if ($uploadOk) {
 								if (file_exists($target_file)) unlink($target_file);
-								if (move_uploaded_file($_FILES['usf']["tmp_name"], $target_file)) {
+								if (move_uploaded_file($_FILES["usf"]["tmp_name"], $target_file)) {
 									slog($datid, "admission", $type, $command, "uf", "pass");
 									die('<script type="text/javascript">top.cnf.recieved("'.$fileType.'");</script>');
 								} else {
@@ -174,13 +174,13 @@
 				} header("Location: /e/enroll/new-swefur".(!empty($return["reason"] ?? null) ? "#msgID=".implode("", $return["reason"]) : ""));
 			} default: errorMessage(1, "Invalid command"); break; } break;
 		} case "save": {
-			$authuser = $_SESSION['auth']['user'] ?? null;
+			$authuser = $_SESSION["auth"]["user"] ?? null;
 			$options = ($command == "cng" ? "/^[A-H]$/" : "/^[YN]$/");
 			$name = "";
 			if (empty($authuser)) {
 				errorMessage("0"); // Unauthorized
 				slog("webForm", "admission", $command, $type, $attr, "fail", "", "Unauthorized");
-			} else if ($_SESSION['auth']['type'] <> "s") {
+			} else if ($_SESSION["auth"]["type"] <> "s") {
 				errorMessage("1"); // Not student
 				slog($authuser, "admission", $command, $type, $attr, "fail", "", "NotStudentUserType");
 			} else if (!preg_match($options, $attr)) {
@@ -188,15 +188,15 @@
 				slog($authuser, "admission", $command, $type, $attr, "fail", "", "InvalidOption");
 			} else {
 				function try_upload_file($dir) {
-					if (!isset($_FILES['usf'])) return false;
+					if (!isset($_FILES["usf"])) return false;
 					global $authuser, $command, $type, $attr, $fileType;
-					$target_dir = "../upload/$dir/"; $fileType = strtolower(pathinfo(basename($_FILES['usf']["name"]), PATHINFO_EXTENSION));
+					$target_dir = "../upload/$dir/"; $fileType = strtolower(pathinfo(basename($_FILES["usf"]["name"]), PATHINFO_EXTENSION));
 					$newFileName = "$authuser.$fileType"; $target_file = $target_dir.$newFileName;
-					$uploadOk = ($_FILES['usf']["size"] > 0 && $_FILES['usf']["size"] <= 10240000); // 10 MB
+					$uploadOk = ($_FILES["usf"]["size"] > 0 && $_FILES["usf"]["size"] <= 10240000); // 10 MB
 					if (!in_array($fileType, array("png", "jpg", "jpeg", "gif", "heic", "pdf"))) $uploadOk = false;
 					if ($uploadOk) {
 						if (file_exists($target_file)) unlink($target_file);
-						if (move_uploaded_file($_FILES['usf']["tmp_name"], $target_file)) return true;
+						if (move_uploaded_file($_FILES["usf"]["tmp_name"], $target_file)) return true;
 						else {
 							errorMessage("9"); // Upload error
 							slog($authuser, "admission", $command, $type, $attr, "fail", "", "UploadError");
@@ -221,7 +221,7 @@
 							} else if (!inTimerange($readchk["start"], $readchk["stop"])) {
 								errorMessage("6"); // Timeout
 								slog($authuser, "admission", $command, $type, $attr, "fail", "", "Timeout");
-							} else if ($attr=="Y" && !isset($_FILES['usf'])) {
+							} else if ($attr=="Y" && !isset($_FILES["usf"])) {
 								errorMessage("7"); // No file
 								slog($authuser, "admission", $command, $type, $attr, "fail", "", "NoFile");
 							} else if ($attr=="N" || try_upload_file($name)) {
@@ -255,7 +255,7 @@
 							} else if ($choose == $readchk["type"]) {
 								errorMessage("B"); // Same group
 								slog($authuser, "admission", $command, $type, $attr, "fail", "", "Duplicate");
-							} else if (!isset($_FILES['usf'])) {
+							} else if (!isset($_FILES["usf"])) {
 								errorMessage("7"); // No file
 								slog($authuser, "admission", $command, $type, $attr, "fail", "", "NoFile");
 							} else if (try_upload_file($name)) {
@@ -287,7 +287,7 @@
 							} else if (!inTimerange($readchk["start"], $readchk["stop"])) {
 								errorMessage("6"); // Timeout
 								slog($authuser, "admission", $command, $type, $attr, "fail", "", "Timeout");
-							} else if ($attr=="N" && !isset($_FILES['usf'])) {
+							} else if ($attr=="N" && !isset($_FILES["usf"])) {
 								errorMessage("7"); // No file
 								slog($authuser, "admission", $command, $type, $attr, "fail", "", "NoFile");
 							} else if ($attr=="Y" || try_upload_file($name)) {
@@ -315,19 +315,24 @@
 				errorMessage(2, "You are unauthorized.");
 				slog("webForm", "admission", $type, $command, "", "fail", "", "Unauthorized");
 			} else {
-				$authuser = $_SESSION['auth']['user'] ?? "";
+				$authuser = $_SESSION["auth"]["user"] ?? "";
 				function optionResult($choice) { return (empty($choice) ? "ยังไม่ใช้" : ($choice=="Y" ? "ยืนยัน" : "สละ")); }
+				require_once($dirPWroot."resource/php/core/config.php");
+				$mainDBname = "`tiantcl_inf`";
 				switch ($command) {
 					case "find": {
-						$user = escapeSQL($attr['user']); $group = $attr['group'];
+						$user = escapeSQL($attr["user"]); $group = $attr["group"];
 						if (!preg_match("/^[1-9]\d{4,5}$/", $user))
 							errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
 						else {
 							switch ($group) {
 								case "new": $rtype = 1; $sqlinfo = "SELECT datid,CONCAT(namepth,namefth,' ',namelth) AS nameath,type,choose,time,ip FROM admission_newstd WHERE amsid=$user"; break;
-								case "prs": $rtype = 2; $sqlinfo = "SELECT a.stdid,CONCAT(b.namepth,b.namefth,' ',b.namelth) AS nameath,(CASE a.timerange WHEN 5 THEN 3 ELSE a.timerange END) AS timerange,a.choose,a.filetype,a.time,a.ip FROM admission_present a INNER JOIN bd_student b ON a.stdid=b.stdid WHERE a.stdid=$user"; break;
-								case "cng": $rtype = 3; $sqlinfo = "SELECT a.stdid,CONCAT(b.namepth,b.namefth,' ',b.namelth) AS nameath,c.name AS name1,a.choose,d.name AS name2,a.filetype,a.time,a.ip FROM admission_change a INNER JOIN bd_student b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code LEFT JOIN admission_sgroup d ON a.choose=d.code WHERE a.stdid=$user"; break;
-								case "cnf": $rtype = 4; $sqlinfo = "SELECT a.stdid,CONCAT(b.namepth,b.namefth,' ',b.namelth) AS nameath,c.name,a.choose,a.filetype,a.time,a.ip FROM admission_confirm a INNER JOIN bd_student b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code WHERE a.stdid=$user"; break;
+								# case "prs": $rtype = 2; $sqlinfo = "SELECT a.stdid,CONCAT(b.namepth,b.namefth,' ',b.namelth) AS nameath,(CASE a.timerange WHEN 5 THEN 3 ELSE a.timerange END) AS timerange,a.choose,a.filetype,a.time,a.ip FROM admission_present a INNER JOIN bd_student b ON a.stdid=b.stdid WHERE a.stdid=$user"; break;
+								case "prs": $rtype = 2; $sqlinfo = "SELECT a.stdid,b.namep,CONCAT(b.namefth,' ',b.namelth) AS nameath,(CASE a.timerange WHEN 5 THEN 3 ELSE a.timerange END) AS timerange,a.choose,a.filetype,a.time,a.ip FROM admission_present a INNER JOIN $mainDBname.user_s b ON a.stdid=b.stdid WHERE a.stdid=$user"; break;
+								# case "cng": $rtype = 3; $sqlinfo = "SELECT a.stdid,CONCAT(b.namepth,b.namefth,' ',b.namelth) AS nameath,c.name AS name1,a.choose,d.name AS name2,a.filetype,a.time,a.ip FROM admission_change a INNER JOIN bd_student b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code LEFT JOIN admission_sgroup d ON a.choose=d.code WHERE a.stdid=$user"; break;
+								case "cng": $rtype = 3; $sqlinfo = "SELECT a.stdid,b.namep,CONCAT(b.namefth,' ',b.namelth) AS nameath,c.name AS name1,a.choose,d.name AS name2,a.filetype,a.time,a.ip FROM admission_change a INNER JOIN $mainDBname.user_s b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code LEFT JOIN admission_sgroup d ON a.choose=d.code WHERE a.stdid=$user"; break;
+								# case "cnf": $rtype = 4; $sqlinfo = "SELECT a.stdid,CONCAT(b.namepth,b.namefth,' ',b.namelth) AS nameath,c.name,a.choose,a.filetype,a.time,a.ip FROM admission_confirm a INNER JOIN bd_student b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code WHERE a.stdid=$user"; break;
+								case "cnf": $rtype = 4; $sqlinfo = "SELECT a.stdid,b.namep,CONCAT(b.namefth,' ',b.namelth) AS nameath,c.name,a.choose,a.filetype,a.time,a.ip FROM admission_confirm a INNER JOIN $mainDBname.user_s b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code WHERE a.stdid=$user"; break;
 							} if (isset($sqlinfo)) {
 								$getinfo = $db -> query($sqlinfo);
 								if (!$getinfo) {
@@ -344,7 +349,8 @@
 										"msgType" => "cyan",
 										"action" => intval(!empty($readinfo["choose"])) + intval(!empty($readinfo["filetype"] ?? null)),
 										"impact" => $vToken -> create($readinfo[($group=="new" ? "datid" : "stdid")])."+".strrev(str_rot13($vToken -> create($rtype)))
-									); function ts() {
+									); if ($group <> "new") $readinfo["nameath"] = prefixcode2text($readinfo["namep"])["th"].$readinfo["nameath"];
+									function ts() {
 										global $readinfo;
 										return (!empty($readinfo["choose"]) ? " เมื่อ".date("วันที่ d/m/Y เวลา H:i:s", strtotime($readinfo["time"]))." ผ่านที่อยู่ IP ".$readinfo["ip"] : "");
 									} switch ($group) {
@@ -404,13 +410,14 @@
 								slog($authuser, "admission", $type, $command, "$user,$group", "fail", "", "InvalidOption");
 						} } break;
 					} case "check": {
-						$user = escapeSQL($attr['user']); $group = $attr['group'];
+						$user = escapeSQL($attr["user"]); $group = $attr["group"];
 						if (!preg_match("/^[1-9]\d{4,5}$/", $user))
 							errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
 						else {
 							switch ($group) {
 								case "new": $sqlinfo = "SELECT datid,CONCAT(namepth,namefth,' ',namelth) AS nameath,type,choose FROM admission_newstd WHERE amsid=$user"; break;
-								case "old": $sqlinfo = "SELECT a.stdid AS datid,CONCAT(b.namepth,b.namefth,' ',b.namelth) AS nameath,c.name AS type,a.choose FROM admission_confirm a INNER JOIN bd_student b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code WHERE a.stdid=$user"; break;
+								# case "old": $sqlinfo = "SELECT a.stdid AS datid,CONCAT(b.namepth,b.namefth,' ',b.namelth) AS nameath,c.name AS type,a.choose FROM admission_confirm a INNER JOIN bd_student b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code WHERE a.stdid=$user"; break;
+								case "old": $sqlinfo = "SELECT a.stdid AS datid,b.namep,CONCAT(b.namefth,' ',b.namelth) AS nameath,c.name AS type,a.choose FROM admission_confirm a INNER JOIN $mainDBname.user_s b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code WHERE a.stdid=$user"; break;
 							} if (isset($sqlinfo)) {
 								$getinfo = $db -> query($sqlinfo);
 								if (!$getinfo) {
@@ -424,6 +431,7 @@
 										"action" => $readinfo["choose"] == "Y",
 										"impact" => $vToken -> create($readinfo["datid"])."+".strrev(str_rot13($vToken -> create($group == "new" ? intval($readinfo["type"]) : 9)))
 									); if ($group == "new") $readinfo["type"] = $CV_groupAdm[intval($readinfo["type"]) - 1];
+									else if ($group == "old") $readinfo["nameath"] = prefixcode2text($readinfo["namep"])["th"].$readinfo["nameath"];
 									$data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานตัว".($group == "new" ? "ประเภท" : "กลุ่มการเรียน")."<u>".$readinfo["type"]."</u>";
 									successState($data);
 									slog($authuser, "admission", $type, $command, "$user,$group", "pass");

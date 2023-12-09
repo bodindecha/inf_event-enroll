@@ -1,6 +1,6 @@
 <?php
 	session_start(); ob_start();
-	$my_url = ($_SERVER["REQUEST_URI"]=="/")?"":"account/sign-in?return_url=".urlencode(ltrim($_SERVER["REQUEST_URI"], "/")); // str_replace("#", "%23", "");
+	$my_url = ($_SERVER["REQUEST_URI"]=="/")?"":"account/sign-in#next=".urlencode(ltrim($_SERVER["REQUEST_URI"], "/")); // str_replace("#", "%23", "");
 	if (preg_match("/^(((s|t)\/)?|\?return_url=(s|t)(%2F)?)$/", $my_url)) $my_url = "";
 	if (!isset($dirPWroot)) $dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 

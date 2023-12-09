@@ -43,13 +43,14 @@
 							<hr>
 							<a href="/e/enroll/report/import-data"><i class="material-icons">unarchive</i><span>นำเข้าข้อมูล</span></a>
 							<a href="/e/enroll/report/export-result"><i class="material-icons">archive</i><span>นำออกข้อมูล</span></a>
+							<a href="/e/enroll/report/download-doc"><i class="material-icons">download</i><span>รวมหลักฐาน</span></a>
 						</ul>
 					</div>
 				</div>
 			<?php } else { ?>
 				<div class="head-item text">
 					<a href="/e/enroll/new"><span>นักเรียนใหม่</span></a>
-					<a <?= isset($_SESSION['auth']) ? 'href="/e/enroll/M4/"' : 'onClick="sys.auth.orize(\'e%2Fenroll%2FM4%2F\')" href="javascript:"' ?>><span>นักเรียนเดิม<?= isset($_SESSION['auth']) ? "" : " (เข้าสู่ระบบ)" ?></span></a>
+					<a <?= isset($_SESSION["auth"]) ? 'href="/e/enroll/M4/"' : 'onClick="sys.auth.orize(\'e%2Fenroll%2FM4%2F\')" href="javascript:"' ?>><span>นักเรียนเดิม<?= isset($_SESSION["auth"]) ? "" : " (เข้าสู่ระบบ)" ?></span></a>
 				</div>
 			<?php } ?>
 		</div>
@@ -57,7 +58,7 @@
 	<section class="slider hscroll sscroll">
 		<div class="ocs">
 			<div class="head-item text">
-				<?php if (has_perm("admission") || (isset($_SESSION['auth']['user']) && $_SESSION['auth']['type'] == "s")) { ?>
+				<?php if (has_perm("admission") || (isset($_SESSION["auth"]["user"]) && $_SESSION["auth"]["type"] == "s")) { ?>
 					<a onClick="sys.auth.out()" href="javascript:"><span>ออกจากระบบ</span></a>
 				<?php } else { ?>
 					<a onClick="sys.auth.orize('e%2Fenroll%2Freport%2F')" href="javascript:"><span>เจ้าหน้าที่</span></a>

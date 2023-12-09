@@ -1,5 +1,5 @@
 <?php
-	$dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "พิมพ์เอกสารใบมอบตัว";
 	$home_menu = "manage";
@@ -67,7 +67,7 @@
 				};
 			}();
 		</script>
-		<script type="text/javascript" src="/resource/js/lib/print.min.js"></script>
+		<script type="text/javascript" src="https://cdn.TianTcl.net/static/script/lib/print.min.js"></script>
 	</head>
 	<body>
 		<?php require($dirPWroot."e/enroll/resource/hpe/header.php"); ?>

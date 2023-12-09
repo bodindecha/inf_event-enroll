@@ -1,9 +1,9 @@
 <?php
-	$dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "การนำออกข้อมูล";
 	$home_menu = "settings";
-    
+	
 	$permitted = has_perm("admission");
 ?>
 <!doctype html>
@@ -22,24 +22,24 @@
 		</style>
 		<script type="text/javascript">
 			const verify = function() {
-                (function() {
-                    var send = {
-                        sys: document.querySelector('main form [name="system"]'),
-                        eft: document.querySelector('main form [name="filetype"]')
-                    }; if (!["prs", "cng", "cnf", "new"].includes(send.sys.value.trim())) {
-                        app.ui.notify(1, [1, "หมวดหมู่ไม่ถูกต้อง."]);
-                        $(send.sys).focus();
-                    } else if (!["csv", "tsv", "json"].includes(send.eft.value.trim())) {
-                        app.ui.notify(1, [1, "ประเภทไฟล์ไม่ถูกต้อง."]);
-                        $(send.eft).focus();
-                    } else {
+				(function() {
+					var send = {
+						sys: document.querySelector('main form [name="system"]'),
+						eft: document.querySelector('main form [name="filetype"]')
+					}; if (!["prs", "cng", "cnf", "new"].includes(send.sys.value.trim())) {
+						app.ui.notify(1, [1, "หมวดหมู่ไม่ถูกต้อง."]);
+						$(send.sys).focus();
+					} else if (!["csv", "tsv", "json"].includes(send.eft.value.trim())) {
+						app.ui.notify(1, [1, "ประเภทไฟล์ไม่ถูกต้อง."]);
+						$(send.eft).focus();
+					} else {
 						let msg = "คุณต้องการนำออกข้อมูลการ", name = {
 							sys: document.querySelector('main form [name="system"] option:checked')
 						}; msg += name.sys.innerText + "ของ" + name.sys.parentNode.label + "ใช่หรือไม่ ?";
 						if (confirm(msg)) document.querySelector("main form").submit();
 					}
-                }()); return false;
-            }
+				}()); return false;
+			}
 		</script>
 	</head>
 	<body>
@@ -48,9 +48,9 @@
 			<?php if (!$permitted) echo '<iframe src="/error/901">901: No Permission</iframe>'; else { ?>
 			<div class="container">
 				<h2>การนำออกข้อมูล</h2>
-                <form class="form message blue" method="post" action="response/export" target="dlframe">
-					<p class="message yellow">ควรใช้งานหน้านี้ผ่านคอมพิวเตอร์หรือโน้ตบุ้ค เนื่องจากประเภทไฟล์นำออกไม่เหมาะแก่การเปิดบนโทรศัพท์มือถือหรือแท็บเล็ท</p>
-                    <div class="group">
+				<form class="form message blue" method="post" action="response/export" target="dlframe">
+					<p class="message yellow">ควรใช้งานหน้านี้ผ่านคอมพิวเตอร์หรือโน้ตบุ้ค เนื่องจากประเภทไฟล์นำออกไม่เหมาะสมกับการเปิดบนโทรศัพท์มือถือหรือแท็บเล็ท</p>
+					<div class="group">
 						<span>หมวดหมู่</span>
 						<select name="system">
 							<option value disabled selected>---กรุณาเลือก---</option>
@@ -79,8 +79,10 @@
 						<!--font style="color: var(--clr-bs-gray-dark)">&nbsp; เฉพาะประเภทนักเรียนเดิม</font-->
 					</label><!/div>
 					<input type="hidden" name="start">
-                    <center><button class="yellow" onClick="return verify()">นำอออก (Export)</button></center>
-                </form>
+					<center><button class="yellow" onClick="return verify()">นำอออก (Export)</button></center>
+				</form>
+				<!-- <br>
+				<h2>การดาวน์โหลดไฟล์หลักฐาน (ทั้งหมด)</h2> -->
 				<iframe name="dlframe" hidden></iframe>
 			</div><?php } ?>
 		</main>

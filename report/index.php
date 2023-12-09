@@ -36,6 +36,7 @@
 					<li class="dl">&nbsp;</li>
 					<li><a href="import-data">นำเข้าข้อมูล</a></li>
 					<li><a href="export-result">นำออกข้อมูล</a></li>
+					<li><a href="download-doc">ดาวน์โหลดไฟล์หลักฐาน</a></li>
 				</ul>
 			</div>
 		</main>
