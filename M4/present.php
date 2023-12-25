@@ -1,5 +1,5 @@
 <?php
-    $dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "ระบบรายงานตัวเข้าศึกษาต่อ";
 	$header_desc = "นักเรียนเดิม";
@@ -161,21 +161,8 @@
 							<center class="message red">ขณะนี้อยู่นอกช่วงเวลาในการรายงานตัวของนักเรียน</center>
 					<?php } } else { ?>
 						<center class="message green">นักเรียนได้<b><?=$readstatus["choose"]=="Y"?"ยืนยัน":"สละ"?>สิทธิ์</b>เรียบร้อยแล้วเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus["time"]))?> ผ่านที่อยู่ IP <?=$readstatus["ip"]?><?php if ($readstatus["choose"] == "Y") { ?><br><a href="/e/enroll/resource/upload/view?type=present" onClick="return prs.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a><?php } ?></center>
-						<?php if ($readstatus["choose"] == "Y") { ?>
-						<div class="message gray" name="instruction">
-							<center><b>คำชี้แจง</b></center>
-							<ol>
-								<li>หากนักเรียนต้องการสละสิทธิ์ในภายหลัง ขอความร่วมมือติดต่องานทะเบียน โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</li>
-								<li>ติดตามผลการจัดกลุ่มการเรียน ครั้งที่ 1 ภายในวันที่ 28 กุมภาพันธ์ 2566 ที่<a href="/go?url=https%3A%2F%2Fbodin.ac.th" target="_blank">เว็บไซต์โรงเรียน</a> หากนักเรียนต้องการเปลี่ยนกลุ่มการเรียน ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ตั้งแต่วันที่ 1 มีนาคม 2566 เวลา 09.00 น. ถึงวันที่ 10 มีนาคม 2566 เวลา 15.00 น. ที่เว็บไซต์ <a href="change">https://inf.bodin.ac.th/e/enroll/M4/change</a></li>
-								<li>ยืนยันสิทธิ์เข้าศึกษาต่อ ตั้งแต่วันที่ 13 มีนาคม 2566 เวลา 09.00 น. ถึงวันที่ 17 มีนาคม 2566 เวลา 15.00 น. ที่เว็บไซต์ <a href="confirm">https://inf.bodin.ac.th/e/enroll/M4/confirm</a></li>
-								<li>ติดตามผลการจัดกลุ่มการเรียน ครั้งที่ 2 ภายในวันที่ 24 มีนาคม 2566 เวลา 09.00 น. ที่<a href="/go?url=https%3A%2F%2Fbodin.ac.th" target="_blank">เว็บไซต์โรงเรียน</a></li>
-								<li>สอบจัดห้องเรียน (เฉพาะกลุ่มการเรียนวิทยาศาสตร์-คณิตศาสตร์) วันที่ 31 มีนาคม 2566 เวลา 09.00 - 12.00 น.</li>
-								<li>ศึกษาคำชี้แจงเอกสารประกอบการมอบตัวและกำหนดนัดหมายนักเรียน</li>
-								<li>มอบตัว วันที่ 2 เมษายน 2566 เวลา 09.00 - 16.30 น.</li>
-								<li>ติดตามกำหนดการเปิดภาคเรียนที่ 1 ปีการศึกษา 2566 อย่างต่อเนื่องที่<a href="/go?url=https%3A%2F%2Fbodin.ac.th" target="_blank">เว็บไซต์โรงเรียน</a></li>
-							</ol>
-						</div>
-				<?php } } } ?>
+						<?php if ($readstatus["choose"] == "Y") include($dirPWroot."e/enroll/resource/upload/archive/".$_SESSION["stif"]["t_year"]."/direction/present.html");
+				} } ?>
 			</div>
 		</main>
 		<?php require($dirPWroot."resource/hpe/material.php"); ?>

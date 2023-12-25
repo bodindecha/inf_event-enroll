@@ -4,9 +4,6 @@
 	$header["title"] = "ดาวน์โหลดไฟล์หลักฐาน (ทั้งหมด)";
 	$home_menu = "settings";
 
-	require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
-	if (!has_perm("dev", false)) $TCL -> http_response_code(903);
-
 	$has_perm = has_perm("admission");
 	if (!$has_perm) {
 		require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
@@ -19,6 +16,8 @@
 		<?php require($APP_RootDir."private/block/core/heading.php"); require($APP_RootDir."private/script/start/CSS-JS.php"); ?>
 		<style type="text/css">
 			app[name=main] main .form p { margin: 0; }
+			app[name=main] .lightbox .progression h3 { margin: 10px 0; }
+			app[name=main] .lightbox .progression .bar { min-width: 375px; width: 30vw; max-width: 80vw; }
 		</style>
 		<script type="text/javascript">
 			const TRANSLATION = location.pathname.substring(1).replace(/\/$/, "").replaceAll("/", "+");
@@ -32,9 +31,15 @@
 						'<span class="ripple-effect"></span><i class="material-icons">download</i> ดาวน์โหลด',
 						'&nbsp;&emsp;<div class="loading small"></div>&emsp;&nbsp;'
 					], chunk_size: Math.pow(1024, 2) * 5, // 5 MB
-					TypeAvail: ["prs", "cng", "cnf", "new"]
+					TypeAvail: ["prs", "cng", "cnf", "new"],
+					barSpeed: .5, barSmoothness: 1.5
 				};
-				var sv = {inited: false, processing: false, msgID: ""};
+				var sv = {
+					inited: false,
+					processing: false,
+					msgID: "",
+					barUpdating: null
+				};
 				var initialize = function() {
 					if (sv.inited) return;
 
@@ -58,6 +63,7 @@
 				},
 				process = function(type) {
 					sv.processing = true;
+					app.nav.confirmLeave();
 					$("app[name=main] main .form button").attr("disabled", "").toggleClass("orange green").html(cv.btn[1]);
 					sv.msgID = app.UI.notify(1, "Zipping files...", 0);
 					app.Util.ajax(cv.API_URL, {act: "merge", cmd: "squash", param: type}).then(function(dat) {
@@ -67,54 +73,67 @@
 							grepFile(dat.token);
 						} else {
 							$("app[name=main] main .form button").removeAttr("disabled", "").toggleClass("orange green").html(cv.btn[0]);
+							app.nav.confirmLeave(false);
 							sv.processing = false;
 						}
 					});
 				},
 				grepFile = function(token) {
 					sv.msgID = app.UI.notify(1, "Downloading zipped files...", 0);
-					const fetcher = new XMLHttpRequest(),
-						command = new FormData();
-					command.append("act", "get");
-					command.append("cmd", "info");
-					command.append("param[token]", token);
-					fetcher.open("POST", cv.API_URL);
-					fetcher.responseType = "blob";
-					fetcher.onload = function() {
-						const blob = fetcher.response;
-						const fileSize = blob.size;
-						const chunks = Math.ceil(fileSize / cv.chunk_size);
-						let chunk = 0;
-						const getChunk = function() {
-							var byte = {start: chunk * cv.chunk_size};
-							byte.end = Math.min(byte.start + cv.chunk_size, fileSize);
-							const data = blob.slice(byte.start, byte.end),
-								grepChunk = new XMLHttpRequest(),
-								buffer = new FormData();
-							buffer.append("act", "get");
-							buffer.append("cmd", "part");
-							buffer.append("param[token]", token);
-							buffer.append("param[part]", data);
-							buffer.append("param[chunk]", chunk);
-							buffer.append("param[all]", chunks);
-							grepChunk.open("POST", cv.API_URL);
-							grepChunk.onload = function() {
-								chunk += 1;
-								if (chunk < chunks) return getChunk();
-								// real download action
-								var download = d.querySelector("app[name=main] main [name=dlframe]");
-								download.src = cv.API_URL + "?act=get&cmd=file&param[token]=" + token;
-								// After download success
-								app.UI.notify.close(sv.msgID);
-								app.UI.notify(0, "Zipped file downloaded.");
-								setTimeout(function() {
-									$("app[name=main] main .form button").removeAttr("disabled", "").toggleClass("orange green").html(cv.btn[0]);
-									$(download).removeAttr("src");
-									sv.processing = false;
-								}, 1e3);
-							}; grepChunk.send(buffer);
-						}; getChunk();
-					}; fetcher.send(command);
+					app.UI.lightbox("center", {allowClose: false}, $("app[name=main] main .progress-template").html());
+					app.Util.ajax(cv.API_URL, {act: "get", cmd: "info", param: token}).then(async function(dat) {
+						if (!dat) {
+							app.UI.lightbox.close();
+							app.UI.notify.close(sv.msgID);
+							$("app[name=main] main .form button").removeAttr("disabled", "").toggleClass("orange green").html(cv.btn[0]);
+							app.nav.confirmLeave(false);
+							sv.processing = false;
+							return;
+						} var chunks = [], bytesRead = 0, offset = 0,
+							download = d.querySelector("app[name=main] main [name=dl-link]");
+						while (true) {
+							let bytesLimit = Math.min(bytesRead + cv.chunk_size, dat.filesize) - 1;
+							const file = await fetch(cv.API_URL, {
+								method: "POST",
+								headers: {Range: `bytes=${bytesRead}-${bytesLimit}`},
+								body: new URLSearchParams(`act=get&cmd=file&param[token]=${token}&param[range]=${bytesRead}-${bytesLimit}`)
+							}); const chunk = await file.arrayBuffer();
+							chunks.push(chunk);
+							bytesRead += chunk.byteLength;
+							updateProgress(bytesRead / dat.filesize * 100);
+							if (bytesRead >= dat.filesize) break;
+						} const fileObject = new Blob(chunks, {type: dat.mime});
+						const fileURL = URL.createObjectURL(fileObject);
+						// real download action
+						download.download = dat.filename;
+						download.href = fileURL;
+						download.click();
+						// After download success
+						setTimeout(function() {
+							app.UI.lightbox.close();
+							app.UI.notify.close(sv.msgID);
+							app.UI.notify(0, "Zipped file downloaded.");
+							setTimeout(function() {
+								URL.revokeObjectURL(fileURL);
+								$("app[name=main] main .form button").removeAttr("disabled", "").toggleClass("orange green").html(cv.btn[0]);
+								$(download).removeAttr("href download");
+								app.nav.confirmLeave(false);
+								sv.processing = false;
+							}, 1e3);
+						}, sv.barUpdating != null ? 1e3 * cv.barSpeed : 0);
+					});
+				},
+				updateProgress = function(newValue) {
+					var bar = d.querySelector("app[name=main] .lightbox .progression progress");
+					var currentValue = bar.value;
+					if (sv.barUpdating != null) clearInterval(sv.barUpdating);
+					var increment = (newValue - currentValue) / cv.barSmoothness;
+					sv.barUpdating = setInterval(function() {
+						bar.value += (bar.value + cv.barSmoothness <= newValue ? cv.barSmoothness : newValue - bar.value);
+						if (bar.value < newValue) return;
+						clearInterval(sv.barUpdating);
+						sv.barUpdating = null;
+					}, 1e3 * cv.barSpeed / increment);
 				};
 				return {
 					init: initialize,
@@ -151,7 +170,16 @@
 							<span class="text">ดาวน์โหลด</span>
 						</button></center>
 					</form>
-					<iframe name="dlframe" hidden></iframe>
+					<iframe name="dl-frame" hidden></iframe>
+					<a name="dl-link" hidden></a>
+					<div class="progress-template" hidden>
+						<div class="progression">
+							<h3 class="center">Do not close this window</h3>
+							<div class="bar center">
+								<progress class="decor green large stripes" value="0" max="100"></progress>
+							</div>
+						</div>
+					</div>
 				</section>
 			</main>
 			<?php

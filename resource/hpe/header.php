@@ -25,6 +25,7 @@
 							<a href="/e/enroll/report/response/M4-present-v2"><span>รายงานตัว</span></a>
 							<a href="/e/enroll/report/response/M4-change-v2"><span>เปลี่ยนกลุ่มการเรียน</span></a>
 							<a href="/e/enroll/report/response/M4-confirm-v2"><span>ยืนยันสิทธิ์</span></a>
+							<a href="/e/enroll/report/response/M4-switch"><span>เปลี่ยนแปลงสิทธิ์</span></a>
 							<a class="title"><span>นักเรียนใหม่</span></a>
 							<a href="/e/enroll/report/response/new-student-v2"><span>รายงานตัว</span></a>
 						</ul>
@@ -40,6 +41,7 @@
 						<a data-onClick="app.ui.toggle.hmenu(this)" href="javascript:"><i class="material-icons">settings</i><span>กระทำการ</span></a>
 						<ul class="dropdown">
 							<a href="/e/enroll/report/time-control"><i class="material-icons">date_range</i><span>ตั้งค่าเวลา</span></a>
+							<a href="/e/enroll/report/edit-direction"><i class="material-icons">web</i><span>แก้ไขคำชี้แจง</span></a>
 							<hr>
 							<a href="/e/enroll/report/import-data"><i class="material-icons">unarchive</i><span>นำเข้าข้อมูล</span></a>
 							<a href="/e/enroll/report/export-result"><i class="material-icons">archive</i><span>นำออกข้อมูล</span></a>

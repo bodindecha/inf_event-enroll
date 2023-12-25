@@ -5,30 +5,8 @@
 	$year = $_SESSION["stif"]["t_year"];
 	require_once($APP_RootDir."public_html/e/enroll/api/_log-v1.php");
 	// Execute
-	define("ADMISSION_ANSWER_YES", "Y");
-	define("ADMISSION_ANSWER_NO", "N");
-	define("ADMISSION_SECRET_KEY", "B0d1^/-4dm1$5|o/v");
-	define("ADMISSION_SECRET_SALT", 2565.2024);
-	function switch_ref_encrypt($refID) {
-		global $TCL;
-		if (!isset($TCL)) {
-			if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
-			else $TCL = new TianTcl();
-		} return $TCL -> encrypt(
-			"swt".str_pad(strval($refID), 4, "0", STR_PAD_LEFT)."ADM",
-			key: ADMISSION_SECRET_KEY,
-			salt: ADMISSION_SECRET_SALT
-		);
-	}
-	function switch_ref_decrypt($reference) {
-		global $TCL;
-		if (!isset($TCL)) {
-			if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
-			else $TCL = new TianTcl();
-		} return rtrim(substr($TCL -> decrypt($reference, key: ADMISSION_SECRET_KEY, salt: ADMISSION_SECRET_SALT), 3), "ADM");
-	}
-	if (!isset($_SESSION["auth"]) || $_SESSION["auth"]["type"] <> "s") errorMessage(1, "You are unauthorized.");
-	else switch ($action) {
+	if (!isset($_SESSION["auth"]) || $_SESSION["auth"]["type"] <> "s") errorMessage(1, "You are unauthorized."); else
+	switch ($action) {
 		case "get": {
 			switch ($command) {
 				case "status": {
@@ -36,10 +14,10 @@
 					$getHist = $APP_DB[5] -> query("SELECT 1 FROM admission_switch WHERE stdid=$APP_USER");
 					if (!$getInfo || !$getHist) {
 						errorMessage(3, "Unable to load data.");
-						syslog_e($APP_USER, "admission", "swt", "getStatus", "", "fail", "", "InvalidQuery");
+						syslog_e(null, "admission", "swt", "getStatus", "", false, "", "InvalidQuery");
 					} else if (!$getInfo -> num_rows) {
 						errorMessage(1, "You are not allowed to perform this action for you are not on the list of those eligible to study.");
-						syslog_e($APP_USER, "admission", "swt", "getStatus", "", "fail", "", "Empty");
+						syslog_e(null, "admission", "swt", "getStatus", "", false, "", "Empty");
 					} else {
 						$read = $getInfo -> fetch_array(MYSQLI_ASSOC);
 						if ($read["choose"] == null) successState(array("chosen" => false));
@@ -60,10 +38,10 @@
 					$get = $APP_DB[5] -> query("SELECT refID,prev,reason,time FROM admission_switch WHERE stdid=$APP_USER ORDER BY time DESC");
 					if (!$get) {
 						errorMessage(3, "Unable to load history.");
-						syslog_e($APP_USER, "admission", "swt", "getHistory", "", "fail", "", "InvalidQuery");
+						syslog_e(null, "admission", "swt", "getHistory", "", false, "", "InvalidQuery");
 					} else if (!$get -> num_rows) {
 						errorMessage(1, "Sorry, but your changes history is currently not available.");
-						syslog_e($APP_USER, "admission", "swt", "getHistory", "", "fail", "", "Empty");
+						syslog_e(null, "admission", "swt", "getHistory", "", false, "", "Empty");
 					} else {
 						$hist = array();
 						while ($read = $get -> fetch_assoc()) array_push($hist, array(
@@ -79,15 +57,15 @@
 					$get = $APP_DB[5] -> query("SELECT stdid,reason FROM admission_switch WHERE refID=$refID");
 					if (!$get) {
 						errorMessage(3, "Unable to get notes.");
-						syslog_e($APP_USER, "admission", "swt", "getNote", "", "fail", "", "InvalidQuery");
+						syslog_e(null, "admission", "swt", "getNote", "", false, "", "InvalidQuery");
 					} else if (!$get -> num_rows) {
 						errorMessage(1, "Memorandum not found.");
-						syslog_e($APP_USER, "admission", "swt", "getNote", "", "fail", "", "Empty");
+						syslog_e(null, "admission", "swt", "getNote", "", false, "", "Empty");
 					} else {
 						$read = $get -> fetch_array(MYSQLI_ASSOC);
 						if ($read["stdid"] <> $APP_USER) {
 							errorMessage(3, "You don't have permission to view this memorandum.");
-							syslog_e($APP_USER, "admission", "swt", "getNote", "", "fail", "", "Unauthorized");
+							syslog_e(null, "admission", "swt", "getNote", "", false, "", "Unauthorized");
 						} else successState($read["reason"]);
 					}
 				break; }
@@ -100,15 +78,15 @@
 					$get = $APP_DB[5] -> query("SELECT choose,filetype FROM admission_confirm WHERE stdid=$APP_USER");
 					if (!$get) {
 						errorMessage(3, "Unable to load data.");
-						syslog_e($APP_USER, "admission", "swt", "updateRights", "", "fail", "", "InvalidGetQuery");
+						syslog_e(null, "admission", "swt", "updateRights", "", false, "", "InvalidGetQuery");
 					} else if (!$get -> num_rows) {
 						errorMessage(1, "You are not allowed to perform this action for you are not on the list of those eligible to study.");
-						syslog_e($APP_USER, "admission", "swt", "updateRights", "", "fail", "", "Empty");
+						syslog_e(null, "admission", "swt", "updateRights", "", false, "", "Empty");
 					} else {
 						$read = $get -> fetch_array(MYSQLI_ASSOC);
 						if ($read["choose"] == null) {
 							errorMessage(2, "You haven't choose any rights previously. You cannot perform this action.");
-							syslog_e($APP_USER, "admission", "swt", "updateRights", "", "fail", "", "Unauthorized");
+							syslog_e(null, "admission", "swt", "updateRights", "", false, "", "Unauthorized");
 						} else {
 							// Update and record
 							$chose = $read["choose"];
@@ -118,11 +96,13 @@
 							$success = $APP_DB[5] -> query("INSERT INTO admission_switch (stdid,prev,reason,ip) VALUE ($APP_USER,'$chose','$reason','$USER_IP')");
 							if (!$update || !$success) {
 								errorMessage(3, "Unable to update information. Please try again.");
-								syslog_e($APP_USER, "admission", "swt", "updateRights", "", "fail", "", "InvalidQuery");
+								syslog_e(null, "admission", "swt", "updateRights", "$chose → $choose", false, "", "InvalidQuery");
 							} else {
 								$reference = switch_ref_encrypt($APP_DB[5] -> insert_id);
-								successState(array("token" => $reference));
-								syslog_e($APP_USER, "admission", "swt", "updateRights", "", "pass");
+								successState(array(
+									"token" => $reference,
+									"signature" => date("วันที่ d/m/Y เวลา H:i น.")
+								)); syslog_e(null, "admission", "swt", "updateRights", "$chose → $choose", true);
 							}
 						}
 					}

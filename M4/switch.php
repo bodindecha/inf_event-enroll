@@ -114,7 +114,8 @@
 								'<td data-reference="' + er.reference + '">' + options + '</td>'
 							);
 						}); $("app[name=main] .history tbody").html('<tr>' + table.join('</tr><tr>') + '</tr>');
-						app.UI.language();
+						app.UI.language.load();
+						app.UI.refineElements();
 					});
 					if (!update) {
 						$("app[name=main] .history").off("click");

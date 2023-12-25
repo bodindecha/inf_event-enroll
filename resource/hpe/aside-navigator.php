@@ -73,6 +73,7 @@
 								<li><a href="/e/enroll/report/response/M4-present-v2"><span>รายงานตัว</span></a></li>
 								<li><a href="/e/enroll/report/response/M4-change-v2"><span>เปลี่ยนกลุ่มการเรียน</span></a></li>
 								<li><a href="/e/enroll/report/response/M4-confirm-v2"><span>ยืนยันสิทธิ์</span></a></li>
+								<li><a href="/e/enroll/report/response/M4-switch"><span>เปลี่ยนแปลงสิทธิ์</span></a></li>
 							</ul>
 						</details></li>
 						<li class="epdb"><details open>
@@ -94,6 +95,7 @@
 					<summary>กระทำการ</summary>
 					<ul>
 						<li><a href="/e/enroll/report/time-control"><span>ตั้งค่าเวลา</span></a></li>
+						<li><a href="/e/enroll/report/edit-direction"><span>แก้ไขคำชี้แจง</span></a></li>
 						<li class="seperator">&nbsp;</li>
 						<li><a href="/e/enroll/report/import-data"><span>นำเข้าข้อมูล</span></a></li>
 						<li><a href="/e/enroll/report/export-result"><span>นำออกข้อมูล</span></a></li>

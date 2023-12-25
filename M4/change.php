@@ -143,16 +143,8 @@
 					<?php if (!empty($readstatus["choose"])) { ?>
 						<center class="message green">นักเรียนได้ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียนเป็น<b><?=$readstatus["name2"]?></b>เรียบร้อยแล้ว ครั้งล่าสุดเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus["time"]))?> ผ่านที่อยู่ IP <?=$readstatus["ip"]?><br><a href="/e/enroll/resource/upload/view?type=change" onClick="return cng.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a></center>
 					<?php } if ($inTime) { ?>
-						<?php if (empty($readstatus["choose"])) { ?><center class="message yellow">นักเรียนสามารถยื่นคำร้องได้ภายใน<?=date("วันที่ d/m/Y เวลา H:i น.", strtotime($readstatus["stop"]))?></center><?php } ?>
-						<div class="--message gray" name="instruction">
-							<center><b>ข้อตกลงในการใช้งานระบบยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน</b></center>
-							<ol>
-								<li>ก่อนการยื่นคำร้องขอเปลี่ยนกลุ่มการเรียน ขอให้นักเรียนศึกษารายละเอียดของแต่ละกลุ่มการเรียนให้เข้าใจ ปรึกษา และได้รับความเห็นชอบจากผู้ปกครองก่อนดำเนินการ โดยนักเรียนและผู้ปกครองกรอกแบบฟอร์ม</li>
-								<li>กเรียนสามารถยื่นคำร้องของเปลี่ยนแปลงกลุ่มการเรียนผ่านระบบออนไลน์ ได้ตั้งแต่วันที่ 1 มีนาคม 2566 เวลา 09.00 น. ถึงวันที่ 10 มีนาคม 2566 เวลา 15.00 น. ที่เว็บไซต์ <a href="change">https://inf.bodin.ac.th/e/enroll/M4/change</a> หากนักเรียนไม่ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียนโรงเรียนจะจัดให้นักเรียนเรียนกลุ่มการเรียนตามประกาศผลการจัดกลุ่มการเรียน ครั้งที่ 1 ประกาศภายในวันที่ 28 กุมภาพันธ์ 2566</li>
-								<li>อัปโหลดใบคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน พร้อมลงลายมือนักเรียน และผู้ปกครอง</li>
-								<li>ผลการยื่นคำร้องจะถูกนำไปพิจารณาตามเกณฑ์การตัดสินกลุ่มการเรียน ตามที่ว่างจากผู้สละสิทธิ์ และที่ว่างจากการขอเปลี่ยนแปลงกลุ่มการเรียน</li>
-							</ol>
-						</div>
+						<?php if (empty($readstatus["choose"])) { ?><center class="message yellow">นักเรียนสามารถยื่นคำร้องได้ภายใน<?=date("วันที่ d/m/Y เวลา H:i น.", strtotime($readstatus["stop"]))?></center><?php }
+						include($dirPWroot."e/enroll/resource/upload/archive/".$_SESSION["stif"]["t_year"]."/direction/change.html"); ?>
 						<form class="form message blue" name="rights" method="post" enctype="multipart/form-data" action="/e/enroll/resource/php/api">
 							<center>เลือกกลุ่มการเรียนที่ต้องการและอัปโหลดคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน กดปุ่ม "ยืนยันการขอเปลี่ยนแปลงกลุ่มการเรียน"</center>
 							<div class="group last">

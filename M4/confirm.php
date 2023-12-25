@@ -169,16 +169,8 @@
 							<?php } ?>
 							<?php if (true || $inTime) { ?><a role="button" class="yellow" href="switch">เปลี่ยนแปลงคำตอบ</a><?php } ?>
 						</center>
-						<?php if ($readstatus["choose"] == "Y") { ?>
-						<div class="message gray" name="instruction">
-							<center><b>คำชี้แจง</b></center>
-							<ol>
-								<li>ศึกษาคำชี้แจงเอกสารประกอบการมอบตัวและกำหนดนัดหมายนักเรียน</li>
-								<li>พิมพ์ใบมอบตัวนักเรียน สำหรับนักเรียนระดับชั้นมัธยมศึกษาตอนปลาย ประเภทห้องเรียนปกติ ลงบนกระดาษ A4 สีขาว และติดรูปถ่ายนักเรียนพร้อมทั้งกรอกข้อมูล นำมายื่นต่อคณะกรรมการรับมอบตัวในวันอาทิตย์ที่ 2 เมษายน 2566</li>
-							</ol>
-							<center><a href="/e/enroll/resource/file/dl?name=sef-4n" target="dlframe" download="ใบมอบตัว.pdf">[<i class="material-icons">download</i> ใบมอบตัว ]</a></center>
-						</div>
-				<?php } } } ?>
+						<?php if ($readstatus["choose"] == "Y") include($dirPWroot."e/enroll/resource/upload/archive/".$_SESSION["stif"]["t_year"]."/direction/confirm.html");
+				} } ?>
 				<iframe name="dlframe" hidden></iframe>
 			</div>
 		</main>

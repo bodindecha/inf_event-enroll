@@ -1,26 +1,58 @@
 <?php
 	$APP_DB[5] = connect_to_database(5);
-	if (!function_exists("syslog_e")) { function syslog_e($iExor="", $iApp="", $iCmd="", $iAct="", $iData="", $iVal="", $iAttr="", $iRef="", $close=false, $forced=false) {
-		global $APP_DB, $USER_IP;
+	if (!function_exists("syslog_e")) { function syslog_e($doer, string $flow, string $action, string $impact, string $detail="", bool $state=true, string $attr="", string $remark="", bool $force=false, bool $close_db_connection=false) {
+		// Check connection
+		global $APP_CONST, $APP_DB, $APP_USER, $USER_IP, $APP_RootDir;
+		if (!isset($USER_IP) || !isset($APP_USER)) require($APP_RootDir."private/script/function/utility.php");
+
 		// Clean data
-		if ($iExor == "" || $iExor == null) $dExor = strval($_SESSION["evt"]["user"] ?? ($_SESSION["evt2"]["user"] ?? ""));
-		else { $dExor = trim(strval($iExor)); try { $dExor = $APP_DB[5] -> real_escape_string($dExor); } catch(Exception$e){} }
-		$dApp = trim(strval($iApp)); try { $dApp = $APP_DB[5] -> real_escape_string($dApp); } catch(Exception$e){}
-		$dCmd = trim(strval($iCmd)); try { $dCmd = $APP_DB[5] -> real_escape_string($dCmd); } catch(Exception$e){}
-		$dAct = trim(strval($iAct)); try { $dAct = $APP_DB[5] -> real_escape_string($dAct); } catch(Exception$e){}
-		$dData = trim(strval($iData)); try { $dData = $APP_DB[5] -> real_escape_string($dData); } catch(Exception$e){}
-		$dVal = trim(strval($iVal)); try { $dVal = $APP_DB[5] -> real_escape_string($dVal); } catch(Exception$e){}
-		$dAttr = trim(strval($iAttr)); try { $dAttr = $APP_DB[5] -> real_escape_string($dAttr); } catch(Exception$e){}
-		$dRef = trim(strval($iRef)); try { $dRef = $APP_DB[5] -> real_escape_string($dRef); } catch(Exception$e){}
+		# if ($doer == null) $doer = strval($_SESSION["auth"]["user"] ?? $APP_CONST["USER_TYPE"][0]); else
+		if ($doer == null) $doer = strval($_SESSION["evt"]["user"] ?? ($_SESSION["evt2"]["user"] ?? ($APP_USER ?? ($_SESSION["auth"]["user"] ?? $APP_CONST["USER_TYPE"][0])))); else
+		$doer	= escapeSQL(trim(strval($doer)));
+		$flow	= escapeSQL(trim(strval($flow)));
+		$action	= escapeSQL(trim(strval($action)));
+		$impact	= escapeSQL(trim(strval($impact)));
+		$detail	= escapeSQL(trim(strval($detail)));
+		$state	= ($state ? "PASS" : "FAIL");
+		$attr	= escapeSQL(trim(strval($attr)));
+		$remark	= escapeSQL(trim(strval($remark)));
+
 		// Filter user
-		if (!$forced) {
-			if ($dApp == "PathwaySCon" && in_array($dExor, array("0", "10000"))) return false;
-			if ($dApp == "admission" && in_array($dExor, array("99999", "test02"))) return false;
-		} // Record em
-		$success = $APP_DB[5] -> query("INSERT INTO all_log_action (exor,app,cmd,act,data,val,attr,ref,ip) VALUES ('$dExor','$dApp','$dCmd','$dAct','$dData','$dVal','$dAttr','$dRef','$USER_IP')");
+		if (!$force) {
+			if ($flow == "PathwaySCon" && in_array($doer, array("0", "10000"))) return false;
+			if ($flow == "admission" && in_array($doer, $APP_CONST["USER_NO_SHADOW"])) return false;
+		}
+
+		// Record
+		$success = $APP_DB[5] -> query("INSERT INTO all_log_action (exor,app,cmd,act,data,val,attr,ref,ip) VALUE ('$doer','$flow','$action','$impact','$detail','$state','$attr','$remark','$USER_IP')");
+
 		// Close connection
-		if ($close && isset($APP_DB[5])) $APP_DB[5] -> close();
-		// Returns status (bool)
+		if ($close_db_connection) $APP_DB[5] -> close();
+
 		return $success;
 	} }
+	$mainDBname = "`tiantcl_inf`";
+
+	define("ADMISSION_ANSWER_YES", "Y");
+	define("ADMISSION_ANSWER_NO", "N");
+	define("ADMISSION_SECRET_KEY", "B0d1^/-4dm1$5|o/v");
+	define("ADMISSION_SECRET_SALT", 2565.2024);
+	function switch_ref_encrypt($refID) {
+		global $TCL;
+		if (!isset($TCL)) {
+			if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
+			else $TCL = new TianTcl();
+		} return $TCL -> encrypt(
+			"swt".str_pad(strval($refID), 4, "0", STR_PAD_LEFT)."ADM",
+			key: ADMISSION_SECRET_KEY,
+			salt: ADMISSION_SECRET_SALT
+		);
+	}
+	function switch_ref_decrypt($reference) {
+		global $TCL;
+		if (!isset($TCL)) {
+			if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
+			else $TCL = new TianTcl();
+		} return rtrim(substr($TCL -> decrypt($reference, key: ADMISSION_SECRET_KEY, salt: ADMISSION_SECRET_SALT), 3), "ADM");
+	}
 ?>
