@@ -57,7 +57,7 @@
 			const page = (function(d) {
 				const cv = {
 					API_URL: AppConfig.APIbase + "enroll/v1/edit-site",
-					filename: {prs: "present", cng: "change", cnf: "confirm"},
+					filename: {prs: "present", cng: "change", cnf: "confirm", new: "new"},
 					editorSide: ["left", "top", "right", "bottom"],
 					regex: {
 						URL: /^((http(s)?:)?\/\/)?((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,13}))((\/|\?|#)\S*)?$/,
@@ -95,7 +95,7 @@
 					app.Util.ajax(cv.API_URL, {act: "direction", cmd: "loadHTML", param: cv.filename[sv.currentFile]}).then(function(dat) {
 						option.removeAttr("disabled");
 						if (!dat) return;
-						sv.original = dat.HTML;
+						sv.original = dat.HTML; // atob(dat.HTML);
 						sv.editor.session.setValue(sv.original, -1);
 						updatePreview();
 						if (sv.warnLeave) {
@@ -121,10 +121,11 @@
 				},
 				updatePreview = function() {
 					if (sv.previewRendered) return;
-					$("app[name=main] main .wrapper .preview").html(getSecureHTML(false));
-					$("app[name=main] main .wrapper .preview a[href]")
+					var sandbox = $("app[name=main] main .wrapper .preview").html(getSecureHTML(false));
+					sandbox.find("a[href]")
 						.attr("onClick", "return false")
 						.attr("draggable", "false");
+					sandbox.children().show();
 					sv.previewRendered = true;
 				},
 				getSecureHTML = function(alertFault = true) {
@@ -157,7 +158,7 @@
 						editable = $("app[name=main] main .control select[name=for], app[name=main] main .control div:nth-child(1) button, app[name=main] main .wrapper .editor, app[name=main] main .control .group:nth-child(3) button:not(.default)");
 					editable.attr("disabled", "");
 					app.Util.ajax(cv.API_URL, {act: "direction", cmd: "update", param: {
-						file: cv.filename[sv.currentFile], content: context
+						file: cv.filename[sv.currentFile], content: context // btoa(context)
 					}}).then(function(dat) {
 						editable.removeAttr("disabled");
 						if (!dat) return;
@@ -179,7 +180,7 @@
 							app.UI.lightbox("top", {
 								title: getElementText(2), exitTap: false
 							}, $("app[name=main] .formTemplate").html());
-							return app.UI.refineElements();
+							return setTimeout(app.UI.refineElements, 250);
 						} $("app[name=main] .lightbox .il-form").attr("disabled", "");
 						var data = {
 							text: $("app[name=main] .lightbox .il-form [name=link-text]").val().trim(),
@@ -237,12 +238,19 @@
 								<label>สำหรับ</label>
 								<select name="for">
 									<option value selected disabled>— กรุณาเลือก —</option>
-									<option value="prs">รายงานตัว</option>
-									<option value="cng">เปลี่ยนกลุ่มการเรียน</option>
-									<option value="cnf">ยืนยันสิทธิ์</option>
+									<optgroup label="นักเรียนเดิม">
+										<option value="prs">รายงานตัว</option>
+										<option value="cng">เปลี่ยนกลุ่มการเรียน</option>
+										<option value="cnf">ยืนยันสิทธิ์</option>
+									</optgroup>
+									<optgroup label="นักเรียนใหม่">
+										<option value="new">รายงานตัว</option>
+									</optgroup>
 								</select>
 							</div>
-							<button disabled class="black hollow icon" onClick="page.insertLink()" data-title="แทรกลิงก์"><i class="material-icons">insert_link</i></button>
+							<button disabled class="black hollow icon" onClick="page.insertLink()" data-title="แทรกลิงก์">
+								<span class="material-symbols-rounded">add_link</span>
+							</button>
 						</div>
 						<button class="gray icon pill hollow ref-00001" onClick="page.turnSide()" data-title="เปลี่ยนด้าน"><i class="material-icons">rotate_right</i></button>
 						<div class="group">
@@ -267,8 +275,8 @@
 								<label class="ref-00003">ลิงก์ที่หมาย</label>
 								<input type="url" name="link-href" required />
 							</div>
-							<label class="css-flex css-flex-gap-25">
-								<input type="checkbox" class="switch" name="new_tab" />
+							<label class="css-flex css-flex-gap-5">
+								<input type="checkbox" class="switch on-cyan" name="new_tab" />
 								<span class="ref-00004">เปิดในแท็บใหม่</span>
 							</label>
 							<div class="group spread">

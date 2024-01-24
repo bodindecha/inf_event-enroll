@@ -10,6 +10,7 @@
 	}
 
 	$permission = array(
+		"isModerator" => $isAdministrator,
 		"isDeveloper" => $isDeveloper,
 		"modEnroll" => $has_perm,
 		"modUAC" => has_perm("user")

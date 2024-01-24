@@ -8,6 +8,7 @@
 	else $return["reason"] = array();
 	// Connect
 	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
+	$APP_RootDir = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/"));
 	require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
 	require($dirPWroot."resource/php/core/getip.php");
 	require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
@@ -30,15 +31,16 @@
 	switch ($type) {
 		case "new": { switch ($command) {
 			case "authen": {
-				if (!preg_match("/^[1-9]\d{5}$/", $attr["user"]) || !preg_match("/^\d{13}$/", $attr["pswd"]))
+				if (!preg_match("/^[1-9]\d{6}$/", $attr["user"]) || !preg_match("/^\d{13}$/", $attr["pswd"]))
 					errorMessage(2, "รูปแบบเลขประจำตัวผู้สมัครหรือเลขประจำตัวประชาชนไม่ถูกต้อง");
 				else {
 					$amsid = escapeSQL($attr["user"]); $natid = escapeSQL($attr["pswd"]);
-					$get = $db -> query("SELECT a.datid, a.amsid, CONCAT(a.namepth, a.namefth, ' ', a.namelth) AS nameath, a.type, a.choose, a.filetype, a.time, a.ip, b.start, b.stop FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.amsid=$amsid AND a.natid=$natid");
+					$get = $db -> query("SELECT a.datid,a.amsid,CONCAT(a.namepth, a.namefth, ' ', a.namelth) AS nameath,a.type,a.choose,a.filetype,a.time,a.ip,b.start,b.stop,c.signature FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sclass c ON c.refID=a.type WHERE a.amsid=$amsid AND a.natid=$natid");
 					if ($get) {
 						if ($get -> num_rows == 1) {
 							$read = $get -> fetch_array(MYSQLI_ASSOC); $data = array(
 								"type" => intval($read["type"]),
+								"signature" => $read["signature"],
 								"name" => $read["nameath"],
 								"expire" => date("วันที่ d/m/Y เวลา H:i น.", strtotime($read["stop"])),
 								"done" => !empty($read["choose"]),
@@ -322,7 +324,7 @@
 				switch ($command) {
 					case "find": {
 						$user = escapeSQL($attr["user"]); $group = $attr["group"];
-						if (!preg_match("/^[1-9]\d{4,5}$/", $user))
+						if (!preg_match("/^[1-9]\d{4,6}$/", $user))
 							errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
 						else {
 							switch ($group) {
@@ -354,7 +356,7 @@
 										global $readinfo;
 										return (!empty($readinfo["choose"]) ? " เมื่อ".date("วันที่ d/m/Y เวลา H:i:s", strtotime($readinfo["time"]))." ผ่านที่อยู่ IP ".$readinfo["ip"] : "");
 									} switch ($group) {
-										case "new": $data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานตัวประเภท<u>".$CV_groupAdm[intval($readinfo["type"])-1]."</u>".ts(); break;
+										case "new": $data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานตัวประเภท<u>".$CV_groupAdm[$readinfo["type"]]."</u>".ts(); break;
 										case "prs": $data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานคัวเข้ารับการศึกษาชั้นมัธยมศึกษาปีที่ 4 โรงเรียนเดิม".ts(); break;
 										case "cng": $data["message"] = $readinfo["nameath"].(empty($readinfo["choose"]) ? "ไม่ได้ยื่นคำชอเปลี่ยนแปลงกลุ่มการเรียน" : "ยื่นคำขอเปลี่ยนแปลงกลุ่มการเรียนจากเดิมกลุ่มการเรียน<u>".$readinfo["name1"]."</u> เป็นกลุ่มการเรียน<u>".$readinfo["name2"]."</u>"); break;
 										case "cnf": $data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การเข้าเรียนกลุ่มการเรียน<u>".$readinfo["name"]."</u>".ts(); break;
@@ -411,12 +413,11 @@
 						} } break;
 					} case "check": {
 						$user = escapeSQL($attr["user"]); $group = $attr["group"];
-						if (!preg_match("/^[1-9]\d{4,5}$/", $user))
+						if (!preg_match("/^[1-9]\d{4,6}$/", $user))
 							errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
 						else {
 							switch ($group) {
-								case "new": $sqlinfo = "SELECT datid,CONCAT(namepth,namefth,' ',namelth) AS nameath,type,choose FROM admission_newstd WHERE amsid=$user"; break;
-								# case "old": $sqlinfo = "SELECT a.stdid AS datid,CONCAT(b.namepth,b.namefth,' ',b.namelth) AS nameath,c.name AS type,a.choose FROM admission_confirm a INNER JOIN bd_student b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code WHERE a.stdid=$user"; break;
+								case "new": $sqlinfo = "SELECT a.datid,CONCAT(a.namepth,a.namefth,' ',a.namelth) AS nameath,a.type,a.choose,b.signature FROM admission_newstd a INNER JOIN admission_sclass b ON b.refID=a.type WHERE a.amsid=$user"; break;
 								case "old": $sqlinfo = "SELECT a.stdid AS datid,b.namep,CONCAT(b.namefth,' ',b.namelth) AS nameath,c.name AS type,a.choose FROM admission_confirm a INNER JOIN $mainDBname.user_s b ON a.stdid=b.stdid INNER JOIN admission_sgroup c ON a.type=c.code WHERE a.stdid=$user"; break;
 							} if (isset($sqlinfo)) {
 								$getinfo = $db -> query($sqlinfo);
@@ -427,10 +428,12 @@
 									errorMessage(1, "ไม่พบข้อมูลของเลขประจำตัว $user");
 									slog($authuser, "admission", $type, $command, "$user,$group", "fail", "", "NotExisted");
 								} else {
+									require($APP_RootDir."private/script/lib/TianTcl/various.php");
 									$readinfo = $getinfo -> fetch_array(MYSQLI_ASSOC); $data = array(
 										"action" => $readinfo["choose"] == "Y",
-										"impact" => $vToken -> create($readinfo["datid"])."+".strrev(str_rot13($vToken -> create($group == "new" ? intval($readinfo["type"]) : 9)))
-									); if ($group == "new") $readinfo["type"] = $CV_groupAdm[intval($readinfo["type"]) - 1];
+										# "impact" => $vToken -> create($readinfo["datid"])."+".strrev(str_rot13($vToken -> create($group == "new" ? intval($readinfo["type"]) : "4n")))
+										"impact" => $vToken -> create($readinfo["datid"])."+".($TCL -> encrypt("sef-".($group == "new" ? $readinfo["signature"] : "4n"), nest: 2))
+									); if ($group == "new") $readinfo["type"] = $CV_groupAdm[$readinfo["type"]];
 									else if ($group == "old") $readinfo["nameath"] = prefixcode2text($readinfo["namep"])["th"].$readinfo["nameath"];
 									$data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานตัว".($group == "new" ? "ประเภท" : "กลุ่มการเรียน")."<u>".$readinfo["type"]."</u>";
 									successState($data);

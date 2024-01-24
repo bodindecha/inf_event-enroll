@@ -11,6 +11,10 @@
 		<?php require($APP_RootDir."private/block/core/heading.php"); require($APP_RootDir."private/script/start/CSS-JS.php"); ?>
 		<style type="text/css">
 			app[name=main] main .students .table { border-radius: .3rem; }
+			app[name=main] main .history hr {
+				margin: 2.5px 0;
+				width: 75%;
+			}
 		</style>
 		<script type="text/javascript">
 			const TRANSLATION = location.pathname.substring(1).replace(/\/$/, "").replaceAll("/", "+");
@@ -85,7 +89,8 @@
 					}
 				},
 				getNotes = function(me) {
-					var box = $(me.parentNode.parentNode);
+					var box = $(me.parentNode.parentNode),
+						infobox = box.parent().parent().parent().parent().parent().parent();
 					me = $(me);
 					var reference = box.attr("data-reference");
 					if (reference in sv.reasons) box.html(sv.reasons[reference]);
@@ -95,6 +100,7 @@
 							if (!dat) return me.removeAttr("disabled");
 							box.html(dat);
 							sv.reasons[reference] = dat;
+							infobox.animate({height: infobox.children().first().outerHeight()}, 250, $.bez([0.65, 0, 0.35, 1]));
 						});
 					}
 				},
@@ -132,7 +138,7 @@
 					</div></div>
 					<ul class="students accordian-group"></ul>
 					<div class="tableTemplate" hidden>
-						<div class="table responsive"><table><thead class="center">
+						<div class="table static responsive striped"><table><thead class="center">
 							<tr>
 								<th rowspan="2">ลำดับ</th>
 								<th rowspan="2">ประทับเวลา</th>

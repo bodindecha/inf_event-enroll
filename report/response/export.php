@@ -140,7 +140,7 @@
 							if ($evdLink) $outputData .= "$delimeter\"ไฟล์หลักฐาน\"";
 							if ($has_result) { while ($er = $result -> fetch_assoc()) {
 								// Modify
-								$er["type"] = $CV_groupAdm[intval($er["type"])-1];
+								$er["type"] = $CV_groupAdm[$er["type"]];
 								$er["choose"] = (empty($er["choose"]) ? "ยังไม่ใช้สิทธิ์" : ($er["choose"]=="Y" ? "ยืนยันสิทธิ์" : "สละสิทธิ์"));
 								$er["filetype"] = (empty($er["filetype"]) ? "" : $linkPrefix.$er["amsid"]."&type=newstd");
 								// Concat
@@ -152,7 +152,7 @@
 							$outputData = array();
 							if ($has_result) { while ($er = $result -> fetch_assoc()) {
 								// Modify
-								$er["type"] = $CV_groupAdm[intval($er["type"])-1];
+								$er["type"] = $CV_groupAdm[$er["type"]];
 								$er["choose"] = (empty($er["choose"]) ? "ยังไม่ใช้สิทธิ์" : ($er["choose"]=="Y" ? "ยืนยันสิทธิ์" : "สละสิทธิ์"));
 								$er["filetype"] = (empty($er["filetype"]) ? "" : $linkPrefix.$er["amsid"]."&type=newstd");
 								// Concat

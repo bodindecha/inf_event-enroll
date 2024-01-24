@@ -46,6 +46,10 @@
 							<a href="/e/enroll/report/import-data"><i class="material-icons">unarchive</i><span>นำเข้าข้อมูล</span></a>
 							<a href="/e/enroll/report/export-result"><i class="material-icons">archive</i><span>นำออกข้อมูล</span></a>
 							<a href="/e/enroll/report/download-doc"><i class="material-icons">download</i><span>รวมหลักฐาน</span></a>
+							<?php if ($_SESSION["auth"]["level"]>=75) { ?>
+							<hr>
+							<a href="/e/enroll/report/file-manager"><i class="material-icons">source</i><span>จัดการเอกสารแม่แบบ</span></a>
+							<?php } ?>
 						</ul>
 					</div>
 				</div>

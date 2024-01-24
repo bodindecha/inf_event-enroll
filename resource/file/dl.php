@@ -1,46 +1,49 @@
 <?php
-    $dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
 	$normalized_control = false;
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
-    
-    if (isset($_REQUEST["name"])) {
-        $file = trim($_REQUEST["name"]);
-        switch ($file) {
-            case "sggtmf": $type = "jpg"; $dl = false; $path = "ตัวอย่างใบรับรองผลการสมัครเข้าศึกษาต่อระดับชั้นมัธยมศึกษาปีที่ 4.$type"; break;
-            case "csgrf": $type = "pdf"; $dl = true; $path = "2566/ใบยื่นคำร้องขอเปลี่ยนกลุ่มการเรียน.$type"; $pages = 1; break;
-            case "waiver": $type = "pdf"; $dl = true; $path = "2566/คำร้องขอสละสิทธิ์ v2.$type"; $pages = 1; break;
-            case "sef-1n": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนทั่วไป ม.1.$type"; $pages = 1; break;
-            case "sef-1m": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนคณิต ม.1.$type"; $pages = 1; break;
-            case "sef-1s": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนวิทย์ ม.1.$type"; $pages = 1; break;
-            case "sef-4n": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนทั่วไป ม.4.$type"; $pages = 1; break;
-            case "sef-4s": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนพิเศษ ม.4.$type"; $pages = 1; break;
-            case "sef-4d": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียนพสวท ม.4.$type"; $pages = 1; break;
-            case "sef-1e": $type = "pdf"; $dl = true; $path = "2566/ใบมอบตัว ห้องเรียน EP ม.1.$type"; $pages = 1; break;
-            case "eioad": $type = "pdf"; $dl = false; $path = "2566/คำชี้แจงเอกสารการมอบตัว v2.$type"; $pages = 1; break;
-            default: $error = "900"; break;
-        } if (!isset($error) && !file_exists($path)) $error = "404";
+	
+	if (isset($_REQUEST["name"])) {
+		$file = trim($_REQUEST["name"]);
+		switch ($file) {
+			case "sggtmf":	$type = "jpg"; $dl = false;	$path = "ตัวอย่างใบรับรองผลการสมัครเข้าศึกษาต่อระดับชั้นมัธยมศึกษาปีที่_4"; break;
+			case "csgrf":	$type = "pdf"; $dl = true;	$path = "2567/ใบยื่นคำร้องขอเปลี่ยนกลุ่มการเรียน"; $pages = 1; break;
+			case "waiver":	$type = "pdf"; $dl = true;	$path = "2567/คำร้องขอสละสิทธิ์"; $pages = 1; break;
+			case "sef-1n":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนทั่วไป ม.1"; $pages = 1; break;
+			case "sef-1m":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนคณิต ม.1"; $pages = 1; break;
+			# case "sef-1s":	$type = "pdf"; $dl = true;	$path = "2566/ใบมอบตัว ห้องเรียนวิทย์ ม.1"; $pages = 1; break;
+			case "sef-1p":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนวิทย์ สอวน. ม.1"; $pages = 1; break;
+			case "sef-1i":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนวิทย์ สสวท. ม.1"; $pages = 1; break;
+			case "sef-4n":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนทั่วไป ม.4"; $pages = 1; break;
+			case "sef-4s":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนพิเศษ ม.4"; $pages = 1; break;
+			case "sef-4d":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนพสวท ม.4"; $pages = 1; break;
+			case "sef-1e":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียน EP ม.1"; $pages = 1; break;
+			case "eioad":	$type = "pdf"; $dl = false;	$path = "2567/คำชี้แจงเอกสารการมอบตัว"; $pages = 1; break;
+			default: $error = "900"; break;
+		} $path = "$path.$type";
+		if (!isset($error) && !file_exists($path)) $error = "404";
 		$name = end(explode("/", $path));
 		preg_match("/(\ v(\d|\-)+)\./", $name, $versioning); $versioning = count($versioning) ? strlen($versioning[1]) : 0;
-    } else $error = "902";
+	} else $error = "902";
 
-    if (!isset($error) && $type == "pdf") {
-        /* --- PDF generation --- (BEGIN) */
+	if (!isset($error) && $type == "pdf") {
+		/* --- PDF generation --- (BEGIN) */
 		require_once($dirPWroot."resource/php/core/config.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
 		require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
 		require_once($dirPWroot."resource/php/lib/tcpdf/tcpdf.php"); # require_once($dirPWroot."resource/php/lib/fpdi/fpdi.php");
 		require_once($dirPWroot."resource/php/lib/fpdi/autoload.php"); require_once($dirPWroot."resource/php/lib/fpdi/Tcpdf/Fpdi.php");
 		$exportfile = new setasign\Fpdi\Tcpdf\Fpdi("P", PDF_UNIT, "A4", true, 'UTF-8', false);
-        // Configuration
+		// Configuration
 		$fileTitle = "งานรับนักเรียน รร.บ.ด. - ".substr($name, 0, strlen($name)-strlen($type)-1-$versioning);
-        # $exportfile -> SetProtection(array("modify", "copy", "annot-forms", "fill-forms", "extract", "assemble"), "", null, 0, null);
-        $exportfile -> SetCreator("Bodindecha (Sing Singhaseni) School: INF-Webapp");
-        $exportfile -> SetAuthor("งานรับนักเรียน โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)");
-        $exportfile -> SetTitle($fileTitle);
-        $exportfile -> SetSubject($fileTitle);
-        $exportfile -> setPrintHeader(false);
-        $exportfile -> setPrintFooter(false);
-        # $exportfile -> SetKeywords("");
-        $exportfile -> SetAutoPageBreak(false, 0);
+		# $exportfile -> SetProtection(array("modify", "copy", "annot-forms", "fill-forms", "extract", "assemble"), "", null, 0, null);
+		$exportfile -> SetCreator("Bodindecha (Sing Singhaseni) School: INF-Webapp");
+		$exportfile -> SetAuthor("งานรับนักเรียน โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)");
+		$exportfile -> SetTitle($fileTitle);
+		$exportfile -> SetSubject($fileTitle);
+		$exportfile -> setPrintHeader(false);
+		$exportfile -> setPrintFooter(false);
+		# $exportfile -> SetKeywords("");
+		$exportfile -> SetAutoPageBreak(false, 0);
 		// Edit
 		$pages = $exportfile -> setSourceFile($dirPWroot."e/enroll/resource/file/$path");
 		for ($pageno = 1; $pageno <= $pages; $pageno++) {
@@ -108,11 +111,11 @@
 			}
 		} // Send out file
 		if (!isset($dlname)) $dlname = substr($name, 0, strlen($name)-strlen($type)-1-$versioning).".$type";
-        $exportfile -> Output($dlname, ($dl && ($_GET["output"]??"file")<>"web" ? "D": "I"));
-        /* --- PDF generation --- (END) */
-    } else {
-        $header_title = (isset($error) ? "Error: $error" : "ใบมอบตัวนักเรียน");
-        if (!$dl && $type <> "pdf") $size = getimagesize("./$path");
+		$exportfile -> Output($dlname, ($dl && ($_GET["output"]??"file")<>"web" ? "D": "I"));
+		/* --- PDF generation --- (END) */
+	} else {
+		$header_title = (isset($error) ? "Error: $error" : "ใบมอบตัวนักเรียน");
+		if (!$dl && $type <> "pdf") $size = getimagesize("./$path");
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -334,8 +337,8 @@
 				else if ($type == "pdf") {
 			?>
 				<div class="container">
-                    <div class="message yellow"><?=$_COOKIE["set_lang"]=="th"?'หากไม่มีภาพปรากฏขึ้นใน 5 วินาที กรุณากดปิดหน้านี้และเปิดใหม่':'If the nothing shows up within 5 seconds. Please re-open this viewer.'?></div>
-                </div>
+					<div class="message yellow"><?=$_COOKIE["set_lang"]=="th"?'หากไม่มีภาพปรากฏขึ้นใน 5 วินาที กรุณากดปิดหน้านี้และเปิดใหม่':'If the nothing shows up within 5 seconds. Please re-open this viewer.'?></div>
+				</div>
 				<iframe src="https://docs.google.com/gview?embedded=true&url=https%3A%2F%2Finf.bodin.ac.th%2Fe%2Fenroll%2Fresource%2Ffile%2F<?=urlencode($path)?>">Loading...</iframe>
 			<?php } else { ?>
 			<div class="container">

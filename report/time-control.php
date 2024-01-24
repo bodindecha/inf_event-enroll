@@ -8,10 +8,7 @@
 	$permitted = has_perm("admission"); if ($permitted) {
 		require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
 		require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
-		function escapeSQL($input) {
-			global $db;
-			return $db -> real_escape_string($input);
-		} $authuser = $_SESSION["auth"]["user"];
+		$authuser = $_SESSION["auth"]["user"];
 		$tsRegex = '20\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1]) ([0-1]\d|2[0-3])(:([0-5]\d)){2}';
 		// Update
 		if (isset($_POST["save"])) {

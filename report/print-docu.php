@@ -1,25 +1,32 @@
 <?php
 	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
+	$APP_RootDir = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/"));
 	$normalized_control = false;
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	
 	require_once($dirPWroot."resource/php/core/config.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
 	require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
 	if (isset($_REQUEST["ment"]) && !empty($_REQUEST["ment"]) && isset($_REQUEST["ID"]) && !empty($_REQUEST["ID"])) {
-		$group = intval($vToken -> read(str_rot13(strrev(trim($_REQUEST["ment"]))))); $authuser = $vToken -> read(trim($_REQUEST["ID"]));
+		require($APP_RootDir."private/script/lib/TianTcl/various.php");
+		$authuser = $vToken -> read(trim($_REQUEST["ID"]));
+		# $group = $vToken -> read(str_rot13(strrev(trim($_REQUEST["ment"]))));
+		$group = $TCL -> decrypt($_REQUEST["ment"], nest: 2);
 	}
 
 	if (isset($group)) {
-		switch ($group - 1) {
-			case 5: case 6: case 7: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนทั่วไป ม.1.$type"; $pages = 1; break;
-			case 0: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนคณิต ม.1.$type"; $pages = 1; break;
-			case 1: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนวิทย์ ม.1.$type"; $pages = 1; break;
-			case 3: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนพิเศษ ม.4.$type"; $pages = 1; break;
-			case 8: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนทั่วไป ม.4.$type"; $pages = 1; break;
-			case 4: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียนพสวท ม.4.$type"; $pages = 1; break;
-			case 2: $type = "pdf"; $path = "2566/ใบมอบตัว ห้องเรียน EP ม.1.$type"; $pages = 1; break;
+		switch ($group) {
+			case "sef-1n":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนทั่วไป ม.1"; $pages = 1; break;
+			case "sef-1m":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนคณิต ม.1"; $pages = 1; break;
+			# case "sef-1s":	$type = "pdf"; $dl = true;	$path = "2566/ใบมอบตัว ห้องเรียนวิทย์ ม.1"; $pages = 1; break;
+			case "sef-1p":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนวิทย์ สอวน. ม.1"; $pages = 1; break;
+			case "sef-1i":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนวิทย์ สสวท. ม.1"; $pages = 1; break;
+			case "sef-4n":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนทั่วไป ม.4"; $pages = 1; break;
+			case "sef-4s":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนพิเศษ ม.4"; $pages = 1; break;
+			case "sef-4d":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนพสวท ม.4"; $pages = 1; break;
+			case "sef-1e":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียน EP ม.1"; $pages = 1; break;
 			default: $error = "900"; $errorMsg = '2, "ประเภทเอกสารไม่ถูกต้อง"'; break;
-		} if (!isset($error) && !file_exists($dirPWroot."e/enroll/resource/file/$path")) { $error = "404"; $errorMsg = '3, "ไม่มีไฟล์ต้นฉบับ"'; }
+		} $path = "$path.$type";
+		if (!isset($error) && !file_exists($dirPWroot."e/enroll/resource/file/$path")) { $error = "404"; $errorMsg = '3, "ไม่มีไฟล์ต้นฉบับ"'; }
 		$name = explode("/", $path); $name = end($name);
 		preg_match("/(\ v(\d|\-)+)\./", $name, $versioning); $versioning = count($versioning) ? strlen($versioning[1]) : 0;
 	} else { $error = "902"; $errorMsg = '1, "ไม่พบข้อมูลเอกสาร"'; }
@@ -52,7 +59,7 @@
 				$exportfile -> useTemplate($temppage);
 				if ($pageno == 1) { // Write PDF for confirm
 					$exportfile -> SetTextColor(0, 0, 0);
-					$is_oldstd = ($group == 9 && substr($authuser, 0, 1) == "4") || $authuser == "99999";
+					$is_oldstd = strlen($authuser) == 5;
 					// Fetch biological information
 					if ($is_oldstd) {
 						$pathToDB = "resource/php/core";
@@ -99,7 +106,7 @@
 						$exportfile -> SetXY(113, 146.85);
 						$exportfile -> Cell(56, 0, "โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)", 0, 1, "C", 0, "", 0);
 					} // Add Grade
-					$stdbio["oldgrade"] = $group > 5 ? "ม.3" : "ป.6";
+					$stdbio["oldgrade"] = intval($group[4]) == 4 ? "ม.3" : "ป.6";
 					$exportfile -> SetXY(190, 146.85);
 					$exportfile -> Cell(10, 0, $stdbio["oldgrade"], 0, 1, "C", 0, "", 0);
 				}

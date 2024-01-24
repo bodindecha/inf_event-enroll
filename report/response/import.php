@@ -35,7 +35,8 @@
 				$read = explode(",", trim($content)); $read = array_map("escapeSQL", $read);
 				if ($type == "prs") $query = "$read[0],$read[1]";
 				else if ($type == "cng" || $type == "cnf") $query = "$read[0],'$read[1]',$read[2]";
-				else if ($type == "new") $query = "$read[0],'$read[1]','$read[2]','$read[3]','$read[4]',$read[5],$read[6]";
+				# else if ($type == "new") $query = "$read[0],'$read[1]','$read[2]','$read[3]','$read[4]',$read[5],$read[6]";
+				else if ($type == "new") $query = "$read[0],'$read[1]','$read[2]','$read[3]','$read[4]',(SELECT refID FROM admission_sclass WHERE '".substr($read[0], 0, 2)."' LIKE CONCAT(code, '%')),$read[5]";
 				array_push($data, "($query)");
 			} fclose($fileReader);
 			if (!count($data)) {

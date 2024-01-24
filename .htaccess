@@ -6,6 +6,7 @@ RewriteBase /e/enroll/
 
 ### App URLs
 RewriteRule ^$ /e/enroll/2567 [L,QSA]
+RewriteRule ^(\d{4})/statistics$ /e/enroll/statistics/$1 [L,QSA]
 
 ### App's default
 RewriteCond %{HTTP_USER_AGENT} (Safari){0} [NC]

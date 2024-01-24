@@ -6,6 +6,10 @@
 
 	$forceExternalBrowser = true;
 	require_once($dirPWroot."e/enroll/resource/php/config.php");
+
+	$admission = array(
+		"year" => "2567"
+	);
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -51,18 +55,7 @@
 				const cv = {
 					APIurl: "/e/enroll/resource/php/api",
 					group: <?=arrDump($CV_groupAdm)?>,
-					dlURL: "/e/enroll/resource/file/dl?name=sef-",
-					dlFile: function(type) {
-						switch (parseInt(type)) {
-							case 5: case 6: case 7: type = "1n"; break;
-							case 0: type = "1m"; break;
-							case 1: type = "1s"; break;
-							case 3: type = "4s"; break;
-							case 8: type = "4n"; break;
-							case 4: type = "4d"; break;
-							case 2: type = "1e"; break;
-						} return type;
-					}
+					dlURL: "/e/enroll/resource/file/dl?name=sef-"
 				};
 				var sv = {};
 				var authen = function() {
@@ -71,7 +64,7 @@
 							type: "new", act: "authen", param: {
 								user: document.querySelector('main .form [name="sid"]').value.trim(),
 								pswd: document.querySelector('main .form [name="cid"]').value.trim()
-						} }; if (!/^[1-9]\d{5}$/.test(data.param.user)) {
+						} }; if (!/^[1-9]\d{6}$/.test(data.param.user)) {
 							app.ui.notify(1, [2, "รูปแบบเลขประจำตัวผู้สมัครไม่ถูกต้อง"]);
 							$('main .form [name="sid"]').focus();
 						} else if (!/^\d{13}$/.test(data.param.pswd)) {
@@ -82,7 +75,7 @@
 							$.post(cv.APIurl, data, function(res, hsc) {
 								var dat = JSON.parse(res);
 								if (dat.success) {
-									$('main form output[name="rtype"]').val(cv.group[dat.info.type - 1]);
+									$('main form output[name="rtype"]').val(cv.group[dat.info.type]);
 									$('main form output[name="fullname"]').val(dat.info.name);
 									$('main form output[name="closetime"]').val(dat.info.expire);
 									$('form[name="authenticate"]').hide();
@@ -94,7 +87,7 @@
 										$('form[name="complete"]').toggle("blind");
 										if (dat.info.choice == "Y") {
 											$('form[name="instruction"]').toggle("blind");
-											$('form a[target="dlframe"][download]').attr("href", cv.dlURL+cv.dlFile(dat.info.type - 1)+"&authuser="+dat.info.authuser);
+											$('form a[target="dlframe"][download]').attr("href", cv.dlURL+dat.info.signature+"&authuser="+dat.info.authuser);
 										} else if (dat.info.choice == "N" && dat.info.evfile) {
 											$('form[name="complete"] > center').removeClass("last");
 											$('form[name="complete"]').append('<center class="last"><a href="/e/enroll/resource/upload/view?type=newstd&authuser='+dat.info.evfile+'" onClick="return cnf.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a></center>');
@@ -102,6 +95,7 @@
 									} else if (dat.info.inTime) {
 										sv.ID = dat.info.returnTo;
 										sv.type = dat.info.type;
+										sv.signature = dat.info.signature;
 										$('form[name="choose"]').toggle("blind");
 									} else $('form[name="timeout"]').toggle("blind");
 								} else {
@@ -159,7 +153,7 @@
 								$('form[name="complete"]').toggle("blind");
 								if (dat.info.choice=="Y") {
 									$('form[name="instruction"]').toggle("blind");
-									$('form a[target="dlframe"][download]').attr("href", cv.dlURL+cv.dlFile(sv.type - 1)+"&authuser="+sv.ID);
+									$('form a[target="dlframe"][download]').attr("href", cv.dlURL+sv.type.signature+"&authuser="+sv.ID);
 								} else if (dat.info.choice == "N" && dat.info.evfile) {
 									$('form[name="complete"] > center').removeClass("last");
 									$('form[name="complete"]').append('<center class="last"><a href="/e/enroll/resource/upload/view?type=newstd&authuser='+dat.info.evfile+'" onClick="return cnf.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a></center>');
@@ -222,18 +216,18 @@
 				<h2>ระบบรายงานตัว/ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 				<!--center class="message red">ขณะนี้ระบบอยู่ระหว่างการปรับปรุง กรุณาเข้ามาใหม่หลัง 10.15 น.</center-->
 				<form class="form modern --message-black" name="authenticate">
-					<input type="number" name="sid" maxlength="6" autofocus><label>เลขประจำตัวผู้สมัคร 6 หลัก</label>
+					<input type="number" name="sid" maxlength="7" autofocus><label>เลขประจำตัวผู้สมัคร 7 หลัก</label>
 					<input type="number" name="cid" maxlength="13"><label>เลขประจำตัวประชาชน 13 หลัก</label>
 					<p>ใส่เลขประจำตัวผู้สมัครและเลขประจำตัวประชาชนโดยไม่ต้องมีขีดกลางหรือเว้นวรรค</p>
 					<button class="blue full-x last" onClick="return cnf.check()" name="authen">ตรวจสอบสิทธิ์</button>
 				</form>
 				<form name="bio" style="display: none;">
-					<center class="message cyan">การรายงานตัว/ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภท<u><output name="rtype"></output></u> ปีการศึกษา 2566<br><output name="fullname"></output></center>
+					<center class="message cyan">การรายงานตัว/ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภท<u><output name="rtype"></output></u> ปีการศึกษา <?=$admission["year"]?><br><output name="fullname"></output></center>
 				</form>
 				<form class="form" name="choose" style="display: none;">
 					<center class="message yellow">นักเรียนสามารถเลือกได้เพียง 1 ครั้งเท่านั้น ภายใน<output name="closetime"></output></center>
 					<div class="message blue last">
-						<center>กรุณาศึกษารายละเอียดการเข้าศึกษาต่ออย่างถี่ถ้วน แล้วกรอกข้อมูลด้านล่าง และกดปุ่มเพื่อยืนยันหรือสละสิทธิ์ เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภท<u><output name="rtype"></output></u> ปีการศึกษา 2566</center>
+						<center>กรุณาศึกษารายละเอียดการเข้าศึกษาต่ออย่างถี่ถ้วน แล้วกรอกข้อมูลด้านล่าง และกดปุ่มเพื่อยืนยันหรือสละสิทธิ์ เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภท<u><output name="rtype"></output></u> ปีการศึกษา <?=$admission["year"]?></center>
 						<fieldset>
 							<legend>กรณียืนยันสิทธิ์ กรุณากรอกข้อมูล</legend>
 							<div class="group">
@@ -257,15 +251,7 @@
 				<form class="form message green" name="complete" style="display: none;">
 					<center class="last">นักเรียนได้<b><output name="choice"></output>สิทธิ์</b>เรียบร้อยแล้วเมื่อ<output name="dsctime"></output> ผ่านที่อยู่ IP <output name="IPaddr"></output></center>
 				</form>
-				<form class="form message gray" name="instruction" style="display: none;">
-					<center><b>คำชี้แจง</b></center>
-					<ol class="last">
-						<li>หากนักเรียนต้องการสละสิทธิ์ในภายหลัง ขอความร่วมมือติดต่องานทะเบียน โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</li>
-						<li>พิมพ์ใบมอบตัวนักเรียนลงบนกระดาษ A4 สีขาว แล้วกรอกข้อมูลให้ครบถ้วน พร้อมแบบหลักฐานตามคำชี้แจงการมอบตัว และนำมายื่นในวันมอบตัว</li>
-						<li>ติดตามกำหนดการเปิดภาคเรียนที่ 1 ปีการศึกษา 2566 อย่างต่อเนื่องที่<a href="/go?url=https%3A%2F%2Fbodin.ac.th" target="_blank">เว็บไซต์โรงเรียน</a></li>
-					</ol>
-					<center><a href="javascript:" target="dlframe" download="ใบมอบตัว.pdf">[<i class="material-icons">download</i> ใบมอบตัว ]</a></center>
-				</form>
+				<?php include($dirPWroot."e/enroll/resource/upload/direction/new.html"); ?>
 				<iframe name="dlframe" hidden></iframe>
 			</div>
 		</main>

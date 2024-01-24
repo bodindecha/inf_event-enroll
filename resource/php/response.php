@@ -171,7 +171,7 @@
 					$send .= '{ ';
 					if ($list <> "new") $eu["namefth"] = prefixcode2text($eu["namep"])["th"].$eu["namefth"];
 					foreach ($col as $ec) {
-						if ($list == "new" && $ec == "Z") $send .= '"'.$ec.'": { "val": "'.$CV_groupAdmShort[intval($eu[$colcode[$ec][0]])-1].'" },';
+						if ($list == "new" && $ec == "Z") $send .= '"'.$ec.'": { "val": "'.$CV_groupAdmShort[$eu[$colcode[$ec][0]]].'" },';
 						else if ($ec == "X") {
 							if (!empty($eu[$colcode[$ec][0]])) $send .= '"'.$ec.'": { "val": "ดูไฟล์หลักฐาน", "link": "/e/enroll/report/response/file?of='.$eu[$colcode["A"][0]].'&type='.$dirname.'" },';
 							else $send .= '"'.$ec.'": { "val": "" },';

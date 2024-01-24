@@ -5,7 +5,7 @@
 	$header_desc = "นักเรียนเดิม";
 
 	require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
-	$authuser = $_SESSION["auth"]["user"] ?? "";
+	$authuser = $_SESSION["auth"]["user"] ?? "0";
 
 	// Check right
 	$getstatus = $db -> query("SELECT a.choose,a.lastupdate AS time,a.ip,b.start,b.stop,c.name,e.name AS new FROM admission_confirm a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sgroup c ON a.type=c.code LEFT JOIN admission_change d ON a.stdid=d.stdid LEFT JOIN admission_sgroup e ON d.choose=e.code WHERE a.stdid=$authuser");
@@ -138,7 +138,7 @@
 				<h2>ระบบยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 				<?php if (!$permitted) echo '<center class="message red">นักเรียนไม่มีสิทธิ์ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ</center>'; else { ?>
 					<center class="message cyan">การยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2566<br><?=$_SESSION["auth"]["name"]["th"]["a"]?> กลุ่มการเรียน<u><?=$readstatus["name"]?></u>
-						<?php if (!empty($readstatus["new"])) echo '<center class="message blue" style="margin: 10px 0px 0px">คำร้องการขอเปลี่ยนเป็นกลุ่มการเรียน<u>'.$readstatus["new"].'</u>จะได้รับการพิจารณา'.($readstatus["choose"] == "Y" ? "ภายหลัง" : "หลังนักเรียนกดยืนยันสิทธิ์").'</center>'; ?>
+						<?php if (!empty($readstatus["new"])) echo '<center class="message blue" style="margin: 10px 0 0;">คำร้องการขอเปลี่ยนเป็นกลุ่มการเรียน<u>'.$readstatus["new"].'</u>จะได้รับการพิจารณา'.($readstatus["choose"] == "Y" ? "ภายหลัง" : "หลังนักเรียนกดยืนยันสิทธิ์").'</center>'; ?>
 					</center>
 					<?php if (empty($readstatus["choose"])) { ?>
 						<?php if ($inTime) { ?>
@@ -166,10 +166,9 @@
 							<span style="margin-bottom: 0;">นักเรียนได้<b><?=$readstatus["choose"]=="Y"?"ยืนยัน":"สละ"?>สิทธิ์</b>เรียบร้อยแล้วเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus["time"]))?> ผ่านที่อยู่ IP <?=$readstatus["ip"]?></span>
 							<?php if ($readstatus["choose"] == "N") { ?>
 								<a href="/e/enroll/resource/upload/view?type=confirm" onClick="return cnf.intercept(this, event)" style="margin-bottom: 0;">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a>
-							<?php } ?>
-							<?php if (true || $inTime) { ?><a role="button" class="yellow" href="switch">เปลี่ยนแปลงคำตอบ</a><?php } ?>
+							<?php } else if ($inTime) { ?><a role="button" class="yellow" href="switch">เปลี่ยนแปลงคำตอบ</a><?php } ?>
 						</center>
-						<?php if ($readstatus["choose"] == "Y") include($dirPWroot."e/enroll/resource/upload/archive/".$_SESSION["stif"]["t_year"]."/direction/confirm.html");
+						<?php if ($readstatus["choose"] == "Y") include($dirPWroot."e/enroll/resource/upload/direction/confirm.html");
 				} } ?>
 				<iframe name="dlframe" hidden></iframe>
 			</div>
