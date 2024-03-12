@@ -15,7 +15,7 @@
 			</div>
 			<?php if (has_perm("admission")) { ?>
 				<div class="head-item text icon">
-					<a href="/e/enroll/report/<?= !empty($home_menu ?? "") ? "#menu=$home_menu" : "" ?>"><i class="material-icons">dashboard</i><span>เมนูหลัก</span></a>
+					<a href="/e/enroll/report/<?=""/*!empty($home_menu ?? "")?"#menu=$home_menu":""*/?>"><i class="material-icons">dashboard</i><span>เมนูหลัก</span></a>
 				</div>
 				<div class="head-item super text icon">
 					<div class="menu">

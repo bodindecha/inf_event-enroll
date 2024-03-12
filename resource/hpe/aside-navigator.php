@@ -49,17 +49,15 @@
 							<li><a href="/e/enroll/M4/confirm"><span>ยืนยันสิทธิ์</span></a></li>
 						</ul>
 					</details></li>
-					<li class="seperator">&nbsp;</li>
-					<li><a href="/s/"><span>เว็บทะเบียนเสริม</span></a></li>
-					<li><a href="/go?url=http%3A%2F%2Freg.bodin.ac.th"><span>เว็บทะเบียนหลัก</span></a></li>
-					<li class="seperator">&nbsp;</li>
+					<!-- <li class="seperator">&nbsp;</li> -->
 					<li><a onClick="sys.auth.out()" href="javascript:"><span>ออกจากระบบ</span></a></li>
-				<?php } else { ?>
+				<?php } else if (!isset($_SESSION["auth"]["user"])) { ?>
 					<li><a onClick="sys.auth.orize('e%2Fenroll%2FM4%2F')" href="javascript:"><span>นักเรียนเดิม</span></a></li>
 					<li><a href="/e/enroll/new"><span>นักเรียนใหม่</span></a></li>
 				<?php } ?>
 			</ul>
 		</div>
+		<?php if (!isset($_SESSION["auth"]["user"]) || has_perm("admission")) { ?>
 		<div class="group">
 			<label>เจ้าหน้าที่</label>
 			<ul><?php if (has_perm("admission")) { ?>
@@ -100,6 +98,10 @@
 						<li><a href="/e/enroll/report/import-data"><span>นำเข้าข้อมูล</span></a></li>
 						<li><a href="/e/enroll/report/export-result"><span>นำออกข้อมูล</span></a></li>
 						<li><a href="/e/enroll/report/download-doc"><span>รวมหลักฐาน</span></a></li>
+						<?php if ($_SESSION["auth"]["level"]>=75) { ?>
+						<li class="seperator">&nbsp;</li>
+						<li><a href="/e/enroll/report/file-manager"><span>จัดการเอกสารแม่แบบ</span></a></li>
+						<?php } ?>
 					</ul>
 				</details></li>
 				<li><a onClick="sys.auth.out()" href="javascript:"><span>ออกจากระบบ</span></a></li>
@@ -108,6 +110,7 @@
 			<?php } ?>
 			</ul>
 		</div>
+		<?php } ?>
 		<div class="group">
 			<label>กลับสู่</label>
 			<ul>

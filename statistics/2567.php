@@ -45,7 +45,16 @@
 					posts: [
 						{
 							img: "regis-DPSTE.jpg",
-							link: "https%3A%2F%2Ffacebook.com%2Fbodin.ac.th%2Fposts%2Fpfbid02bW1wmEMERHUPSYdWu7sq6MJsr1AiHSzXbkvEXWpgX5hSduPMZ2ft3veU6f3D8Pfkl"
+							// link: "https://facebook.com/bodin.ac.th/posts/769791958516499"
+							link: "https://bodin.ac.th/home/2024/01/31116"
+						}, {
+							img: "regis-GIFTED.jpg",
+							link: "https://facebook.com/bodin.ac.th/posts/789836046512090"
+							// link: "https://bodin.ac.th/home/2024/0_/_____"
+						}, {
+							img: "regis-SpecialAbility.jpg",
+							link: "https://facebook.com/bodin.ac.th/posts/803992935096401"
+							// link: "https://bodin.ac.th/home/2024/0_/_____"
 						} /* , {
 							img: "",
 							link: ""
@@ -62,7 +71,7 @@
 					var space = $("app[name=main] main .pictures"),
 						added = 0;
 					cv.posts.reverse().forEach(ep => {
-						space.append(`<li class="css-flex center"><a class="holder" href="${AppConfig.baseURL}go?url=${ep.link}" target="_blank">
+						space.append(`<li class="css-flex center"><a class="holder" href="${AppConfig.baseURL}go?url=${encodeURIComponent(ep.link)}" target="_blank">
 							<img src="${AppConfig.baseURL}_resx/upload/img/event/enroll/stats/2567/${ep.img}" ${++added > 3 ? 'loading="lazy"' : ""} />
 						</a></li>`);
 					}); app.UI.refineElements();

@@ -44,7 +44,9 @@
 							errorMessage(3, "Unable to create ZIP file");
 							syslog_e(null, "admission", "mod", "download", "UUEF: $type", false, "", "FileIneligible");
 						} else {
-							$file -> addGlob($fileDir.$type2name[$type]."/*");
+							# $file -> addGlob($fileDir.$type2name[$type]."/*");
+							$ev_files = glob($fileDir.$type2name[$type]."/*");
+							foreach ($ev_files as $ev_file) $file -> addFile($ev_file, basename($ev_file));
 							$file -> close();
 							if ($file -> status == ZipArchive::ER_OK) {
 								$time = time();

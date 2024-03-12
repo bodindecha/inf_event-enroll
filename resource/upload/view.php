@@ -243,8 +243,8 @@
 				else if ($extension == "pdf") {
 			?>
 				<div class="container">
-                    <div class="message yellow"><?=$_COOKIE["set_lang"]=="th"?'หากไม่มีภาพปรากฏขึ้นใน 5 วินาที กรุณากดปิดหน้านี้และเปิดใหม่':'If the nothing shows up within 5 seconds. Please re-open this viewer.'?></div>
-                </div>
+					<div class="message yellow"><?=$_COOKIE["set_lang"]=="th"?'หากไม่มีภาพปรากฏขึ้นใน 5 วินาที กรุณากดปิดหน้านี้และเปิดใหม่':'If the nothing shows up within 5 seconds. Please re-open this viewer.'?></div>
+				</div>
 				<iframe src="https://docs.google.com/gview?embedded=true&url=https%3A%2F%2Finf.bodin.ac.th%2Fe%2Fenroll%2Fresource%2Fupload%2F<?=$dir?>%2F<?=$authuser.'.'.$extension?>">Loading...</iframe>
 			<?php } else { ?>
 			<div class="container">

@@ -5,17 +5,16 @@
 	$header_desc = "นักเรียนเดิม";
 
 	require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
-	$authuser = $_SESSION["auth"]["user"] ?? "";
+	$authuser = $_SESSION["auth"]["user"] ?? "0";
 
 	// Check right
-	$getstatus = $db -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop FROM admission_present a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.stdid=$authuser");
-	$permitted = ($getstatus && $getstatus -> num_rows == 1);
+	if ($_SESSION["auth"]["type"] == "s") $getstatus = $db -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop FROM admission_present a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.stdid=$authuser");
+	$permitted = ($_SESSION["auth"]["type"] == "s" && $getstatus && $getstatus -> num_rows == 1);
 	if ($permitted) {
 		$readstatus = $getstatus -> fetch_array(MYSQLI_ASSOC);
-		if (empty($readstatus["choose"])) {
 		// Check time
 		$inTime = inTimerange($readstatus["start"], $readstatus["stop"]);
-	} } $db -> close();
+	} $db -> close();
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -137,12 +136,12 @@
 			<div class="container">
 				<h2>ระบบรายงานตัวเข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 				<?php if (!$permitted) echo '<center class="message red">นักเรียนไม่มีสิทธิ์รายงานตัวเข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ</center>'; else { ?>
-					<center class="message cyan">การรายงานตัวเข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2566<br><?=$_SESSION["auth"]["name"]["th"]["a"]?></center>
+					<center class="message cyan">การรายงานตัวเข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2567<br><?=$_SESSION["auth"]["name"]["th"]["a"]?></center>
 					<?php if (empty($readstatus["choose"])) { ?>
 						<?php if ($inTime) { ?>
 							<center class="message yellow">นักเรียนสามารถเลือกได้เพียง 1 ครั้งเท่านั้น ภายใน<?=date("วันที่ d/m/Y เวลา H:i น.", strtotime($readstatus["stop"]))?></center>
 							<form class="form message blue" name="rights" method="post" enctype="multipart/form-data" action="/e/enroll/resource/php/api">
-								<center>กดปุ่มเพื่อยืนยัน หรือ สละสิทธิ์ เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2566</center>
+								<center>กดปุ่มเพื่อยืนยัน หรือ สละสิทธิ์ เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2567</center>
 								<fieldset>
 									<legend>กรณียืนยันสิทธิ์ กรุณาอัปโหลดไฟล์</legend>
 									<div class="box"><input type="file" name="usf" accept=".png, .jpg, .jpeg, .gif, .heic, .pdf" required></div>

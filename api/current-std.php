@@ -75,7 +75,7 @@
 		case "answer": {
 			switch ($command) {
 				case "switch": {
-					$get = $APP_DB[5] -> query("SELECT choose,filetype FROM admission_confirm WHERE stdid=$APP_USER");
+					$get = $APP_DB[5] -> query("SELECT a.choose,a.filetype,b.shortname FROM admission_confirm a INNER JOIN admission_sgroup b ON a.type=b.code WHERE a.stdid=$APP_USER");
 					if (!$get) {
 						errorMessage(3, "Unable to load data.");
 						syslog_e(null, "admission", "swt", "updateRights", "", false, "", "InvalidGetQuery");
@@ -104,6 +104,11 @@
 									"token" => $reference,
 									"signature" => date("วันที่ d/m/Y เวลา H:i น.")
 								)); syslog_e(null, "admission", "swt", "updateRights", "$chose → $choose", true);
+								if ($choose == ADMISSION_ANSWER_NO) {
+									require($APP_RootDir."private/script/lib/TianTcl/LINE.php");
+									$LINE -> setToken("3Iy4xiCuirfOo2BxvU5ruqTafbt2FAKYqUXliNlBhjf");
+									$LINE -> notify("มีนักเรียนสละสิทธิ์\r\nประเภท: นักเรียนเดิม\r\nกลุ่ม: ".$read["shortname"]."\r\nเลขประจำตัว: $APP_USER\r\nชื่อ: ".$_SESSION["auth"]["name"]["th"]["a"]);
+								}
 							}
 						}
 					}

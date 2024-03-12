@@ -97,11 +97,11 @@
 								if (!in_array($fileType, array("png", "jpg", "jpeg", "gif", "heic", "pdf"))) {
 									$record = false; errorMessage(2, "ประเภทไฟล์ไม่ถูกต้อง กรุณาติดต่อเจ้าหน้าที่ให้ทำการลบไฟล์ แล้วเริ่มใหม่");
 								} else $dataSQL = ",filetype='$fileType'";
-							   break; 
+								break; 
 							} } if ($record) {
 								$success = $db -> query("UPDATE admission_newstd SET choose='$choose',ip='$ip'$dataSQL WHERE datid=$datid");
 								if ($success) {
-									$getbio = $db -> query("SELECT amsid,choose,filetype,time,ip FROM admission_newstd WHERE datid=$datid");
+									$getbio = $db -> query("SELECT a.amsid,CONCAT(a.namepth, a.namefth, '  ', a.namelth) AS name,a.choose,a.filetype,a.time,a.ip,b.name AS class FROM admission_newstd a INNER JOIN admission_sclass b ON a.type=b.refID WHERE a.datid=$datid");
 									if (!($getbio && $getbio -> num_rows == 1)) {
 										errorMessage(3, "Unable to get data.");
 										slog($datid, "admission", $type, $command, "getUR", "fail", "", "InvalidQuery");
@@ -114,6 +114,11 @@
 											"IPaddr" => $readbio["ip"],
 											"evfile" => (($readbio["choose"] == "N" && !empty($readbio["filetype"])) ? $vToken -> create($readbio["amsid"]) : null)
 										)); slog($datid, "admission", $type, $command, "getUR", "pass");
+										if ($readbio["choose"] == "N") {
+											require($APP_RootDir."private/script/lib/TianTcl/LINE.php");
+											$LINE -> setToken("3Iy4xiCuirfOo2BxvU5ruqTafbt2FAKYqUXliNlBhjf");
+											$LINE -> notify("มีนักเรียนสละสิทธิ์\r\nประเภท: นักเรียนใหม่\r\nห้อง: ".$readbio["class"]."\r\nเลขประจำตัว: ".$readbio["amsid"]."\r\nชื่อ: ".$readbio["name"]);
+										}
 									}
 								} else {
 									errorMessage(3, "Unable to record data.");
@@ -277,7 +282,7 @@
 						break;
 					} case "cnf": {
 						$name = "confirm";
-						$getchk = $db -> query("SELECT a.choose, b.start, b.stop FROM admission_$name $sqlTail");
+						$getchk = $db -> query("SELECT a.choose,b.start,b.stop,c.shortname FROM admission_$name a INNER JOIN admission_sgroup c ON a.type=c.code".substr($sqlTail, 1));
 						if (!$getchk) {
 							errorMessage("3"); // Error get
 							slog($authuser, "admission", $command, $type, $attr, "fail", "", "InvalidQueryG");
@@ -298,6 +303,11 @@
 								if ($success) {
 									successState(null);
 									slog($authuser, "admission", $command, $type, $attr, "pass");
+									if ($attr=="N") {
+										require($APP_RootDir."private/script/lib/TianTcl/LINE.php");
+										$LINE -> setToken("3Iy4xiCuirfOo2BxvU5ruqTafbt2FAKYqUXliNlBhjf");
+										$LINE -> notify("มีนักเรียนสละสิทธิ์\r\nประเภท: นักเรียนเดิม\r\nกลุ่ม: ".$readchk["shortname"]."\r\nเลขประจำตัว: $authuser\r\nชื่อ: ".$_SESSION["auth"]["name"]["th"]["a"]);
+									}
 								} else {
 									errorMessage("A"); // Error record
 									slog($authuser, "admission", $command, $type, $attr, "fail", "", "InvalidQueryR");

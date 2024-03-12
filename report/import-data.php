@@ -1,7 +1,7 @@
 <?php
 	$APP_RootDir = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/"));
 	require($APP_RootDir."private/script/start/PHP.php");
-	$header["title"] = "น้ำเข้าข้อมูล";
+	$header["title"] = "นำเข้าข้อมูล";
 
 	if (!has_perm("admission")) {
 		require($APP_RootDir."private/script/lib/TianTcl/various.php");

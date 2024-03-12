@@ -30,7 +30,7 @@
 					btn: [
 						'<span class="ripple-effect"></span><i class="material-icons">download</i> ดาวน์โหลด',
 						'&nbsp;&emsp;<div class="loading small"></div>&emsp;&nbsp;'
-					], chunk_size: Math.pow(1024, 2) * 5, // 5 MB
+					], chunk_size: Math.pow(1e3, 2) * 3, // 3 MB
 					TypeAvail: ["prs", "cng", "cnf", "new"],
 					barSpeed: .5, barSmoothness: 1.5
 				};

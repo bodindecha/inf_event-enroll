@@ -1,5 +1,5 @@
 <?php
-	$dirPWroot = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/")-1);
+	$dirPWroot = str_repeat("../", substr_count($_SERVER['PHP_SELF'], "/")-1);
 	require($dirPWroot."e/enroll/resource/hpe/init_ps.php");
 	$header_title = "พิมพ์เอกสารใบมอบตัว";
 	$home_menu = "manage";
@@ -23,7 +23,7 @@
 							type: "mod", act: "check", param: {
 								user: document.querySelector('main .form [name="sid"]').value.trim(),
 								group: document.querySelector('main .form [name="system"] option:checked').value.trim()
-						} }; if (!/^[1-9]\d{4,5}$/.test(data.param.user)) {
+						} }; if (!/^[1-9]\d{5,6}$/.test(data.param.user)) {
 							app.ui.notify(1, [2, "รูปแบบเลขประจำตัวไม่ถูกต้อง"]);
 							$('main .form [name="sid"]').focus();
 						} else if (!/^(old|new)$/.test(data.param.group)) {
@@ -67,7 +67,7 @@
 				};
 			}();
 		</script>
-		<script type="text/javascript" src="https://cdn.TianTcl.net/static/script/lib/print.min.js"></script>
+		<script type="text/javascript" src="/resource/js/lib/print.min.js"></script>
 	</head>
 	<body>
 		<?php require($dirPWroot."e/enroll/resource/hpe/header.php"); ?>

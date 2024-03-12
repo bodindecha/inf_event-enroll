@@ -5,11 +5,11 @@
 	$header_desc = "นักเรียนเดิม";
 
 	require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
-	$authuser = $_SESSION["auth"]["user"] ?? "";
+	$authuser = $_SESSION["auth"]["user"] ?? "0";
 
 	// Check right
-	$getstatus = $db -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop,c.name AS name1,d.name AS name2 FROM admission_change a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sgroup c ON a.type=c.code LEFT JOIN admission_sgroup d ON a.choose=d.code WHERE a.stdid=$authuser");
-	$permitted = ($getstatus && $getstatus -> num_rows == 1);
+	if ($_SESSION["auth"]["type"] == "s") $getstatus = $db -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop,c.name AS name1,d.name AS name2 FROM admission_change a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sgroup c ON a.type=c.code LEFT JOIN admission_sgroup d ON a.choose=d.code WHERE a.stdid=$authuser");
+	$permitted = ($_SESSION["auth"]["type"] == "s" && $getstatus && $getstatus -> num_rows == 1);
 	if ($permitted) {
 		$readstatus = $getstatus -> fetch_array(MYSQLI_ASSOC);
 		$inTime = inTimerange($readstatus["start"], $readstatus["stop"]);
@@ -139,7 +139,7 @@
 			<div class="container">
 				<h2>ระบบยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน</h2>
 				<?php if (!$permitted) echo '<center class="message red">นักเรียนไม่มีสิทธิ์ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ประเภทห้องเรียนปกติ</center>'; else { ?>
-					<center class="message cyan">การยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2566<br><?=$_SESSION["auth"]["name"]["th"]["a"]?> กลุ่มการเรียน<u><?=$readstatus["name1"]?></u></center>
+					<center class="message cyan">การยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2567<br><?=$_SESSION["auth"]["name"]["th"]["a"]?> กลุ่มการเรียน<u><?=$readstatus["name1"]?></u></center>
 					<?php if (!empty($readstatus["choose"])) { ?>
 						<center class="message green">นักเรียนได้ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียนเป็น<b><?=$readstatus["name2"]?></b>เรียบร้อยแล้ว ครั้งล่าสุดเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus["time"]))?> ผ่านที่อยู่ IP <?=$readstatus["ip"]?><br><a href="/e/enroll/resource/upload/view?type=change" onClick="return cng.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a></center>
 					<?php } if ($inTime) { ?>

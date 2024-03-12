@@ -22,7 +22,8 @@
 			default: $error = "900"; break;
 		} $path = "$path.$type";
 		if (!isset($error) && !file_exists($path)) $error = "404";
-		$name = end(explode("/", $path));
+		$name = explode("/", $path);
+		$name = end($name);
 		preg_match("/(\ v(\d|\-)+)\./", $name, $versioning); $versioning = count($versioning) ? strlen($versioning[1]) : 0;
 	} else $error = "902";
 
@@ -52,7 +53,7 @@
 			$tempinfo = $exportfile -> getTemplateSize($temppage);
 			$exportfile -> addPage($tempinfo["height"] > $tempinfo["width"] ? "P" : "L");
 			$exportfile -> useTemplate($temppage);
-			if (preg_match("/^sef\-(1[nmse]|4[dns])$/", $file) && $pageno == 1) { // Write PDF for confirm
+			if (preg_match("/^sef\-(1[nmspie]|4[nsd])$/", $file) && $pageno == 1) { // Write PDF for confirm
 				$exportfile -> SetTextColor(0, 0, 0);
 				// Get student data
 				$authuser = $_SESSION["auth"]["user"] ?? ""; if (!strlen($authuser) && isset($_REQUEST["authuser"])) $authuser = $vToken -> read(trim($_REQUEST["authuser"]));

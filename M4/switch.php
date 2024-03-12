@@ -159,7 +159,6 @@
 								data: pseudoForm,
 								processData: false, contentType: false,
 								success: function(dat) {
-									console.log(dat);
 									if (dat.success) processRequest(details);
 									else {
 										$("app[name=main] > main .form").removeAttr("disabled");

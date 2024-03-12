@@ -153,7 +153,7 @@
 								$('form[name="complete"]').toggle("blind");
 								if (dat.info.choice=="Y") {
 									$('form[name="instruction"]').toggle("blind");
-									$('form a[target="dlframe"][download]').attr("href", cv.dlURL+sv.type.signature+"&authuser="+sv.ID);
+									$('form a[target="dlframe"][download]').attr("href", cv.dlURL+sv.signature+"&authuser="+sv.ID);
 								} else if (dat.info.choice == "N" && dat.info.evfile) {
 									$('form[name="complete"] > center').removeClass("last");
 									$('form[name="complete"]').append('<center class="last"><a href="/e/enroll/resource/upload/view?type=newstd&authuser='+dat.info.evfile+'" onClick="return cnf.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a></center>');
