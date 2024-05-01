@@ -8,8 +8,8 @@
 	$authuser = $_SESSION["auth"]["user"] ?? "0";
 
 	// Check right
-	if ($_SESSION["auth"]["type"] == "s") $getstatus = $db -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop,c.name AS name1,d.name AS name2 FROM admission_change a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sgroup c ON a.type=c.code LEFT JOIN admission_sgroup d ON a.choose=d.code WHERE a.stdid=$authuser");
-	$permitted = ($_SESSION["auth"]["type"] == "s" && $getstatus && $getstatus -> num_rows == 1);
+	if (!empty($authuser) && $_SESSION["auth"]["type"] == "s") $getstatus = $db -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop,c.name AS name1,d.name AS name2 FROM admission_change a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sgroup c ON a.type=c.code LEFT JOIN admission_sgroup d ON a.choose=d.code WHERE a.stdid=$authuser");
+	$permitted = (!empty($authuser) && $_SESSION["auth"]["type"] == "s" && $getstatus && $getstatus -> num_rows == 1);
 	if ($permitted) {
 		$readstatus = $getstatus -> fetch_array(MYSQLI_ASSOC);
 		$inTime = inTimerange($readstatus["start"], $readstatus["stop"]);

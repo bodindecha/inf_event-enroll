@@ -31,7 +31,7 @@
 	switch ($type) {
 		case "new": { switch ($command) {
 			case "authen": {
-				if (!preg_match("/^[1-9]\d{6}$/", $attr["user"]) || !preg_match("/^\d{13}$/", $attr["pswd"]))
+				if (!preg_match("/^[1-9]\d{6,7}$/", $attr["user"]) || !preg_match("/^\d{13}$/", $attr["pswd"]))
 					errorMessage(2, "รูปแบบเลขประจำตัวผู้สมัครหรือเลขประจำตัวประชาชนไม่ถูกต้อง");
 				else {
 					$amsid = escapeSQL($attr["user"]); $natid = escapeSQL($attr["pswd"]);
@@ -334,7 +334,7 @@
 				switch ($command) {
 					case "find": {
 						$user = escapeSQL($attr["user"]); $group = $attr["group"];
-						if (!preg_match("/^[1-9]\d{4,6}$/", $user))
+						if (!preg_match("/^[1-9]\d{4,7}$/", $user))
 							errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
 						else {
 							switch ($group) {
@@ -423,7 +423,7 @@
 						} } break;
 					} case "check": {
 						$user = escapeSQL($attr["user"]); $group = $attr["group"];
-						if (!preg_match("/^[1-9]\d{4,6}$/", $user))
+						if (!preg_match("/^[1-9]\d{4,7}$/", $user))
 							errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
 						else {
 							switch ($group) {

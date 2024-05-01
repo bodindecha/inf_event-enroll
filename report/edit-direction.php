@@ -172,7 +172,7 @@
 					});
 				},
 				showHelp = function() {
-					app.UI.lightbox("top", {title: getElementText(8)}, $("app[name=main] .guideTemplate").html());
+					app.UI.lightbox("top", {title: getElementText(11)}, $("app[name=main] .guideTemplate").html());
 				},
 				insertLink = function(formFilled = false) {
 					(function() {

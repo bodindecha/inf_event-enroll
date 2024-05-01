@@ -55,6 +55,10 @@
 							img: "regis-SpecialAbility.jpg",
 							link: "https://facebook.com/bodin.ac.th/posts/803992935096401"
 							// link: "https://bodin.ac.th/home/2024/0_/_____"
+						}, {
+							img: "regis-Regular.jpg",
+							// link: "https://facebook.com/bodin.ac.th/posts/806207111541650"
+							link: "https://bodin.ac.th/home/2024/03/31810"
 						} /* , {
 							img: "",
 							link: ""
@@ -72,7 +76,7 @@
 						added = 0;
 					cv.posts.reverse().forEach(ep => {
 						space.append(`<li class="css-flex center"><a class="holder" href="${AppConfig.baseURL}go?url=${encodeURIComponent(ep.link)}" target="_blank">
-							<img src="${AppConfig.baseURL}_resx/upload/img/event/enroll/stats/2567/${ep.img}" ${++added > 3 ? 'loading="lazy"' : ""} />
+							<img src="${AppConfig.baseURL}_resx/upload/img/event/enroll/stats/2567/${ep.img}" ${++added > 2 ? 'loading="lazy"' : ""} />
 						</a></li>`);
 					}); app.UI.refineElements();
 				};

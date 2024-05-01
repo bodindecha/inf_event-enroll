@@ -23,7 +23,7 @@
 							"ID" => $read["stdid"],
 							"fullname" => array(
 								"TH" => prefixcode2text($read["namep"])["th"].$read["nameath"],
-								"EN" => prefixcode2text($read["namep"])["en"].$read["nameaen"]
+								"EN" => prefixcode2text($read["namep"])["en"]." ".$read["nameaen"]
 							)
 						)); successState($list);
 					}

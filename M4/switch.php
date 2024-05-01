@@ -182,7 +182,7 @@
 							if (!recheck) {
 								fprop["name"].value = f.name;
 								fprop["size"].value = byte2text(f.size);
-								try { if (!isSafari) {
+								try { if (!app._var.isSafari()) {
 									sv.img_link = URL.createObjectURL(f);
 									preview.css("background-image", 'url("'+sv.img_link+'")');
 								} } catch(ex) {}
@@ -305,16 +305,16 @@
 								<div class="css-flex css-flex-col css-flex-split css-full-x">
 									<div class="container">
 										<div class="group">
-											<label>ชื่อไฟล์</label>
+											<label class="ref-00005">ชื่อไฟล์</label>
 											<input type="text" data-name="name" readonly />
 										</div>
 										<div class="group">
-											<label>ขนาดไฟล์</label>
+											<label class="ref-00006">ขนาดไฟล์</label>
 											<input type="text" data-name="size" readonly />
 										</div>
 									</div>
 									<div class="left">
-										<a role="button" class="hollow icon long pill ripple-click" href="<?=$APP_CONST["baseURL"]?>e/enroll/resource/file/dl?name=waiver" target="dlframe" download="ฟอร์มสละสิทธิ์.pdf"><i class="material-icons">download</i><span class="text">ฟอร์มสละสิทธิ์</span></a>
+										<a role="button" class="hollow icon long pill ripple-click" href="<?=$APP_CONST["baseURL"]?>e/enroll/resource/file/dl?name=waiver" target="dlframe" download="ฟอร์มสละสิทธิ์.pdf"><i class="material-icons">download</i><span class="text ref-00007">ฟอร์มสละสิทธิ์</span></a>
 									</div>
 								</div>
 							</div>
