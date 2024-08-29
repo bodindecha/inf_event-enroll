@@ -171,27 +171,28 @@
 							</div>
 						</div>
 						<div class="submit container" style="display: none;">
-						<div class="css-flex css-flex-gap-10">
-							<div class="file-box land r-widescr">
-								<input type="file" name="usf" accept=".csv" required />
-							</div>
-							<div class="css-flex css-flex-split css-flex-col css-full-x">
-								<div class="container">
-									<div class="group">
-										<label>ชื่อไฟล์</label>
-										<input type="text" data-name="name" readonly />
-									</div>
-									<div class="group">
-										<label>ขนาดไฟล์</label>
-										<input type="text" data-name="size" readonly />
-									</div>
+							<div class="css-flex css-flex-gap-10">
+								<div class="file-box land r-widescr">
+									<input type="file" name="usf" accept=".csv" required />
 								</div>
-								<div class="container">
-									<button class="lime full-x center ripple-click" onClick="return enroll.import()" disabled>อัปโหลด</button>
-									<div class="upload-icon" style="display: none;">
-										<span>กำลังอัปโหลด...</span>
-										<div class="animation">
-											<i class="material-icons">file_upload</i>
+								<div class="css-flex css-flex-split css-flex-col css-full-x">
+									<div class="container">
+										<div class="group">
+											<label>ชื่อไฟล์</label>
+											<input type="text" data-name="name" readonly />
+										</div>
+										<div class="group">
+											<label>ขนาดไฟล์</label>
+											<input type="text" data-name="size" readonly />
+										</div>
+									</div>
+									<div class="container">
+										<button class="lime full-x center ripple-click" onClick="return enroll.import()" disabled>อัปโหลด</button>
+										<div class="upload-icon" style="display: none;">
+											<span>กำลังอัปโหลด...</span>
+											<div class="animation">
+												<i class="material-icons">file_upload</i>
+											</div>
 										</div>
 									</div>
 								</div>
