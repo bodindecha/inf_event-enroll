@@ -1,7 +1,6 @@
 <?php
+	$APP_RootDir = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/"));
+	require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
 	$default = "คำชี้แจงเอกสารการมอบตัว v2.pdf";
-	header("Content-Type: application/pdf");
-	header("Content-Length: ".filesize($default));
-	fpassthru(fopen($default, "rb")); # readfile($default);
-	exit(0);
+	$TCL -> sendFile("../".getcwd().$default);
 ?>

@@ -5,7 +5,7 @@ RewriteEngine On
 RewriteBase /e/enroll/
 
 ### App URLs
-RewriteRule ^$ /e/enroll/2567 [L,QSA]
+RewriteRule ^$ /e/enroll/2568 [L,QSA]
 RewriteRule ^(\d{4})/statistics$ /e/enroll/statistics/$1 [L,QSA]
 
 ### App's default

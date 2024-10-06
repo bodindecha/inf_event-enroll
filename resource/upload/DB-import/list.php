@@ -60,6 +60,7 @@
 								<tr>
 									<th>No.</th>
 									<th>File name</th>
+									<th>File size</th>
 									<th>Actual time</th>
 								</tr>
 								<tbody><?php
@@ -67,9 +68,10 @@
 									$f_inc = 1;
 									foreach ($uploads as $file) { ?>
 										<tr>
-											<td center><?=$f_inc++?></td>
-											<td><?=$file?></td>
-											<td><?=date("Y-m-d H:i:s", (int)preg_replace("/\D/", "", $file))?></td>
+											<td class="center"><?=$f_inc++?></td>
+											<td><a href="<?=$file?>" class="semi-blend" target="_blank"><?=$file?></a></td>
+											<td class="right"><?=number_format(filesize($file));?></td>
+											<td class="center"><?=date("Y-m-d H:i:s", (int)preg_replace("/\D/", "", $file))?></td>
 										</tr>
 									<?php }
 								?></tbody>

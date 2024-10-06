@@ -18,42 +18,9 @@
 	<head>
 		<?php require($APP_RootDir."private/block/core/heading.php"); require($APP_RootDir."private/script/start/CSS-JS.php"); ?>
 		<style type="text/css">
-			app[name=main] main .wrapper {
-				margin: 25px 0 !important;
-				display: flex; justify-content: space-evenly; flex-wrap: wrap; gap: 12.5px;
-			}
-			app[name=main] main .wrapper .card {
-				margin: 0px 10px 10px;
-				width: 275px; min-height: 300px;
-				box-shadow: 1px 2px 10px -2.5px;
-				border-radius: 1.25rem;
-				display: flex; justify-content: space-between; flex-direction: column;
-				transition: var(--time-tst-medium);
-			}
-			app[name=main] main .wrapper .card:hover, app[name=main] main .wrapper .card:focus-within {
-				transform: translateY(-1.25px);
-				transition: var(--time-tst-fast);
-			}
-			app[name=main] main .wrapper .card .info > * { margin: 0px 0px 10px; }
-			app[name=main] main .wrapper .card .action a {
-				width: calc(100% - 22px);
-				justify-content: center;
-			}
-			/* app[name=main] main .wrapper .card:hover .action a, app[name=main] main .wrapper .card:focus-within .action a { font-size: calc(1em + 1.25px); } */
-			app[name=main] main .wrapper .card .action a:not(:last-child) { margin-bottom: 5px; }
-			app[name=main] main .wrapper ~ h3 { font-weight: 500; }
-			app[name=main] main .announcements-list li.label {
-				margin: 2.5px 0px 1.25px;
-				line-height: 1.25;
-				list-style-type: none;
-			}
-			app[name=main] main .announcements-list li:not(.label) { line-height: 1.12; }
-			app[name=main] main .announcements-list p { margin: 0; }
-			@media only screen and (max-width: 768px) {
-				app[name=main] main .wrapper { justify-content: center; }
-				app[name=main] main .wrapper .card { width: 275px; min-height: 150px; }
-			}
+			
 		</style>
+		<link rel="stylesheet" type="text/css" href="<?=$APP_CONST["baseURL"]?>_resx/static/style/ext/enroll-main.css" />
 		<script type="text/javascript">
 			const TRANSLATION = "e+enroll";
 			$(document).ready(function() {
