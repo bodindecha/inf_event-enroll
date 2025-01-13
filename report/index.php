@@ -23,7 +23,7 @@
 		<style type="text/css">
 			
 		</style>
-		<link rel="stylesheet" href="<?=$APP_CONST["baseURL"]?>_resx/static/style/ext/menu.css" />
+		<link rel="stylesheet" href="<?=$APP_CONST["cdnURL"]?>static/style/ext/menu.css" />
 		<script type="text/javascript">
 			const TRANSLATION = ["@component-menu", location.pathname.substring(1).replace(/\/$/, "").replaceAll("/", "+")];
 			$(document).ready(function() {
@@ -37,18 +37,14 @@
 				var initialize = function() {
 					if (sv.inited) return;
 					menu.dashboard("enroll", cv.PERMISSIONS, "<?=$_SESSION["auth"]["user"] ?? ""?>");
-					setTimeout(modifyCustom, 5e2);
 					sv.inited = true;
-				};
-				var modifyCustom = function() {
-
 				};
 				return {
 					init: initialize
 				};
 			}(document));
 		</script>
-		<script type="text/javascript" src="<?=$APP_CONST["baseURL"]?>_resx/static/script/ext/menu.js"></script>
+		<script type="text/javascript" src="<?=$APP_CONST["cdnURL"]?>static/script/ext/menu.js"></script>
 	</head>
 	<body>
 		<app name="main">
