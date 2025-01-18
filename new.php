@@ -59,19 +59,19 @@
 				};
 				var sv = {};
 				var authen = function() {
-					(function() {
+					(function(d) {
 						var data = {
 							type: "new", act: "authen", param: {
-								user: document.querySelector('main .form [name="sid"]').value.trim(),
-								pswd: document.querySelector('main .form [name="cid"]').value.trim()
-						} }; if (!/^[1-9]\d{6,7}$/.test(data.param.user)) {
-							app.ui.notify(1, [2, "รูปแบบเลขประจำตัวผู้สมัครไม่ถูกต้อง"]);
+								user: d.querySelector('main .form [name="sid"]').value.trim(),
+								pswd: d.querySelector('main .form [name="cid"]').value.trim()
+						} }; if (!/^[1-9]\d{4}$/.test(data.param.user)) {
+							app.ui.notify(1, [1, "รูปแบบเลขประจำตัวผู้สมัครไม่ถูกต้อง"]);
 							$('main .form [name="sid"]').focus();
 						} else if (!/^\d{13}$/.test(data.param.pswd)) {
-							app.ui.notify(1, [2, "รูปแบบเลขประจำตัวประชาชนไม่ถูกต้อง"]);
+							app.ui.notify(1, [1, "รูปแบบเลขประจำตัวประชาชนไม่ถูกต้อง"]);
 							$('main .form [name="cid"]').focus();
 						} else {
-							document.querySelector('main .form button[name="authen"]').disabled = true;
+							d.querySelector('main .form button[name="authen"]').disabled = true;
 							$.post(cv.APIurl, data, function(res, hsc) {
 								var dat = JSON.parse(res);
 								if (dat.success) {
@@ -100,14 +100,14 @@
 									} else $('form[name="timeout"]').toggle("blind");
 								} else {
 									dat.reason.forEach(em => app.ui.notify(1, em));
-									document.querySelector('main .form button[name="authen"]').disabled = false;
+									d.querySelector('main .form button[name="authen"]').disabled = false;
 								}
 							});
 						}
-					}()); return false;
+					}(document)); return false;
 				};
 				var choose = function(select) {
-					(function(select) {
+					(function(select, d) {
 						if (typeof sv.ID === "undefined") restartOnError();
 						else {
 							let msg = "คุณต้องการ" + (select ? "ยืนยัน" : "สละสิทธิ์") + "สิทธิ์การเข้าศึกษาต่อใช่หรือไม่ ?";
@@ -117,8 +117,8 @@
 								"file-ext": null
 							} }, collect = true;
 							if (select) {
-								data.param["namefen"] = document.querySelector('main .form [name="firstname"]').value.trim();
-								data.param["namelen"] = document.querySelector('main .form [name="lastname"]').value.trim().toUpperCase();
+								data.param["namefen"] = d.querySelector('main .form [name="firstname"]').value.trim();
+								data.param["namelen"] = d.querySelector('main .form [name="lastname"]').value.trim().toUpperCase();
 								if (!/^[A-Z][a-z\- ]{1,49}$/.test(data.param.namefen) || /^(\-| ){2,}$/.test(data.namefen)) {
 									app.ui.notify(1, [2, "รูปแบบชื่อจริงภาษาอังกฤษไม่ถูกต้อง"]);
 									$('main .form [name="firstname"]').focus(); collect = false;
@@ -128,7 +128,7 @@
 								} if (!collect) app.ui.notify(1, [1, "กรุณาพิมพ์ชื่อในรูป proper-case (Aaa)"]);
 							} if (collect && confirm(msg)) select ? proceed(data) : getFile(data);
 						}
-					}(select)); return false;
+					}(select, document)); return false;
 				};
 				var restartOnError = function() {
 					app.ui.notify(1, [3, "There's an error."]);
@@ -216,7 +216,7 @@
 				<h2>ระบบรายงานตัว/ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 				<!--center class="message red">ขณะนี้ระบบอยู่ระหว่างการปรับปรุง กรุณาเข้ามาใหม่หลัง 10.15 น.</center-->
 				<form class="form modern --message-black" name="authenticate">
-					<input type="number" name="sid" maxlength="8" autofocus><label>เลขประจำตัวผู้สมัคร 7 - 8 หลัก</label>
+					<input type="number" name="sid" maxlength="5" autofocus><label>เลขประจำตัวผู้สมัคร 5 หลัก</label>
 					<input type="number" name="cid" maxlength="13"><label>เลขประจำตัวประชาชน 13 หลัก</label>
 					<p>ใส่เลขประจำตัวผู้สมัครและเลขประจำตัวประชาชนโดยไม่ต้องมีขีดกลางหรือเว้นวรรค</p>
 					<button class="blue full-x last" onClick="return cnf.check()" name="authen">ตรวจสอบสิทธิ์</button>

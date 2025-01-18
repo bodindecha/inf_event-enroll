@@ -3,10 +3,7 @@
 	require($APP_RootDir."private/script/start/PHP.php");
 	$header["title"] = "ระบบยืนยันสิทธิ์การเข้าศึกษาต่อ";
 
-	if (false && !has_perm("dev")) {
-		require($APP_RootDir."private/script/lib/TianTcl/various.php");
-		$TCL -> http_response_code(909);
-	}
+	if (true && !has_perm("dev", false)) $TCL -> http_response_code(909);
 
 	$admission = array(
 		"year" => "25__",
@@ -32,7 +29,7 @@
 				var sv = {inited: false};
 				var initialize = function() {
 					if (sv.inited) return;
-
+					
 					sv.inited = true;
 				};
 				var myFunction = function() {

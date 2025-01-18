@@ -3,10 +3,7 @@
 	require($APP_RootDir."private/script/start/PHP.php");
 	$header["title"] = "ระบบยืนยันสิทธิ์การเข้าศึกษาต่อ";
 
-	if (false && !has_perm("dev")) {
-		require($APP_RootDir."private/script/lib/TianTcl/various.php");
-		$TCL -> http_response_code(909);
-	}
+	if (false && !has_perm("dev")) $TCL -> http_response_code(909);
 
 	$admission = array(
 		"year" => "2568",
@@ -32,7 +29,7 @@
 				var sv = {inited: false};
 				var initialize = function() {
 					if (sv.inited) return;
-
+					
 					sv.inited = true;
 				};
 				var myFunction = function() {
@@ -52,9 +49,9 @@
 			<main class="bg-rainbow-img">
 				<section class="container">
 					<h2>การเข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
-					<p><span class="ref-00001">ติดตามข่าว</span><a disabled target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fcategory%2F___"><span class="ref-00002">การเข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ในปีการศึกษา</span> <?=$admission["year"]?></a> <span class="ref-00003">ได้ที่นี่</span></p>
+					<p><span class="ref-00001">ติดตามข่าว</span><a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fcategory%2Fnewstudent-2568"><span class="ref-00002">การเข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ในปีการศึกษา</span> <?=$admission["year"]?></a> <span class="ref-00003">ได้ที่นี่</span></p>
 					<div class="wrapper">
-						<div class="card message purple disabled">
+						<div class="card message purple">
 							<div class="info">
 								<h3>นักเรียนใหม่</h3>
 								<p><span class="ref-00004">นักเรียนที่สอบเข้ามาใหม่ และมีลำดับที่ใน</span><a href="#/announcement/new-student">การประกาศผล</a><span class="ref-00005">ประจำปีการศึกษา</span> <?=$admission["year"]?></p>
@@ -73,8 +70,8 @@
 							</div>
 						</div>
 					</div>
-					<center class="message orange">ขณะนี้ยังไม่มีประกาศใดๆ กรุณาเข้ามาใหม่ภายหลัง</center>
-					<center>.<br>.<br>.</center>
+					<!-- <center class="message orange">ขณะนี้ยังไม่มีประกาศใดๆ กรุณาเข้ามาใหม่ภายหลัง</center>
+					<center>.<br>.<br>.</center> -->
 					<!-- <h3 class="ref-00008">ประกาศทั่วไป</h3>
 					<ul class="announcements-list">
 						<li><a disabled href="<?=$admission["year"]?>/statistics">สถิติการสมัครเข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</a></li>
@@ -86,7 +83,7 @@
 						<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____"><b>วิทยาศาสตร์พลังสิบ</b>ชั้นมัธยมศึกษา<b>ตอนต้น</b></a></li>
 						<li class="label ref-00012">ข่าวสำหรับนักเรียนชั้นมัธยมศึกษาตอนปลาย</li>
 						<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ <b>4</b> [รอบที่ <b>1</b>]</a></li>
-					</ul>
+					</ul> -->
 					<h3 class="ref-00009">ประกาศผลรายชื่อผู้มีสิทธิ์เข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h3>
 					<ul class="announcements-list">
 						<li class="label ref-00013" id="/announcement/new-student">ประกาศผลนักเรียนที่ผ่านการคัดเลือก (สอบเข้าใหม่)</li>
@@ -95,10 +92,10 @@
 						<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
 						<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
 						<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-						<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภท<b>ห้องเรียนพสวท. (สู่ความเป็นเลิศ)</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-						<li class="label ref-00014" id="/announcement/current-student">ประกาศผลนักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 โรงเรียนเดิม</li>
+						<li data-release="01-14"><a target="_blank" href="<?=$admission["link"]?>1%2F34492">ประเภท<b>ห้องเรียนพสวท. (สู่ความเป็นเลิศ)</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+						<!-- <li class="label ref-00014" id="/announcement/current-student">ประกาศผลนักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 โรงเรียนเดิม</li>
 						<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภทห้องเรียนปกติ (<b>รอบ 1</b>)</a></li>
-						<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภทห้องเรียนปกติ (<b>รอบ 2</b>)</a></li>
+						<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภทห้องเรียนปกติ (<b>รอบ 2</b>)</a></li> -->
 						<!-- <li data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภทห้องเรียนปกติ (<b>รอบ 3</b>)</a></li> -->
 						<!-- <hr>
 						<li class="label"><span class="ref-00015">การเรียกแทนผู้สละสิทธิ์ในปีการศึกษา</span> <?=$admission["year"]?></li>
@@ -113,8 +110,8 @@
 						<li>
 							<p>ประเภท<b>ห้องเรียนพิเศษ</b></p>
 							<a disabled data-release="__-__" target="_blank" href="<?=$admission["link"]?>_%2F_____">[รอบที่ <b>1</b>]</a>
-						</li>
-					</ul> -->
+						</li> -->
+					</ul>
 					<center class="message black"><span class="ref-00016">ศึกษารายระเอียดทั้งหมดที่</span> <a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fadmission">งานรับนักเรียน</a><hr><a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fcostume">เครื่องแบบและระเบียบการแต่งกาย</a><span class="ref-00017">โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</span></center>
 				</section>
 			</main>

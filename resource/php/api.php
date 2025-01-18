@@ -31,8 +31,10 @@
 	switch ($type) {
 		case "new": { switch ($command) {
 			case "authen": {
-				if (!preg_match("/^[1-9]\d{6,7}$/", $attr["user"]) || !preg_match("/^\d{13}$/", $attr["pswd"]))
-					errorMessage(2, "รูปแบบเลขประจำตัวผู้สมัครหรือเลขประจำตัวประชาชนไม่ถูกต้อง");
+				if (!preg_match("/^[1-9]\d{4}$/", $attr["user"]))
+					errorMessage(2, "รูปแบบเลขประจำตัวผู้สมัครไม่ถูกต้อง");
+				if (!preg_match("/^\d{13}$/", $attr["pswd"]))
+					errorMessage(2, "รูปแบบเลขประจำตัวประชาชนไม่ถูกต้อง");
 				else {
 					$amsid = escapeSQL($attr["user"]); $natid = escapeSQL($attr["pswd"]);
 					$get = $db -> query("SELECT a.datid,a.amsid,CONCAT(a.namepth, a.namefth, ' ', a.namelth) AS nameath,a.type,a.choose,a.filetype,a.time,a.ip,b.start,b.stop,c.signature FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sclass c ON c.refID=a.type WHERE a.amsid=$amsid AND a.natid=$natid");
@@ -334,7 +336,7 @@
 				switch ($command) {
 					case "find": {
 						$user = escapeSQL($attr["user"]); $group = $attr["group"];
-						if (!preg_match("/^[1-9]\d{4,7}$/", $user))
+						if (!preg_match("/^[1-9]\d{4}$/", $user))
 							errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
 						else {
 							switch ($group) {
@@ -423,7 +425,7 @@
 						} } break;
 					} case "check": {
 						$user = escapeSQL($attr["user"]); $group = $attr["group"];
-						if (!preg_match("/^[1-9]\d{4,7}$/", $user))
+						if (!preg_match("/^[1-9]\d{4}$/", $user))
 							errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
 						else {
 							switch ($group) {

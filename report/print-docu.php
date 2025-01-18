@@ -15,15 +15,15 @@
 
 	if (isset($group)) {
 		switch ($group) {
-			case "sef-1n":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนทั่วไป ม.1"; $pages = 1; break;
-			case "sef-1m":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนคณิต ม.1"; $pages = 1; break;
+			case "sef-1n":	$type = "pdf"; $dl = true;	$path = "2568/ใบมอบตัว ห้องเรียนทั่วไป ม.1"; $pages = 1; break;
+			case "sef-1m":	$type = "pdf"; $dl = true;	$path = "2568/ใบมอบตัว ห้องเรียนคณิต ม.1"; $pages = 1; break;
 			# case "sef-1s":	$type = "pdf"; $dl = true;	$path = "2566/ใบมอบตัว ห้องเรียนวิทย์ ม.1"; $pages = 1; break;
-			case "sef-1p":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนวิทย์ สอวน. ม.1"; $pages = 1; break;
-			case "sef-1i":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนวิทย์ สสวท. ม.1"; $pages = 1; break;
-			case "sef-4n":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนทั่วไป ม.4"; $pages = 1; break;
-			case "sef-4s":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนพิเศษ ม.4"; $pages = 1; break;
-			case "sef-4d":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียนพสวท ม.4"; $pages = 1; break;
-			case "sef-1e":	$type = "pdf"; $dl = true;	$path = "2567/ใบมอบตัว ห้องเรียน EP ม.1"; $pages = 1; break;
+			case "sef-1p":	$type = "pdf"; $dl = true;	$path = "2568/ใบมอบตัว ห้องเรียนวิทย์ สอวน. ม.1"; $pages = 1; break;
+			case "sef-1i":	$type = "pdf"; $dl = true;	$path = "2568/ใบมอบตัว ห้องเรียนวิทย์ สสวท. ม.1"; $pages = 1; break;
+			case "sef-4n":	$type = "pdf"; $dl = true;	$path = "2568/ใบมอบตัว ห้องเรียนทั่วไป ม.4"; $pages = 1; break;
+			case "sef-4s":	$type = "pdf"; $dl = true;	$path = "2568/ใบมอบตัว ห้องเรียนพิเศษ ม.4"; $pages = 1; break;
+			case "sef-4d":	$type = "pdf"; $dl = true;	$path = "2568/ใบมอบตัว ห้องเรียนพสวท ม.4"; $pages = 1; break;
+			case "sef-1e":	$type = "pdf"; $dl = true;	$path = "2568/ใบมอบตัว ห้องเรียน EP ม.1"; $pages = 1; break;
 			default: $error = "900"; $errorMsg = '2, "ประเภทเอกสารไม่ถูกต้อง"'; break;
 		} $path = "$path.$type";
 		if (!isset($error) && !file_exists($dirPWroot."e/enroll/resource/file/$path")) { $error = "404"; $errorMsg = '3, "ไม่มีไฟล์ต้นฉบับ"'; }

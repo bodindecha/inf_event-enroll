@@ -32,7 +32,7 @@
 				var sv = {inited: false};
 				var initialize = function() {
 					if (sv.inited) return;
-
+					
 					sv.inited = true;
 				};
 				var myFunction = function() {
