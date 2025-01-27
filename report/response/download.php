@@ -1,21 +1,21 @@
 <?php
-	# $normal_params = false;
 	$APP_RootDir = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/"));
 	require_once($APP_RootDir."private/script/start/API.php");
+	API::initialize();
 	$year = $_SESSION["stif"]["t_year"];
 	require_once($APP_RootDir."public_html/e/enroll/api/_log-v1.php");
 	$type2name = array("prs" => "present", "cng" => "change", "cnf" => "confirm", "new" => "newstd");
 	$fileDir = $APP_RootDir."public_html/e/enroll/resource/upload/";
 	// Execute
-	switch ($action) {
+	switch (API::$action) {
 		case "merge": {
-			switch ($command) {
+			switch (API::$command) {
 				case "squash": {
-					$type = escapeSQL($attr);
+					$type = escapeSQL(API::$attr);
 					// Check latest update
 					$get = $APP_DB[5] -> query("SELECT refID,time FROM admission_evidence WHERE type='$type' ORDER BY time DESC LIMIT 1");
 					if (!$get) {
-						errorMessage(3, "Unable to check manifests");
+						API::errorMessage(3, "Unable to check manifests");
 						syslog_e(null, "admission", "mod", "download", "UUEF: $type", false, "", "InvalidQuery");
 					} else if ($get -> num_rows <> 1) {
 						// No previous records: continue to zipping process
@@ -33,7 +33,7 @@
 					// Check if there is any file
 					$amount = count(glob($fileDir.$type2name[$type]."/*"));
 					if (!$amount) {
-						errorMessage(1, "There are currently no file to download");
+						API::errorMessage(1, "There are currently no file to download");
 						syslog_e(null, "admission", "mod", "download", "UUEF: $type", false, "", "Empty");
 					} else { // Zip file
 						// First create record to prevent other overwrite
@@ -41,7 +41,7 @@
 						$refID = $APP_DB[5] -> insert_id;
 						$file = new ZipArchive();
 						if (!$file -> open($fileDir."archive/$year/".$type2name[$type].".zip", ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
-							errorMessage(3, "Unable to create ZIP file");
+							API::errorMessage(3, "Unable to create ZIP file");
 							syslog_e(null, "admission", "mod", "download", "UUEF: $type", false, "", "FileIneligible");
 						} else {
 							# $file -> addGlob($fileDir.$type2name[$type]."/*");
@@ -53,49 +53,49 @@
 								ZIPcomplete:
 								require($APP_RootDir."private/script/lib/TianTcl/various.php");
 								if (gettype($time) != "string") $time = strval($time);
-								successState(array("token" => $TCL -> encrypt("$refID-$type-$time")));
+								API::successState(array("token" => $TCL -> encrypt("$refID-$type-$time")));
 								syslog_e(null, "admission", "mod", "download", "UUEF: $type", true);
 							} else {
-								errorMessage(3, "There's an error zipping files");
+								API::errorMessage(3, "There's an error zipping files");
 								syslog_e(null, "admission", "mod", "download", "UUEF: $type", false, "", "NoResult");
 							}
 						}
 					}
 				break; }
-				default: errorMessage(1, "Invalid command"); break;
+				default: API::errorMessage(1, "Invalid command"); break;
 			}
 		break; }
 		case "get": {
 			switch ($command) {
 				case "info": {
 					require($APP_RootDir."private/script/lib/TianTcl/various.php");
-					$attr = explode("-", escapeSQL($TCL -> decrypt($attr)));
+					API::$attr = explode("-", escapeSQL(TianTcl::decrypt(API::$attr)));
 					// Save download attemp
 					$success = $APP_DB[5] -> query("UPDATE admission_evidence SET downloads=downloads+1 WHERE refID=".$attr[0]);
 					if (!$success) {
-						errorMessage(3, "There was an error fetching file information");
-						syslog_e(null, "admission", "mod", "download", "UUEF: $attr[0]", false, "", "InvalidQuery");
+						API::errorMessage(3, "There was an error fetching file information");
+						syslog_e(null, "admission", "mod", "download", "UUEF: ".API::$attr[0], false, "", "InvalidQuery");
 					} else {
 						$filesrc = $fileDir."archive/$year/".$type2name[$attr[1]].".zip";
-						successState(array(
-							"filename" => "BD-Admission UUEF#".$type2name[$attr[1]]." ".date("Y-m-d\\TH_i_s", $attr[2]).".zip",
+						API::successState(array(
+							"filename" => "BD-Admission UUEF#".$type2name[API::$attr[1]]." ".date("Y-m-d\\TH_i_s", API::$attr[2]).".zip",
 							"filesize" => filesize($filesrc),
-							"mime" => mime_file_type($filesrc)
+							"mime" => TianTcl::mime_file_type($filesrc)
 						));
 					}
 				break; }
 				case "file": {
 					require($APP_RootDir."private/script/lib/TianTcl/various.php");
-					$token = explode("-", $TCL -> decrypt($attr["token"]));
+					$token = explode("-", TianTcl::decrypt(API::$attr["token"]));
 					$filesrc = $fileDir."archive/$year/".$type2name[$token[1]].".zip";
 					if (!file_exists($filesrc)) {
-						errorMessage(3, "Unable to find the requested file. Please start over.");
+						API::errorMessage(3, "Unable to find the requested file. Please start over.");
 						syslog_e(null, "admission", "mod", "download", "UUEF: $token[0]", false, "", "NoResult");
-					} else if (!isset($attr["range"]) || !preg_match("/^\d+-\d+$/", $attr["range"])) {
-						errorMessage(3, "Incorrect file signature.");
+					} else if (!isset(API::$attr["range"]) || !preg_match("/^\d+-\d+$/", API::$attr["range"])) {
+						API::errorMessage(3, "Incorrect file signature.");
 						syslog_e(null, "admission", "mod", "download", "UUEF: $token[0]", false, "", "Incorrect");
 					} else {
-						$range = explode("-", $attr["range"]);
+						$range = explode("-", API::$attr["range"]);
 						$start = intval($range[0]);
 						$end = intval($range[1]);
 						$chunk_size = $end - $start + 1;
@@ -135,11 +135,10 @@
 						exit(0);
 					}
 				break; }
-				default: errorMessage(1, "Invalid command"); break;
+				default: API::errorMessage(1, "Invalid command"); break;
 			}
 		break; }
-		default: errorMessage(1, "Invalid type"); break;
-	} $APP_DB[0] -> close();
-	$APP_DB[5] -> close();
-	sendOutput();
+		default: API::errorMessage(1, "Invalid type"); break;
+	} $APP_DB[5] -> close();
+	API::sendOutput();
 ?>

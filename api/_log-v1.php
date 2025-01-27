@@ -1,6 +1,6 @@
 <?php
 	$APP_DB[5] = connect_to_database(5);
-	if (!function_exists("syslog_e")) { function syslog_e($doer, string $flow, string $action, string $impact, string $detail="", bool $state=true, string $attr="", string $remark="", bool $force=false, bool $close_db_connection=false) {
+	function syslog_e($doer, string $flow, string $action, string $impact, string $detail="", bool $state=true, string $attr="", string $remark="", bool $force=false, bool $close_db_connection=false) {
 		// Check connection
 		global $APP_CONST, $APP_DB, $APP_USER, $USER_IP, $APP_RootDir;
 		if (!isset($USER_IP) || !isset($APP_USER)) require($APP_RootDir."private/script/function/utility.php");
@@ -30,7 +30,7 @@
 		if ($close_db_connection) $APP_DB[5] -> close();
 
 		return $success;
-	} }
+	}
 	$mainDBname = "`tiantcl_inf`";
 
 	define("ADMISSION_ANSWER_YES", "Y");
@@ -38,21 +38,15 @@
 	define("ADMISSION_SECRET_KEY", "B0d1^/-4dm1$5|o/v");
 	define("ADMISSION_SECRET_SALT", 2565.2024);
 	function switch_ref_encrypt($refID) {
-		global $TCL;
-		if (!isset($TCL)) {
-			if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
-			else $TCL = new TianTcl();
-		} return $TCL -> encrypt(
+		if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
+		return TianTcl::encrypt(
 			"swt".str_pad(strval($refID), 4, "0", STR_PAD_LEFT)."ADM",
 			key: ADMISSION_SECRET_KEY,
 			salt: ADMISSION_SECRET_SALT
 		);
 	}
 	function switch_ref_decrypt($reference) {
-		global $TCL;
-		if (!isset($TCL)) {
-			if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
-			else $TCL = new TianTcl();
-		} return rtrim(substr($TCL -> decrypt($reference, key: ADMISSION_SECRET_KEY, salt: ADMISSION_SECRET_SALT), 3), "ADM");
+		if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
+		return rtrim(substr(TianTcl::decrypt($reference, key: ADMISSION_SECRET_KEY, salt: ADMISSION_SECRET_SALT), 3), "ADM");
 	}
 ?>

@@ -11,10 +11,8 @@
 		header("Location: $signinURL");
 		exit(0);
 	} else if (!$isAdministrator || !has_perm("admission")) {
-		# header("Location: /e/enroll/report/");
 		require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
-		$TCL -> http_response_code(901);
-		exit(0);
+		TianTcl::http_response_code(901);
 	}
 
 	# error_reporting(0);
@@ -47,45 +45,38 @@
 	}
 
 	$media_files = array("ico", "jpg", "jpeg", "png", "apng", "webp", "webm", "mp4", "mp3", "pdf");
+	$APP_PAGE -> print -> head();
 ?>
-<!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<?php require($APP_RootDir."private/block/core/heading.php"); require($APP_RootDir."private/script/start/CSS-JS.php"); ?>
-		<style type="text/css">
-			app[name=main] .message > *:not(:last-child) { margin-bottom: 10px; }
-			app[name=main] .form input[type="file"] {
-				height: 38px !important;
-				line-height: 3;
-				display: flex;
-			}
-			app[name=main] .form input[type="file"]::file-selector-button { display: none; }
-			app[name=main] pre code {
-				font-size: .8em !important;
-				white-space: pre-wrap !important;
-				display: block !important;
-			}
-			app[name=main] .file-preview {
-				padding: 0 !important;
-				width: 100% !important; /* aspect-ratio: 4 / 3; */
-				border: 1px solid var(--clr-main-black-absolute); border-radius: 1rem;
-				background-color: var(--clr-gg-grey-300);
-			}
-		</style>
-		<script type="text/javascript">
-			
-		</script>
-	</head>
-	<body>
-	<body>
-		<app name="main">
-			<?php require($APP_RootDir."private/block/core/top-panel/enroll.php"); ?>
-			<main>
-				<section class="container">
-					<h2><?=$header["title"]?></h2>
-					<div class="table list center"><table>
-						<tr>
-							<td align="left">Path :
+<style type="text/css">
+	app[name=main] .message > *:not(:last-child) { margin-bottom: 10px; }
+	app[name=main] .form input[type="file"] {
+		height: 38px !important;
+		line-height: 3;
+		display: flex;
+	}
+	app[name=main] .form input[type="file"]::file-selector-button { display: none; }
+	app[name=main] pre code {
+		font-size: .8em !important;
+		white-space: pre-wrap !important;
+		display: block !important;
+	}
+	app[name=main] .file-preview {
+		padding: 0 !important;
+		width: 100% !important; /* aspect-ratio: 4 / 3; */
+		border: 1px solid var(--clr-main-black-absolute); border-radius: 1rem;
+		background-color: var(--clr-gg-grey-300);
+	}
+</style>
+<script type="text/javascript">
+	
+</script>
+<?php $APP_PAGE -> print -> nav("enroll"); ?>
+<main>
+	<section class="container">
+		<h2><?=$header["title"]?></h2>
+		<div class="table list center"><table>
+			<tr>
+				<td align="left">Path :
 <?php
 	if (isset($_GET["path"])) $path = $_GET["path"];
 	else {
@@ -120,9 +111,13 @@
 		}
 	}
 	else if (isset($_POST["folder"]) && preg_match("/^[A-Z0-9a-zก-๛\-._ \(\)\[\]]{1,128}$/", trim($_POST["folder"]))) {
-		if (!is_dir("$lpath/".$_POST["folder"]) && mkdir("$lpath/".$_POST["folder"]))
+		if (!is_dir("$lpath/".$_POST["folder"]) && mkdir("$lpath/".$_POST["folder"])) {
 			echo '<center class="message green">Folder Create Success</center>';
-		else echo '<center class="message red">Folder Create Failed</center>';
+			syslog_a(null, "devtool", "new", "folder", "$spath/".$_POST["folder"], "pass", "", "", false, true);
+		} else {
+			echo '<center class="message red">Folder Create Failed</center>';
+			syslog_a(null, "devtool", "new", "folder", "$spath/".$_POST["folder"], "fail", "", "", false, true);
+		}
 	}
 	if (!isset($_GET["filesrc"]) && !isset($_GET["option"])) {
 ?>
@@ -209,10 +204,10 @@
 				$fp = fopen($_POST["path"], "w");
 				if (fwrite($fp, $_POST["src"])) {
 					echo '<center class="message green">Success Edit File</center>';
-					syslog_a(null, "devtool", "edit", "file", $_POST["path"], "pass", "", "", false, true);
+					syslog_a(null, "devtool", "edit", "file", str_replace("//", "/", ltrim($_POST["path"], "/")), "pass", "", "", false, true);
 				} else {
 					echo '<center class="message red">Fail Edit File</center>';
-					syslog_a(null, "devtool", "edit", "file", $_POST["path"], "fail", "", "", false, true);
+					syslog_a(null, "devtool", "edit", "file", str_replace("//", "/", ltrim($_POST["path"], "/")), "fail", "", "", false, true);
 				}
 				fclose($fp);
 			}
@@ -325,12 +320,9 @@
 		} echo '</tbody></table></div>';
 	} $APP_DB[0] -> close();
 ?>
-				</section>
-			</main>
-			<?php
-				$resourcePath["navtab"] = "private/block/core/side-panel/enroll.php";
-				require($APP_RootDir."private/block/core/material/main.php");
-			?>
-		</app>
-	</body>
-</html>
+	</section>
+</main>
+<?php
+	$APP_PAGE -> print -> materials();
+	$APP_PAGE -> print -> footer("enroll");
+?>

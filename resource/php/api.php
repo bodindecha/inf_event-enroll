@@ -498,5 +498,6 @@
 			} break;
 		} default: errorMessage(1, "Invalid type"); break;
 	} $db -> close();
+	header("Content-Type: application/json");
 	echo json_encode($return);
 ?>
