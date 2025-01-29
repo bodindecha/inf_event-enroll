@@ -323,6 +323,6 @@
 	</section>
 </main>
 <?php
-	$APP_PAGE -> print -> materials();
-	$APP_PAGE -> print -> footer("enroll");
+	$APP_PAGE -> print -> materials(side_panel: "enroll");
+	$APP_PAGE -> print -> footer();
 ?>
