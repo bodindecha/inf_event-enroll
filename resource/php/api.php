@@ -12,7 +12,7 @@
 	require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
 	require($dirPWroot."resource/php/core/getip.php");
 	require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
-	function escapeSQL($input) {
+	if (!function_exists("escapeSQL")) function escapeSQL($input) {
 		global $db;
 		return $db -> real_escape_string($input);
 	} function successState($output = null) {
