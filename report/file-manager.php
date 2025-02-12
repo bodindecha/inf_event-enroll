@@ -5,6 +5,7 @@
 	$header["desc"] = "Private directory browsing and file management";
 
 	$rootFolder = "public_html/e/enroll/resource/file/";
+	$rpath = rtrim($rootFolder, "/");
 
 	// Safety first
 	if (!isset($_SESSION["auth"])) {
@@ -104,19 +105,19 @@
 	if (isset($_FILES["file"])) {
 		if (move_uploaded_file($_FILES["file"]["tmp_name"], "$lpath/".$_FILES["file"]["name"])) {
 			echo '<center class="message green">Upload Success</center>';
-			syslog_a(null, "devtool", "new", "file", "$path/".$_FILES["file"]["name"], "pass", "", "", false, true);
+			syslog_a(null, "devtool", "new", "file", "$rpath$path/".$_FILES["file"]["name"], "pass", "", "", false, true);
 		} else {
 			echo '<center class="message red">Upload Failed</center>';
-			syslog_a(null, "devtool", "new", "file", "$path/".$_FILES["file"]["name"], "fail", "", "", false, true);
+			syslog_a(null, "devtool", "new", "file", "$rpath$path/".$_FILES["file"]["name"], "fail", "", "", false, true);
 		}
 	}
 	else if (isset($_POST["folder"]) && preg_match("/^[A-Z0-9a-zก-๛\-._ \(\)\[\]]{1,128}$/", trim($_POST["folder"]))) {
 		if (!is_dir("$lpath/".$_POST["folder"]) && mkdir("$lpath/".$_POST["folder"])) {
 			echo '<center class="message green">Folder Create Success</center>';
-			syslog_a(null, "devtool", "new", "folder", "$spath/".$_POST["folder"], "pass", "", "", false, true);
+			syslog_a(null, "devtool", "new", "folder", "$rpath$spath/".$_POST["folder"], "pass", "", "", false, true);
 		} else {
 			echo '<center class="message red">Folder Create Failed</center>';
-			syslog_a(null, "devtool", "new", "folder", "$spath/".$_POST["folder"], "fail", "", "", false, true);
+			syslog_a(null, "devtool", "new", "folder", "$rpath$spath/".$_POST["folder"], "fail", "", "", false, true);
 		}
 	}
 	if (!isset($_GET["filesrc"]) && !isset($_GET["option"])) {
@@ -157,10 +158,10 @@
 			if (isset($_POST["perm"]) && false) {
 				if (chmod($_POST["path"], intval($_POST["perm"]))) {
 					echo '<center class="message green">Change Permission Success</center>';
-					syslog_a(null, "devtool", "overwrite", "file", $_POST["path"]." -> ".$_POST["perm"], "pass", "", "", false, true);
+					syslog_a(null, "devtool", "overwrite", "file", "$rpath$_POST[path] -> $_POST[perm]", "pass", "", "", false, true);
 				} else {
 					echo '<center class="message red">Change Permission Failed</center>';
-					syslog_a(null, "devtool", "overwrite", "file", $_POST["path"]." -> ".$_POST["perm"], "fail", "", "", false, true);
+					syslog_a(null, "devtool", "overwrite", "file", "$rpath$_POST[path] -> $_POST[perm]", "fail", "", "", false, true);
 				}
 			}
 ?>
@@ -179,10 +180,10 @@
 			if (isset($_POST["newname"])) {
 				if (rename($_POST["path"], "$lpath/".$_POST["newname"])) {
 					echo '<center class="message green">Rename File Success</center>';
-					syslog_a(null, "devtool", "trans", "file", "$lpath/".$_POST["name"]." -> ".$_POST["newname"], "pass", "", "", false, true);
+					syslog_a(null, "devtool", "trans", "file", "$rpath$spath/$_POST[name] -> $_POST[newname]", "pass", "", "", false, true);
 				} else {
 					echo '<center class="message red">Rename File Fail</center>';
-					syslog_a(null, "devtool", "trans", "file", "$lpath/".$_POST["name"]." -> ".$_POST["newname"], "fail", "", "", false, true);
+					syslog_a(null, "devtool", "trans", "file", "$rpath$spath/$_POST[name] -> $_POST[newname]", "fail", "", "", false, true);
 				}
 				$_POST["name"] = $_POST["newname"];
 			}
@@ -204,10 +205,10 @@
 				$fp = fopen($_POST["path"], "w");
 				if (fwrite($fp, $_POST["src"])) {
 					echo '<center class="message green">Success Edit File</center>';
-					syslog_a(null, "devtool", "edit", "file", str_replace("//", "/", ltrim($_POST["path"], "/")), "pass", "", "", false, true);
+					syslog_a(null, "devtool", "edit", "file", $rpath.$_POST["path"], "pass", "", "", false, true);
 				} else {
 					echo '<center class="message red">Fail Edit File</center>';
-					syslog_a(null, "devtool", "edit", "file", str_replace("//", "/", ltrim($_POST["path"], "/")), "fail", "", "", false, true);
+					syslog_a(null, "devtool", "edit", "file", $rpath.$_POST["path"], "fail", "", "", false, true);
 				}
 				fclose($fp);
 			}
@@ -227,18 +228,18 @@
 			if ($_POST["type"] == "dir") {
 				if (rmdir($_POST["path"])) {
 					echo '<center class="message green">Directory Deleted</center>';
-					syslog_a(null, "devtool", "del", "file", "D: ".$_POST["path"], "pass", "", "", false, true);
+					syslog_a(null, "devtool", "del", "file", "D: $rpath$_POST[path]", "/", "pass", "", "", false, true);
 				} else {
 					echo '<center class="message red">Directory Delete Fail</center>';
-					syslog_a(null, "devtool", "del", "file", "D: ".$_POST["path"], "fail", "", "", false, true);
+					syslog_a(null, "devtool", "del", "file", "D: $rpath$_POST[path]", "/", "fail", "", "", false, true);
 				}
 			} else if ($_POST["type"] == "file") {
 				if (unlink($_POST["path"])) {
 					echo '<center class="message green">File Deleted</center>';
-					syslog_a(null, "devtool", "del", "file", "F: ".$_POST["path"], "pass", "", "", false, true);
+					syslog_a(null, "devtool", "del", "file", "F: $rpath$_POST[path]", "/", "pass", "", "", false, true);
 				} else {
 					echo '<center class="message red">File Delete Fail</center>';
-					syslog_a(null, "devtool", "del", "file", "F: ".$_POST["path"], "fail", "", "", false, true);
+					syslog_a(null, "devtool", "del", "file", "F: $rpath$_POST[path]", "/", "fail", "", "", false, true);
 				}
 			}
 			echo "</center>";

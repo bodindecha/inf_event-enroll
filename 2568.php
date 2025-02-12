@@ -54,7 +54,7 @@
 					<a href="new" role="button" class="pill ripple-click"><span class="text">ดำเนินการ</span></a>
 				</div>
 			</div>
-			<div class="card message blue disabled">
+			<div class="card message blue">
 				<div class="info">
 					<h3>นักเรียนเดิม</h3>
 					<p><span class="ref-00006">นักเรียนที่จบจากชั้นมัธยมศึกษาปีที่ 3 โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ที่มีลำดับที่ใน</span><a href="#/announcement/current-student">รายชื่อผู้มีสิทธิ์เข้าศึกษาต่อ</a><span class="ref-00007">ชั้นมัธยมศึกษาปีที่ 4 โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</span></p>
@@ -87,21 +87,21 @@
 			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
 			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
 			<li data-release="01-14"><a target="_blank" href="<?=$admission["link"]?>1%2F34492">ประเภท<b>ห้องเรียนพสวท. (สู่ความเป็นเลิศ)</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-			<!-- <li class="label ref-00014" id="/announcement/current-student">ประกาศผลนักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 โรงเรียนเดิม</li>
-			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภทห้องเรียนปกติ (<b>รอบ 1</b>)</a></li>
-			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภทห้องเรียนปกติ (<b>รอบ 2</b>)</a></li> -->
+			<li class="label ref-00014" id="/announcement/current-student">ประกาศผลนักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 โรงเรียนเดิม</li>
+			<li data-release="02-10"><a target="_blank" href="<?=$admission["link"]?>2%2F34731">ประเภทห้องเรียนปกติ (<b>รอบ 1</b>)</a></li>
+			<!-- <li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภทห้องเรียนปกติ (<b>รอบ 2</b>)</a></li> -->
 			<!-- <li data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภทห้องเรียนปกติ (<b>รอบ 3</b>)</a></li> -->
-			<!-- <hr>
+			<hr>
 			<li class="label"><span class="ref-00015">การเรียกแทนผู้สละสิทธิ์ในปีการศึกษา</span> <?=$admission["year"]?></li>
-			<li>
+			<!-- <li>
 				<p>ประเภท<b>ห้องเรียนปกติ</b></p>
 				<a disabled data-release="__-__" target="_blank" href="<?=$admission["link"]?>_%2F_____">[รอบที่ <b>1</b>]</a>
-			</li>
+			</li> -->
 			<li>
 				<p>ประเภท<b>ห้องเรียนพสวท. (สู่ความเป็นเลิศ)</b></p>
-				<a disabled data-release="__-__" target="_blank" href="<?=$admission["link"]?>_%2F_____">[รอบที่ <b>1</b>]</a>
+				<a data-release="02-11" target="_blank" href="<?=$admission["link"]?>2%2F34746">[รอบที่ <b>1</b>]</a>
 			</li>
-			<li>
+			<!-- <li>
 				<p>ประเภท<b>ห้องเรียนพิเศษ</b></p>
 				<a disabled data-release="__-__" target="_blank" href="<?=$admission["link"]?>_%2F_____">[รอบที่ <b>1</b>]</a>
 			</li> -->

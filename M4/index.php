@@ -16,10 +16,14 @@
 	if (inDaterange("2023-03-01", "2023-03-10")) header("Location: change");
 	else if (inDaterange("2023-03-13", "2023-03-17")) header("Location: confirm");
 
-	/* Academic Year 2567 */
+	/* Academic Year 2567
 	if (inDaterange("2024-03-20", "2024-03-21")) header("Location: present");
 	else if (inDaterange("2024-03-04", "2024-03-11")) header("Location: change");
 	else if (inDaterange("2024-03-06", "2024-03-20")) header("Location: confirm");
+
+	/* Academic Year 2568 */
+	if (inDaterange("2025-02-12", "2025-02-16")) header("Location: confirm");
+	else if (inDaterange("2025-02-10", "2025-02-14")) header("Location: change");
 	else {
 ?>
 <!doctype html>
