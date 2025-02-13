@@ -87,7 +87,8 @@
 							// Clean input
 							$record = true; $dataSQL = ""; switch ($choose) {
 								case "Y": {
-								$namefen = escapeSQL($attr["namefen"]); $namelen = escapeSQL($attr["namelen"]);
+								$namefen = escapeSQL(ucfirst($attr["namefen"]));
+								$namelen = escapeSQL(strtoupper($attr["namelen"]));
 								if (!preg_match("/^[A-Z][a-z\- ]{1,49}$/", $namefen) || preg_match("/^(\-| ){2,}$/", $namefen)) {
 									$record = false; errorMessage(1, "รูปแบบชื่อจริงภาษาอังกฤษไม่ถูกต้อง");
 								} else if (!preg_match("/^[A-Z][A-Z\- ]{1,49}$/", $namelen) || preg_match("/^(\-| ){2,}$/", $namelen)) {

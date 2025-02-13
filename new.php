@@ -119,7 +119,7 @@
 							if (select) {
 								data.param["namefen"] = d.querySelector('main .form [name="firstname"]').value.trim();
 								data.param["namelen"] = d.querySelector('main .form [name="lastname"]').value.trim().toUpperCase();
-								if (!/^[A-Z][a-z\- ]{1,49}$/.test(data.param.namefen) || /^(\-| ){2,}$/.test(data.namefen)) {
+								if (!/^[A-Z][A-Za-z\- ]{1,49}$/.test(data.param.namefen) || /^(\-| ){2,}$/.test(data.namefen)) {
 									app.ui.notify(1, [2, "รูปแบบชื่อจริงภาษาอังกฤษไม่ถูกต้อง"]);
 									$('main .form [name="firstname"]').focus(); collect = false;
 								} else if (!/^[A-Z][A-Z\- ]{1,49}$/.test(data.param.namelen) || /^(\-| ){2,}$/.test(data.namelen)) {
