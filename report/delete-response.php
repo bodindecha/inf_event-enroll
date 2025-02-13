@@ -42,7 +42,7 @@
 						} else {
 							document.querySelector('main .form button[name="lookup"]').disabled = true;
 							$.post(cv.APIurl, data, function(res, hsc) {
-								var dat = JSON.parse(res);
+								var dat = (typeof res !== "object" ? JSON.parse(res) : res);
 								if (dat.success) {
 									sv.success = undefined;
 									$("main form.result")
@@ -71,7 +71,7 @@
 								type: "mod", act: "remove",
 								param: sv.action
 							}; $.post(cv.APIurl, data, function(res, hsc) {
-								var dat = JSON.parse(res);
+								var dat = (typeof res !== "object" ? JSON.parse(res) : res);
 								if (dat.success) {
 									$("main form.result").attr("class", cv.resultClass+"green").html('<div class="group split last"><label class="last">ลบรายการการตอบกลับของ '+sv.ID+' สำเร็จ</label><button class="cyan last" onClick="return drp.dismiss()">รับทราบ</button></div>');
 									sv = { success: true };

@@ -80,7 +80,7 @@
 						sortBy: sF.ctrl.sort.col,
 						sortOrder: (sF.ctrl.sort.order ? "ASC" : "DESC")
 					}, function(res, hsc) {
-						var dat = JSON.parse(res);
+						var dat = (typeof res !== "object" ? JSON.parse(res) : res);
 						if (dat.success) {
 							sF.ctrl = dat.intl;
 							sF.render(dat.info);

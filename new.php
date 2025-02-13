@@ -73,7 +73,7 @@
 						} else {
 							d.querySelector('main .form button[name="authen"]').disabled = true;
 							$.post(cv.APIurl, data, function(res, hsc) {
-								var dat = JSON.parse(res);
+								var dat = (typeof res !== "object" ? JSON.parse(res) : res);
 								if (dat.success) {
 									$('main form output[name="rtype"]').val(cv.group[dat.info.type]);
 									$('main form output[name="fullname"]').val(dat.info.name);
@@ -143,7 +143,7 @@
 				var proceed = function(data) {
 					$('main .form div[name="decide"]').attr("disabled", "");
 					$.post(cv.APIurl, data, function(res, hsc) {
-						var dat = JSON.parse(res);
+						var dat = (typeof res !== "object" ? JSON.parse(res) : res);
 						if (dat.success) {
 							$('form[name="choose"]').toggle("blind");
 							if (dat.info.result) {

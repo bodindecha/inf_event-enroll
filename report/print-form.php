@@ -32,7 +32,7 @@
 						} else {
 							document.querySelector('main .form button[name="lookup"]').disabled = true;
 							$.post(cv.APIurl, data, function(res, hsc) {
-								var dat = JSON.parse(res);
+								var dat = (typeof res !== "object" ? JSON.parse(res) : res);
 								if (dat.success) {
 									$("main div.result").html('<p>'+dat.info.message+'</p><div class="group split">&nbsp;<button class="red hollow" onClick="psf.close()" name="danger">ปิด</button></div>');
 									if (dat.info.action) {
