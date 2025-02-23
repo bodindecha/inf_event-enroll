@@ -12,6 +12,7 @@
 	require($dirPWroot."e/resource/db_connect.php"); require_once($dirPWroot."e/enroll/resource/php/config.php");
 	require($dirPWroot."resource/php/core/getip.php");
 	require_once($dirPWroot."resource/php/lib/TianTcl/virtual-token.php");
+	# require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
 	if (!function_exists("escapeSQL")) { function escapeSQL($input) {
 		global $db;
 		return $db -> real_escape_string($input);
@@ -445,7 +446,7 @@
 									$readinfo = $getinfo -> fetch_array(MYSQLI_ASSOC); $data = array(
 										"action" => $readinfo["choose"] == "Y",
 										# "impact" => $vToken -> create($readinfo["datid"])."+".strrev(str_rot13($vToken -> create($group == "new" ? intval($readinfo["type"]) : "4n")))
-										"impact" => $vToken -> create($readinfo["datid"])."+".($TCL -> encrypt("sef-".($group == "new" ? $readinfo["signature"] : "4n"), nest: 2))
+										"impact" => $vToken -> create($readinfo["datid"])."+".(TianTcl::encrypt("sef-".($group == "new" ? $readinfo["signature"] : "4n"), nest: 2))
 									); if ($group == "new") $readinfo["type"] = $CV_groupAdm[$readinfo["type"]];
 									else if ($group == "old") $readinfo["nameath"] = prefixcode2text($readinfo["namep"])["th"].$readinfo["nameath"];
 									$data["message"] = $readinfo["nameath"]." <u>".optionResult($readinfo["choose"])."สิทธิ์</u>การรายงานตัว".($group == "new" ? "ประเภท" : "กลุ่มการเรียน")."<u>".$readinfo["type"]."</u>";
