@@ -10,7 +10,7 @@
 		require($APP_RootDir."private/script/lib/TianTcl/various.php");
 		$authuser = $vToken -> read(trim($_REQUEST["ID"]));
 		# $group = $vToken -> read(str_rot13(strrev(trim($_REQUEST["ment"]))));
-		$group = TianTcl::decrypt($_REQUEST["ment"], nest: 2);
+		$group = TianTcl::decrypt(urldecode($_REQUEST["ment"]), nest: 2);
 	}
 
 	if (isset($group)) {
