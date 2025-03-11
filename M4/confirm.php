@@ -136,14 +136,14 @@
 			<div class="container">
 				<h2>ระบบยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 				<?php if (!$permitted) echo '<center class="message red">นักเรียนไม่มีสิทธิ์ยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ</center>'; else { ?>
-					<center class="message cyan">การยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2567<br><?=$_SESSION["auth"]["name"]["th"]["a"]?> กลุ่มการเรียน<u><?=$readstatus["name"]?></u>
+					<center class="message cyan">การยืนยันสิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2568<br><?=$_SESSION["auth"]["name"]["th"]["a"]?> กลุ่มการเรียน<u><?=$readstatus["name"]?></u>
 						<?php if (!empty($readstatus["new"])) echo '<center class="message blue" style="margin: 10px 0 0;">คำร้องการขอเปลี่ยนเป็นกลุ่มการเรียน<u>'.$readstatus["new"].'</u>จะได้รับการพิจารณา'.($readstatus["choose"] == "Y" ? "ภายหลัง" : "หลังนักเรียนกดยืนยันสิทธิ์").'</center>'; ?>
 					</center>
 					<?php if (empty($readstatus["choose"])) { ?>
 						<?php if ($inTime) { ?>
 							<center class="message yellow">นักเรียนสามารถเลือกได้เพียง 1 ครั้งเท่านั้น ภายใน<?=date("วันที่ d/m/Y เวลา H:i น.", strtotime($readstatus["stop"]))?></center>
 							<form class="form message blue" name="rights" method="post" enctype="multipart/form-data" action="/e/enroll/resource/php/api">
-								<center>กดปุ่มเพื่อยืนยัน หรือ สละสิทธิ์ เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2567</center>
+								<center>กดปุ่มเพื่อยืนยัน หรือ สละสิทธิ์ เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2568</center>
 								<fieldset>
 									<legend>กรณีสละสิทธิ์ กรุณาอัปโหลดไฟล์</legend>
 									<div class="box"><input type="file" name="usf" accept=".png, .jpg, .jpeg, .gif, .heic, .pdf" required></div>

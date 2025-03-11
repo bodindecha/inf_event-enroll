@@ -139,7 +139,7 @@
 			<div class="container">
 				<h2>ระบบยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน</h2>
 				<?php if (!$permitted) echo '<center class="message red">นักเรียนไม่มีสิทธิ์ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ประเภทห้องเรียนปกติ</center>'; else { ?>
-					<center class="message cyan">การยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2567<br><?=$_SESSION["auth"]["name"]["th"]["a"]?> กลุ่มการเรียน<u><?=$readstatus["name1"]?></u></center>
+					<center class="message cyan">การยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ประเภทห้องเรียนปกติ จากนักเรียนที่จบชั้นมัธยมศึกษาปีที่ 3 ของโรงเรียนเดิม ปีการศึกษา 2568<br><?=$_SESSION["auth"]["name"]["th"]["a"]?> กลุ่มการเรียน<u><?=$readstatus["name1"]?></u></center>
 					<?php if (!empty($readstatus["choose"])) { ?>
 						<center class="message green">นักเรียนได้ยื่นคำร้องขอเปลี่ยนแปลงกลุ่มการเรียนเป็น<b><?=$readstatus["name2"]?></b>เรียบร้อยแล้ว ครั้งล่าสุดเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus["time"]))?> ผ่านที่อยู่ IP <?=$readstatus["ip"]?><br><a href="/e/enroll/resource/upload/view?type=change" onClick="return cng.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a></center>
 					<?php } if ($inTime) { ?>
