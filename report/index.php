@@ -20,7 +20,7 @@
 <style type="text/css">
 	
 </style>
-<link rel="stylesheet" href="<?=$APP_CONST["cdnURL"]?>static/style/ext/menu.css" />
+<link rel="stylesheet" href="<?=$APP_CONST["cdnURL"]?>static/style/ext/menu.css" crossorigin="anonymous" />
 <script type="text/javascript">
 	const TRANSLATION = ["@component-menu", location.pathname.substring(1).replace(/\/$/, "").replaceAll("/", "+")];
 	$(document).ready(function() {

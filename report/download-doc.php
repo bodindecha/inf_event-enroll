@@ -78,7 +78,7 @@
 		grepFile = function(token) {
 			sv.msgID = app.UI.notify(1, "Downloading zipped files...", 0);
 			app.UI.lightbox("center", {allowClose: false}, $("app[name=main] main .progress-template").html());
-			app.Util.ajax(cv.API_URL, {act: "get", cmd: "info", param: token}).then(async function(dat) {
+			app.Util.ajax(cv.API_URL, {act: "get", cmd: "info", param: encodeURIComponent(token)}).then(async function(dat) {
 				if (!dat) {
 					app.UI.lightbox.close();
 					app.UI.notify.close(sv.msgID);

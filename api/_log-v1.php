@@ -1,5 +1,5 @@
 <?php
-	$APP_DB[5] = connect_to_database(5);
+	connect_to_database(5);
 	function syslog_e($doer, string $flow, string $action, string $impact, string $detail="", bool $state=true, string $attr="", string $remark="", bool $force=false, bool $close_db_connection=false) {
 		// Check connection
 		global $APP_CONST, $APP_DB, $APP_USER, $USER_IP, $APP_RootDir;
@@ -33,12 +33,12 @@
 	}
 	$mainDBname = "`tiantcl_inf`";
 
+	if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
 	define("ADMISSION_ANSWER_YES", "Y");
 	define("ADMISSION_ANSWER_NO", "N");
 	define("ADMISSION_SECRET_KEY", "B0d1^/-4dm1$5|o/v");
 	define("ADMISSION_SECRET_SALT", 2565.2024);
 	function switch_ref_encrypt($refID) {
-		if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
 		return TianTcl::encrypt(
 			"swt".str_pad(strval($refID), 4, "0", STR_PAD_LEFT)."ADM",
 			key: ADMISSION_SECRET_KEY,
@@ -46,7 +46,6 @@
 		);
 	}
 	function switch_ref_decrypt($reference) {
-		if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
 		return rtrim(substr(TianTcl::decrypt($reference, key: ADMISSION_SECRET_KEY, salt: ADMISSION_SECRET_SALT), 3), "ADM");
 	}
 ?>

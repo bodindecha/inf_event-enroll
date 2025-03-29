@@ -6,6 +6,7 @@
 	require_once($APP_RootDir."public_html/e/enroll/api/_log-v1.php");
 	$type2name = array("prs" => "present", "cng" => "change", "cnf" => "confirm", "new" => "newstd");
 	$fileDir = $APP_RootDir."public_html/e/enroll/resource/upload/";
+	$delimeter = "-";
 	// Execute
 	switch (API::$action) {
 		case "merge": {
@@ -51,9 +52,8 @@
 							if ($file -> status == ZipArchive::ER_OK) {
 								$time = time();
 								ZIPcomplete:
-								require($APP_RootDir."private/script/lib/TianTcl/various.php");
 								if (gettype($time) != "string") $time = strval($time);
-								API::successState(array("token" => $TCL -> encrypt("$refID-$type-$time")));
+								API::successState(array("token" => TianTcl::encrypt_v1("$refID$delimeter$type$delimeter$time")));
 								syslog_e(null, "admission", "mod", "download", "UUEF: $type", true);
 							} else {
 								API::errorMessage(3, "There's an error zipping files");
@@ -66,17 +66,16 @@
 			}
 		break; }
 		case "get": {
-			switch ($command) {
+			switch (API::$command) {
 				case "info": {
-					require($APP_RootDir."private/script/lib/TianTcl/various.php");
-					API::$attr = explode("-", escapeSQL(TianTcl::decrypt(API::$attr)));
+					API::$attr = explode($delimeter, TianTcl::decrypt_v1(API::$attr));
 					// Save download attemp
-					$success = $APP_DB[5] -> query("UPDATE admission_evidence SET downloads=downloads+1 WHERE refID=".$attr[0]);
+					$success = $APP_DB[5] -> query("UPDATE admission_evidence SET downloads=downloads+1 WHERE refID=".escapeSQL(API::$attr[0]));
 					if (!$success) {
 						API::errorMessage(3, "There was an error fetching file information");
 						syslog_e(null, "admission", "mod", "download", "UUEF: ".API::$attr[0], false, "", "InvalidQuery");
 					} else {
-						$filesrc = $fileDir."archive/$year/".$type2name[$attr[1]].".zip";
+						$filesrc = $fileDir."archive/$year/".$type2name[API::$attr[1]].".zip";
 						API::successState(array(
 							"filename" => "BD-Admission UUEF#".$type2name[API::$attr[1]]." ".date("Y-m-d\\TH_i_s", API::$attr[2]).".zip",
 							"filesize" => filesize($filesrc),
@@ -85,8 +84,7 @@
 					}
 				break; }
 				case "file": {
-					require($APP_RootDir."private/script/lib/TianTcl/various.php");
-					$token = explode("-", TianTcl::decrypt(API::$attr["token"]));
+					$token = explode($delimeter, TianTcl::decrypt_v1(API::$attr["token"]));
 					$filesrc = $fileDir."archive/$year/".$type2name[$token[1]].".zip";
 					if (!file_exists($filesrc)) {
 						API::errorMessage(3, "Unable to find the requested file. Please start over.");
@@ -111,11 +109,11 @@
 						// force download dialog
 						if (strpos(php_sapi_name(), "cgi") === false) {
 							# header("Content-Type: $mime", true);
-							header("Content-Type: ".mime_file_type($filesrc));
+							header("Content-Type: ".TianTcl::mime_file_type($filesrc));
 							header("Content-Type: application/octet-stream", false);
 							header("Content-Type: application/download", false);
 							header("Content-Type: application/force-download", false);
-						} else header("Content-Type: ".mime_file_type($filesrc));
+						} else header("Content-Type: ".TianTcl::mime_file_type($filesrc));
 						// use the Content-Disposition header to supply a recommended filename
 						header("Content-Disposition: attachment; filename=\"BD-Admission UUEF#".$type2name[$token[1]]." ".date("Y-m-d\\TH_i_s", $token[2]).".zip\"");
 						header("Content-Transfer-Encoding: binary");
