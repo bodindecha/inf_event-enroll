@@ -64,7 +64,7 @@
 							type: "new", act: "authen", param: {
 								user: d.querySelector('main .form [name="sid"]').value.trim(),
 								pswd: d.querySelector('main .form [name="cid"]').value.trim()
-						} }; if (!/^[1-9]\d{4}$/.test(data.param.user)) {
+						} }; if (!/^[1-9]\d{4,5}$/.test(data.param.user)) {
 							app.ui.notify(1, [1, "รูปแบบเลขประจำตัวผู้สมัครไม่ถูกต้อง"]);
 							$('main .form [name="sid"]').focus();
 						} else if (!/^\d{13}$/.test(data.param.pswd)) {

@@ -32,7 +32,7 @@
 	switch ($type) {
 		case "new": { switch ($command) {
 			case "authen": {
-				if (!preg_match("/^[1-9]\d{4}$/", $attr["user"]))
+				if (!preg_match("/^[1-9]\d{4,5}$/", $attr["user"]))
 					errorMessage(2, "รูปแบบเลขประจำตัวผู้สมัครไม่ถูกต้อง");
 				if (!preg_match("/^\d{13}$/", $attr["pswd"]))
 					errorMessage(2, "รูปแบบเลขประจำตัวประชาชนไม่ถูกต้อง");
@@ -338,7 +338,7 @@
 				switch ($command) {
 					case "find": {
 						$user = escapeSQL($attr["user"]); $group = $attr["group"];
-						if (!preg_match("/^[1-9]\d{4}$/", $user))
+						if (!preg_match("/^[1-9]\d{4,5}$/", $user))
 							errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
 						else {
 							switch ($group) {
@@ -427,7 +427,7 @@
 						} } break;
 					} case "check": {
 						$user = escapeSQL($attr["user"]); $group = $attr["group"];
-						if (!preg_match("/^[1-9]\d{4}$/", $user))
+						if (!preg_match("/^[1-9]\d{4,5}$/", $user))
 							errorMessage(2, "รูปแบบเลขประจำตัวไม่ถูกต้อง");
 						else {
 							switch ($group) {

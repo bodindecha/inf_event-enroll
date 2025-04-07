@@ -33,7 +33,7 @@
 							type: "mod", act: "find", param: {
 								user: document.querySelector('main .form [name="sid"]').value.trim(),
 								group: document.querySelector('main .form [name="system"] option:checked').value.trim()
-						} }; if (!/^[1-9]\d{4}$/.test(data.param.user)) {
+						} }; if (!/^[1-9]\d{4,5}$/.test(data.param.user)) {
 							app.ui.notify(1, [2, "รูปแบบเลขประจำตัวไม่ถูกต้อง"]);
 							$('main .form [name="sid"]').focus();
 						} else if (!/^(prs|cng|cnf|new)$/.test(data.param.group)) {
