@@ -34,11 +34,11 @@
 			case "authen": {
 				if (!preg_match("/^[1-9]\d{4,5}$/", $attr["user"]))
 					errorMessage(2, "รูปแบบเลขประจำตัวผู้สมัครไม่ถูกต้อง");
-				if (!preg_match("/^\d{13}$/", $attr["pswd"]))
+				if (!preg_match("/^(\d{13}|G\d{12}|[A-Z]{2}\d{7})$/", $attr["pswd"]))
 					errorMessage(2, "รูปแบบเลขประจำตัวประชาชนไม่ถูกต้อง");
 				else {
 					$amsid = escapeSQL($attr["user"]); $natid = escapeSQL($attr["pswd"]);
-					$get = $db -> query("SELECT a.datid,a.amsid,CONCAT(a.namepth, a.namefth, ' ', a.namelth) AS nameath,a.type,a.choose,a.filetype,a.time,a.ip,b.start,b.stop,c.signature FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sclass c ON c.refID=a.type WHERE a.amsid=$amsid AND a.natid=$natid");
+					$get = $db -> query("SELECT a.datid,a.amsid,CONCAT(a.namepth, a.namefth, ' ', a.namelth) AS nameath,a.type,a.choose,a.filetype,a.time,a.ip,b.start,b.stop,c.signature FROM admission_newstd a INNER JOIN admission_timerange b ON a.timerange=b.trid INNER JOIN admission_sclass c ON c.refID=a.type WHERE a.amsid=$amsid AND a.natid='$natid'");
 					if ($get) {
 						if ($get -> num_rows == 1) {
 							$read = $get -> fetch_array(MYSQLI_ASSOC); $data = array(

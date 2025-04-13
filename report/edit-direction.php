@@ -275,7 +275,7 @@
 				</label>
 				<div class="group spread">
 					<button class="gray hollow ripple-click" type="reset" onClick="page.backToEditor()">ยกเลิก</button>
-					<button class="blue ripple-click" type="submit" onClick="return page.insertLink(true)">แทรก</button>
+					<button class="cyan ripple-click" type="submit" onClick="return page.insertLink(true)">แทรก</button>
 				</div>
 			</form>
 		</div>
@@ -283,7 +283,7 @@
 			<div class="guide container">
 				<ul>
 					<li><span class="ref-00005">ไม่ควรลบหรือแก้ไขบรรทักแรก</span> <code lang="html" class="language-html">&lt;div class="message gray" name="instruction"&gt;</code> <span class="ref-00006">และบรรทัดสุดท้าย</span> <code lang="html" class="language-html">&lt;/div&gt;</code> <span class="ref-00007">ของไฟล์</span></li>
-					<li><span class="ref-00008">หากคุณต้องการแทรกลิงก์ สามารถกดปุ่ม</span> <button class="black hollow icon"><i class="material-icons">insert_link</i></button> <span class="ref-00009">ได้</span></li>
+					<li><span class="ref-00008">หากคุณต้องการแทรกลิงก์ สามารถกดปุ่ม</span> <button class="black hollow icon"><i class="material-icons">add_link</i></button> <span class="ref-00009">ได้</span></li>
 					<li><span class="ref-00010">กดปุ่ม</span> <button class="gray hollow pill icon"><i class="material-icons">rotate_right</i></button> <span class="ref-00011">เพื่อเปลี่ยนด้านของหน้าต่างแก้ไขโค้ดและหน้าต่างจำลองผลลัพธ์</span></li>
 					<li><span class="ref-00010">กดปุ่ม</span> <button class="red hollow icon"><i class="material-icons">close</i></button> <span class="ref-00012">เพื่อคืนค่าเป็นค่าจากการบันทึกครั้งล่าสุด</span></li>
 					<li><span class="ref-00010">กดปุ่ม</span> <button class="blue icon"><i class="material-icons">save</i></button> <span class="ref-00013">เพื่อบันทึกการเปลี่ยนแปลงไฟล์</span></li>

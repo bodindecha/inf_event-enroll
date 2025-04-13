@@ -67,7 +67,7 @@
 						} }; if (!/^[1-9]\d{4,5}$/.test(data.param.user)) {
 							app.ui.notify(1, [1, "รูปแบบเลขประจำตัวผู้สมัครไม่ถูกต้อง"]);
 							$('main .form [name="sid"]').focus();
-						} else if (!/^\d{13}$/.test(data.param.pswd)) {
+						} else if (!/^(\d{13}|G\d{12}|[A-Z]{2}\d{7})$/.test(data.param.pswd)) {
 							app.ui.notify(1, [1, "รูปแบบเลขประจำตัวประชาชนไม่ถูกต้อง"]);
 							$('main .form [name="cid"]').focus();
 						} else {
@@ -217,7 +217,7 @@
 				<!--center class="message red">ขณะนี้ระบบอยู่ระหว่างการปรับปรุง กรุณาเข้ามาใหม่หลัง 10.15 น.</center-->
 				<form class="form modern --message-black" name="authenticate">
 					<input type="number" name="sid" maxlength="5" autofocus><label>เลขประจำตัวผู้สมัคร 5 หลัก</label>
-					<input type="number" name="cid" maxlength="13"><label>เลขประจำตัวประชาชน 13 หลัก</label>
+					<input type="text" name="cid" maxlength="13"><label>เลขประจำตัวประชาชน 13 หลัก</label>
 					<p>ใส่เลขประจำตัวผู้สมัครและเลขประจำตัวประชาชนโดยไม่ต้องมีขีดกลางหรือเว้นวรรค</p>
 					<button class="blue full-x last" onClick="return cnf.check()" name="authen">ตรวจสอบสิทธิ์</button>
 				</form>
