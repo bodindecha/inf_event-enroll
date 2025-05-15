@@ -68,12 +68,12 @@
 		<center>.<br>.<br>.</center> -->
 		<h3 class="ref-00008">ประกาศทั่วไป</h3>
 		<ul class="announcements-list">
-			<!-- <li><a disabled href="<?=$admission["year"]?>/statistics">สถิติการสมัครเข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</a></li>
+			<!-- <li><a disabled href="<?=$admission["year"]?>/statistics">สถิติการสมัครเข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</a></li> -->
 			<li class="label"><span class="ref-00010">ประกาศสำคัญ (ปีการศึกษา</span> <?=$admission["year"]?>)</li>
-			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">กลุ่มการมอบตัวนักเรียนห้องห้องเรียนปกติ</a></li>
-			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">กิจกรรมเตรียมความพร้อมความเป็นลูกบดินทร</a></li>
-			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">การเปิดใช้งานบัญชีผู้ใช้งานเครือข่าย สำหรับนักเรียนใหม่</a></li>
-			<li class="label ref-00011">ผลนักเรียนที่ผ่านการคัดเลือก (เข้าโครงการ)</li>
+			<!-- <li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">กลุ่มการมอบตัวนักเรียนห้องห้องเรียนปกติ</a></li>
+			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">กิจกรรมเตรียมความพร้อมความเป็นลูกบดินทร</a></li> -->
+			<li data-release="05-13"><a target="_blank" href="<?=$admission["link"]?>5%2F35580">การเปิดใช้งานบัญชีผู้ใช้งานเครือข่าย สำหรับนักเรียนใหม่</a></li>
+			<!-- <li class="label ref-00011">ผลนักเรียนที่ผ่านการคัดเลือก (เข้าโครงการ)</li>
 			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____"><b>วิทยาศาสตร์พลังสิบ</b>ชั้นมัธยมศึกษา<b>ตอนต้น</b></a></li> -->
 			<li class="label ref-00012">ข่าวสำหรับนักเรียนชั้นมัธยมศึกษาตอนปลาย</li>
 			<li data-release="03-19"><a target="_blank" href="<?=$admission["link"]?>3%2F35043">ผลการจัด<b>กลุ่มการเรียน</b>นักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ <b>4</b> [รอบที่ <b>1</b>]</a></li>
@@ -97,6 +97,7 @@
 				<p>ประเภท<b>ห้องเรียนปกติ</b></p>
 				<a data-release="04-07" target="_blank" href="<?=$admission["link"]?>4%2F35313">[รอบที่ <b>1</b>]</a>
 				<a data-release="04-11" target="_blank" href="<?=$admission["link"]?>4%2F35357">[รอบที่ <b>2</b>]</a>
+				<a data-release="05-02" target="_blank" href="<?=$admission["link"]?>5%2F35449">[รอบที่ <b>3</b>]</a>
 			</li>
 			<li>
 				<p>ประเภท<b>ห้องเรียนพสวท. (สู่ความเป็นเลิศ)</b></p>
@@ -110,12 +111,18 @@
 				<a data-release="04-02" target="_blank" href="<?=$admission["link"]?>4%2F35263">[รอบที่ <b>8</b>]</a>
 				<a data-release="04-08" target="_blank" href="<?=$admission["link"]?>4%2F35329">[รอบที่ <b>9</b>]</a>
 				<a data-release="04-11" target="_blank" href="<?=$admission["link"]?>4%2F35364">[รอบที่ <b>10</b>]</a>
+				<a data-release="04-25" target="_blank" href="<?=$admission["link"]?>4%2F35415">[รอบที่ <b>11</b>]</a>
+				<a data-release="05-02" target="_blank" href="<?=$admission["link"]?>5%2F35448">[รอบที่ <b>12</b>]</a>
+				<a data-release="05-13" target="_blank" href="<?=$admission["link"]?>5%2F35573">[รอบที่ <b>13</b>]</a>
+				<br>
+				<a data-release="04-25" target="_blank" href="<?=$admission["link"]?>4%2F35418">[รอบที่ <b>s1</b>]</a>
 			</li>
 			<li>
 				<p>ประเภท<b>ห้องเรียนพิเศษ ม.ต้น</b></p>
 				<a data-release="03-20" target="_blank" href="<?=$admission["link"]?>3%2F35066">[รอบที่ <b>1</b>]</a>
 				<a data-release="03-25" target="_blank" href="<?=$admission["link"]?>3%2F35126">[รอบที่ <b>2</b>]</a>
 				<a data-release="03-28" target="_blank" href="<?=$admission["link"]?>3%2F35174">[รอบที่ <b>3</b>]</a>
+				<a data-release="05-02" target="_blank" href="<?=$admission["link"]?>5%2F35444">[<b>EP </b>รอบที่ <b>3</b>]</a>
 				<a data-release="04-02" target="_blank" href="<?=$admission["link"]?>4%2F35260">[รอบที่ <b>4</b>]</a>
 				<a data-release="04-11" target="_blank" href="<?=$admission["link"]?>4%2F35373">[รอบที่ <b>5</b>]</a>
 			</li>
@@ -127,6 +134,9 @@
 				<a data-release="04-11" target="_blank" href="<?=$admission["link"]?>4%2F35373">[รอบที่ <b>4</b>]</a>
 				<a data-release="04-08" target="_blank" href="<?=$admission["link"]?>4%2F35334">[รอบที่ <b>5</b>]</a>
 				<a data-release="04-11" target="_blank" href="<?=$admission["link"]?>4%2F35360">[รอบที่ <b>6</b>]</a>
+				<a data-release="04-25" target="_blank" href="<?=$admission["link"]?>4%2F35412">[รอบที่ <b>7</b>]</a>
+				<a data-release="05-02" target="_blank" href="<?=$admission["link"]?>5%2F35451">[รอบที่ <b>8</b>]</a>
+				<a data-release="05-13" target="_blank" href="<?=$admission["link"]?>5%2F35574">[รอบที่ <b>9</b>]</a>
 			</li>
 		</ul>
 		<center class="message black"><span class="ref-00016">ศึกษารายระเอียดทั้งหมดที่</span> <a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fadmission">งานรับนักเรียน</a><hr><a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fcostume">เครื่องแบบและระเบียบการแต่งกาย</a><span class="ref-00017">โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</span></center>
