@@ -42,7 +42,7 @@
 					list += '<li class="accordian" data-student="' + es.ID + '">'+
 						'<div class="head" onClick="page.show(this)"><div class="css-flex css-flex-split css-flex-gap-5">'+
 							`<span class="txtoe">${es.fullname[app.settings["lang"]]}</span><span>${es.ID}</span>`.toString()+
-						'</div></div><div class="body" data-loaded="false"><div class="history">'+
+						'</div></div><div class="body" data-loaded="false" style="height: 0;"><div class="history">'+
 							tableTemplate+
 						'</div></div>'+
 					'</li>';
