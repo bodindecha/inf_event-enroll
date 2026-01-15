@@ -3,7 +3,7 @@
 	require($APP_RootDir."private/script/start/PHP.php");
 	$header["title"] = "ระบบยืนยันสิทธิ์การเข้าศึกษาต่อ";
 
-	if (true && !has_perm("dev", false)) TianTcl::http_response_code(909);
+	if (!has_perm("dev", false)) TianTcl::http_response_code(909);
 
 	$admission = array(
 		"year" => "25__",
@@ -45,7 +45,7 @@
 		<h2>การเข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 		<p><span class="ref-00001">ติดตามข่าว</span><a disabled target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fcategory%2F___"><span class="ref-00002">การเข้าศึกษาต่อโรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ในปีการศึกษา</span> <?=$admission["year"]?></a> <span class="ref-00003">ได้ที่นี่</span></p>
 		<div class="wrapper">
-			<div class="card message purple disabled">
+			<div disabled class="card message purple">
 				<div class="info">
 					<h3>นักเรียนใหม่</h3>
 					<p><span class="ref-00004">นักเรียนที่สอบเข้ามาใหม่ และมีลำดับที่ใน</span><a href="#/announcement/new-student">การประกาศผล</a><span class="ref-00005">ประจำปีการศึกษา</span> <?=$admission["year"]?></p>
@@ -54,7 +54,7 @@
 					<a href="new" role="button" class="pill ripple-click"><span class="text">ดำเนินการ</span></a>
 				</div>
 			</div>
-			<div class="card message blue disabled">
+			<div disabled class="card message blue">
 				<div class="info">
 					<h3>นักเรียนเดิม</h3>
 					<p><span class="ref-00006">นักเรียนที่จบจากชั้นมัธยมศึกษาปีที่ 3 โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี) ที่มีลำดับที่ใน</span><a href="#/announcement/current-student">รายชื่อผู้มีสิทธิ์เข้าศึกษาต่อ</a><span class="ref-00007">ชั้นมัธยมศึกษาปีที่ 4 โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</span></p>

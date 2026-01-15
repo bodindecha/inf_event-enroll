@@ -8,7 +8,7 @@
 	require_once($dirPWroot."e/enroll/resource/php/config.php");
 
 	$admission = array(
-		"year" => "2568"
+		"year" => "2569"
 	);
 ?>
 <!doctype html>

@@ -290,6 +290,7 @@
 		echo '</tbody><tbody><tr><td colspan="4" center>— File —</td></tr>';
 		foreach ($scandir as $file) {
 			if (!is_file("$lpath/$file")) continue;
+			if (str_ends_with($file, ".php")) continue;
 			$size = filesize("$lpath/$file") / 1024;
 			$size = round($size, 2);
 			if ($size >= 1024) $size = round($size / 1024, 2)." MB";
