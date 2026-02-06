@@ -27,8 +27,8 @@
 	else { */
 
 	/* Academic Year 2569 */
-	if (inDaterange("2025-02-06", "2025-03-17")) header("Location: change");
-	else if (inDaterange("2025-03-15", "2025-03-18")) header("Location: confirm");
+	if (inDaterange("2026-02-06", "2026-03-17")) header("Location: change");
+	else if (inDaterange("2026-03-15", "2026-03-18")) header("Location: confirm");
 	else {
 ?>
 <!doctype html>

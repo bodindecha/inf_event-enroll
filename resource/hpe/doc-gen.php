@@ -10,7 +10,7 @@
 			case "sggtmf":	header("Location: $APP_CONST[baseURL]_resx/service/view/file?furl=e%2Fenroll%2Fresource%2Ffile%2Fตัวอย่างใบรับรองผลการสมัครเข้าศึกษาต่อระดับชั้นมัธยมศึกษาปีที่-4.jpg"); exit(0); break;
 			# case "eioad":	$user_action = "print";		$doc["source"] = "2569/คำชี้แจงเอกสารการมอบตัว"; break;
 			case "eioad":	$user_action = "print";		$doc["source"] = "2569/แนวทางการเข้ามอบตัว ม.4 ห้องเรียน พสวท. 2569"; break;
-			case "csgrf":	$user_action = "download";	$doc["source"] = "2568/ใบยื่นคำร้องขอเปลี่ยนกลุ่มการเรียน"; break;
+			case "csgrf":	$user_action = "download";	$doc["source"] = "2569/ใบยื่นคำร้องขอเปลี่ยนกลุ่มการเรียน"; break;
 			case "waiver":	$user_action = "download";	$doc["source"] = "2568/คำร้องขอสละสิทธิ์"; break;
 			case "sef-1n":	$user_action = "download";	$doc["source"] = "2569/ใบมอบตัว ห้องเรียนทั่วไป ม.1"; break;
 			case "sef-1m":	$user_action = "download";	$doc["source"] = "2569/ใบมอบตัว ห้องเรียนคณิต ม.1"; break;
@@ -27,7 +27,7 @@
 		if (!file_exists("$doc[source].pdf")) TianTcl::http_response_code(900);
 		$name = basename($doc["source"]);
 		regExTest("/(\ v(\d|\-)+)$/", $name, $versioning);
-		$versioning = count($versioning) ? strlen($versioning[1]) : 0;
+		$versioning = $versioning && count($versioning) ? strlen($versioning[1]) : 0;
 		$doc["title"] = "[BD Admission] ".substr($name, 0, strlen($name) - $versioning); // งานรับนักเรียน รร.บ.ด.
 		$doc["source"] .= ".pdf";
 		$mFile = new setasign\Fpdi\Tcpdf\Fpdi("P", PDF_UNIT, "A4", true, "UTF-8", false);
@@ -152,7 +152,7 @@
 	$authuser = $user_override ?? ($_SESSION["auth"]["user"] ?? "");
 	if (!strlen($authuser) && isset($_REQUEST["authuser"])) $authuser = $vToken -> read(trim($_REQUEST["authuser"]));
 	if (strlen($authuser) && (isset($_REQUEST["authuser"]) || $_SESSION["auth"]["type"]=="s" || isset($user_override))) {
-		$is_oldstd = ($docID == "sef-4n" && RegExTest("/^[45]/", $authuser)) || $authuser == "99999";
+		$is_oldstd = (in_array($docID, ["csgrf", "sef-4n"]) && RegExTest("/^[45]/", $authuser)) || $authuser == "99999";
 		// Fetch biological information
 		$get = $is_oldstd
 			? "SELECT citizen_id,birthy+543 AS birthy,birthm,birthd,room,number FROM user_s WHERE stdid=$authuser"
@@ -242,7 +242,7 @@
 						if (!empty($read["birthy"])) textAt(13.4, atDocRow(28), 2.6, ROW_HGT, $read["birthy"], $showBdr, 1, "C");
 						textAt(4.8, atDocRow(39)-4, 15, ROW_HGT, "โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)", $showBdr, 1, "L");
 					}
-					textAt(24, atDocRow(39)-4, 7.5, ROW_HGT, $is_oldstd ? "ม.3" : "ป.6", $showBdr, 1, "C");
+					textAt(24, atDocRow(39)-4, 7.5, ROW_HGT, (int)$docID[4]==4 ? "ม.3" : "ป.6", $showBdr, 1, "C");
 				break; }
 				case 2: {
 					textAt(13.9, atDocRow(20)-2, 18.1, ROW_HGT, $read["nameath"], $showBdr, 1, "L");
@@ -254,12 +254,31 @@
 				break; }
             }
 		} else if ($docID == "csgrf") {
-			define("ROW_HGT", 36); // px
-			$cfg["margin"] = array("left" => 9.6, "top" => 5.8, "right" => 9.6);
-			textAt(8.75, atDocRow(11), 11, ROW_HGT, $read["nameath"], $showBdr, 1, "C");
-			textAt(28, atDocRow(11), 1.5, ROW_HGT, num2locale($read["room"]), $showBdr, 1, "C");
-			textAt(31, atDocRow(11), 2, ROW_HGT, num2locale($read["number"]), $showBdr, 1, "C");
-			textAt(9, atDocRow(12), 7, ROW_HGT, num2locale($authuser), $showBdr, 1, "C");
+			// 2565,69
+			define("ROW_HGT", 31.5); // px
+			// @14pt
+			# $cfg["margin"] = array("left" => 9.6, "top" => 8.2, "right" => 9.6);
+			# textAt(28.1, atDocRow(12)-13, 2, ROW_HGT, num2locale((int)date("Y")+543), $showBdr, 1, "C");
+			# textAt(8.75, atDocRow(13), 11, ROW_HGT, $read["nameath"], $showBdr, 1, "C");
+			# textAt(28, atDocRow(13), 1.5, ROW_HGT, num2locale($read["room"]), $showBdr, 1, "C");
+			# textAt(31.15, atDocRow(13), 2, ROW_HGT, num2locale($read["number"]), $showBdr, 1, "C");
+			# textAt(9.25, atDocRow(14), 6.75, ROW_HGT, num2locale($authuser), $showBdr, 1, "C");
+			// @16pt
+			$cfg["margin"] = array("left" => 9.6, "top" => 7.6, "right" => 9.6);
+			textAt(8.75, atDocRow(13)+3, 11, ROW_HGT, $read["nameath"], $showBdr, 1, "C");
+			$mFile -> SetFont($cfg["font"], "R", 16);
+			textAt(28, atDocRow(12)-13, 2.5, ROW_HGT, num2locale((int)date("Y")+543), $showBdr, 1, "C");
+			textAt(28, atDocRow(13), 1.5, ROW_HGT, num2locale($read["room"]), $showBdr, 1, "C");
+			textAt(31.15, atDocRow(13), 2, ROW_HGT, num2locale($read["number"]), $showBdr, 1, "C");
+			textAt(9.25, atDocRow(14), 6.75, ROW_HGT, num2locale($authuser), $showBdr, 1, "C");
+			// 2567-68
+			# define("ROW_HGT", 36); // px
+			# $cfg["margin"] = array("left" => 9.6, "top" => 5.8, "right" => 9.6);
+			# textAt(28.5, atDocRow(10), 2, ROW_HGT, (int)date("Y")+543, $showBdr, 1, "C");
+			# textAt(8.75, atDocRow(11), 11, ROW_HGT, $read["nameath"], $showBdr, 1, "C");
+			# textAt(28, atDocRow(11), 1.5, ROW_HGT, num2locale($read["room"]), $showBdr, 1, "C");
+			# textAt(31, atDocRow(11), 2, ROW_HGT, num2locale($read["number"]), $showBdr, 1, "C");
+			# textAt(9, atDocRow(12), 7, ROW_HGT, num2locale($authuser), $showBdr, 1, "C");
 		} else if ($docID == "waiver") {
 			define("ROW_HGT", 34); // px
 			$cfg["margin"] = array("left" => 9.6, "top" => 6.2, "right" => 9.6);
