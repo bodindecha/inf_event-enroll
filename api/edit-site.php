@@ -2,7 +2,7 @@
 	$APP_RootDir = str_repeat("../", substr_count($_SERVER["PHP_SELF"], "/"));
 	require_once($APP_RootDir."private/script/start/API.php");
 	API::initialize();
-	require_once($APP_RootDir."public_html/e/enroll/api/_log-v1.php");
+	require_once("_log-v1.php");
 	// Execute
 	if (!isset($_SESSION["auth"]) || !has_perm("admission")) API::errorMessage(1, "You are unauthorized."); else
 	switch (API::$action) {

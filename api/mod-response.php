@@ -3,8 +3,8 @@
 	require_once($APP_RootDir."private/script/start/API.php");
 	API::initialize();
 	$year = $_SESSION["stif"]["t_year"];
-	require_once($APP_RootDir."public_html/e/enroll/api/_log-v1.php");
-	require_once($APP_RootDir."$APP_CONST[publicDir]/resource/php/core/config.php");
+	require_once("_log-v1.php");
+	require_once("$APP_RootDir$APP_CONST[publicDir]/resource/php/core/config.php");
 	// Execute
 	if (!isset($_SESSION["auth"]) || !has_perm("admission")) API::errorMessage(1, "You are unauthorized."); else
 	switch (API::$action) {

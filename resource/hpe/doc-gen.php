@@ -284,6 +284,8 @@
 			$cfg["margin"] = array("left" => 9.6, "top" => 6.2, "right" => 9.6);
 			$mFile -> SetFont($cfg["font"], "R", 16);
 			textAt(30, atDocRow(10), 3, ROW_HGT, num2locale((int)date("Y")+543), $showBdr, 1, "C");
+			$read["nameath"] = preg_replace("/^(ด\.[ชญ]\.|นา(ย|งสาว)) ?/", "", $read["nameath"]);
+			textAt(13.25, atDocRow(16)-2, 13, ROW_HGT, $read["nameath"], $showBdr, 1, "C");
 			textAt(3, atDocRow(17), 10.5, ROW_HGT, num2locale($authuser), $showBdr, 1, "C");
 		}
 	} addPrintJS();

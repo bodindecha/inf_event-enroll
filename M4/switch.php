@@ -91,8 +91,8 @@
 					fillInfo("at-time", dat.at.time);
 					fillInfo("ip", dat.ip);
 					// Fill form
-					$("app[name=main] > main .form .from").text(cv.option(dat.choose)).attr("class", "from chip-tag " + (dat.choose ? "green" : "red"));
-					$("app[name=main] > main .form .to").text(cv.option(!dat.choose)).attr("class", "to chip-tag " + (!dat.choose ? "green" : "red"));
+					$("app[name=main] > main .form .from").text(cv.option(dat.choose)).attr("class", "from pastel chip-tag " + (dat.choose ? "green" : "red"));
+					$("app[name=main] > main .form .to").text(cv.option(!dat.choose)).attr("class", "to pastel chip-tag " + (!dat.choose ? "green" : "red"));
 					$("app[name=main] > main .form .switch .text").text(cv.option(!dat.choose)).parent().attr("class", "switch xwide ripple-click " + (!dat.choose ? "green" : "red"));
 					// Alter elements
 					$("app[name=main] > main .form .school")[dat.choose ? "fadeIn" : "fadeOut"]();
@@ -274,9 +274,9 @@
 		<form class="form form-bs message gray" style="display: none;">
 			<div class="css-flex css-flex-gap-10 text-middle">
 				<h3>เปลี่ยนแปลงสถานะ</h3>
-				<div class="from chip-tag"></div>
+				<div class="from chip-tag pastel"></div>
 				<i class="material-icons">arrow_forward</i>
-				<div class="to chip-tag"></div>
+				<div class="to chip-tag pastel"></div>
 			</div>
 			<div class="school css-flex css-flex-gap-5 css-flex-wrap">
 				<span class="ref-00003 css-text-middle">กรณีศึกษาต่อโรงเรียนอื่น โปรดระบุ</span>
@@ -287,7 +287,7 @@
 				<a class="css-text-middle" href="javascript:"><i class="material-icons">help</i></a>
 				<span class="css-text-middle">
 					<span class="ref-00004">หากไม่พบชื่อโรงเรียน กรุณาติดต่อ</span>
-					<a href="/go?url=https%3A%2F%2Fmail.google.com%2Fa%2Fbodin.ac.th%2F%3Ffs%3D1%26tf%3Dcm%26to%3Dnoc%40bodin.ac.th%26su%3Dเว็บ%20INF-BD%3A%20งานรับนักเรียน%3A%20ปัญหาชื่อโรงเรียน" target="_blank">noc@bodin.ac.th</a>
+					<a href="<?=$APP_CONST["baseURL"]?>v2/ticket/create#&subj=เพิ่มชื่อสถานศึกษาในตัวเลือก&app=3&cat=6" target="_blank">สร้างคำร้องผ่านระบบ</a>
 				</span>
 			</div>
 			<fieldset class="evi-file">
