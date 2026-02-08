@@ -1,7 +1,8 @@
 <center><p>
 	<a role="button" class="gray hollow dont-ripple" style="font-size: 12.5px;"
 		data-href="/go?url=mailto%3Anoc%40bodin.ac.th%3Fsubject%3Dเว็บ%20INF-BD%3A%20งานรับนักเรียน"
-		href="/go?url=https%3A%2F%2Fmail.google.com%2Fa%2Fbodin.ac.th%2F%3Ffs%3D1%26tf%3Dcm%26to%3Dnoc%40bodin.ac.th%26su%3Dเว็บ%20INF-BD%3A%20งานรับนักเรียน"
+		data-href="/go?url=https%3A%2F%2Fmail.google.com%2Fa%2Fbodin.ac.th%2F%3Ffs%3D1%26tf%3Dcm%26to%3Dnoc%40bodin.ac.th%26su%3Dเว็บ%20INF-BD%3A%20งานรับนักเรียน"
+		href="/v2/ticket/create#service=ADM"
 	>ติดต่อสอบถาม/แจ้งปัญหาการใช้งาน</a>
 </p></center>
 <section class="nav">
