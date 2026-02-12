@@ -7,6 +7,7 @@ RewriteBase /e/enroll/
 ### App URLs
 RewriteRule ^$ /e/enroll/2569 [L,QSA]
 RewriteRule ^(\d{4})/statistics$ /e/enroll/statistics/$1 [L,QSA]
+RewriteRule ^((resource/)?file/)?form/([0-9a-z\-]{5,6})$ /e/enroll/resource/file/dl?name=$3 [L,QSA]
 
 ### App's default
 RewriteCond %{HTTP_USER_AGENT} (Safari){0} [NC]

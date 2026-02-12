@@ -163,7 +163,7 @@
 								<span>ชื่อไฟล์</span>
 								<input type="text" readonly>
 							</div>
-							<center><a href="/e/enroll/resource/file/dl?name=csgrf" target="dlframe" download="ฟอร์มคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน.pdf">[<i class="material-icons">download</i> ฟอร์มคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ]</a></center>
+							<center><a href="/e/enroll/form/csgrf" target="dlframe" download="ฟอร์มคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน.pdf">[<i class="material-icons">download</i> ฟอร์มคำร้องขอเปลี่ยนแปลงกลุ่มการเรียน ]</a></center>
 							<div class="group spread last" name="decide">
 								<button class="last yellow" onClick="return cng.request()">ยืนยันการขอเปลี่ยนแปลงกลุ่มการเรียน</button>
 							</div>

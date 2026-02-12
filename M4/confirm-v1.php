@@ -151,7 +151,7 @@
 										<span class="last">ชื่อไฟล์</span>
 										<input type="text" readonly>
 									</div>
-									<center><a href="/e/enroll/resource/file/dl?name=waiver" target="dlframe" download="ฟอร์มสละสิทธิ์.pdf">[<i class="material-icons">download</i> ฟอร์มสละสิทธิ์ ]</a></center>
+									<center><a href="/e/enroll/form/waiver" target="dlframe" download="ฟอร์มสละสิทธิ์.pdf">[<i class="material-icons">download</i> ฟอร์มสละสิทธิ์ ]</a></center>
 								</fieldset>
 								<div class="group spread last" name="decide">
 									<button class="last green" onClick="return cnf.choose(true)">ยืนยันสิทธิ์การเข้าศึกษาต่อ</button>

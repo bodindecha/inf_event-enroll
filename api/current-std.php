@@ -5,7 +5,8 @@
 	$year = $_SESSION["stif"]["t_year"];
 	require_once("_log-v1.php");
 	// Execute
-	if (!isset($_SESSION["auth"]) || $_SESSION["auth"]["type"] <> "s") API::errorMessage(1, "You are unauthorized."); else
+	if ($APP_USER == $APP_CONST["USER_TYPE"][3]) API::errorMessage(3, "You are not signed-in. Please reload and try again."); else
+	if ($_SESSION["auth"]["type"] <> "s") API::errorMessage(1, "Your account type is not student"); else
 	switch (API::$action) {
 		case "get": {
 			switch (API::$command) {

@@ -11,7 +11,8 @@
 			# case "eioad":	$user_action = "print";		$doc["source"] = "2569/คำชี้แจงเอกสารการมอบตัว"; break;
 			case "eioad":	$user_action = "print";		$doc["source"] = "2569/แนวทางการเข้ามอบตัว ม.4 ห้องเรียน พสวท. 2569"; break;
 			case "csgrf":	$user_action = "download";	$doc["source"] = "2569/ใบยื่นคำร้องขอเปลี่ยนกลุ่มการเรียน"; break;
-			case "waiver":	$user_action = "download";	$doc["source"] = "2568/คำร้องขอสละสิทธิ์"; break;
+			case "nwaive":	$user_action = "download";	$doc["source"] = "2569/คำร้องขอสละสิทธิ์นักเรียนใหม่"; break;
+			case "rwaive":	$user_action = "download";	$doc["source"] = "2569/คำร้องขอสละสิทธิ์นักเรียนเดิม"; break;
 			case "sef-1n":	$user_action = "download";	$doc["source"] = "2569/ใบมอบตัว ห้องเรียนทั่วไป ม.1"; break;
 			case "sef-1m":	$user_action = "download";	$doc["source"] = "2569/ใบมอบตัว ห้องเรียนคณิต ม.1"; break;
 			# case "sef-1s":	$user_action = "download";	$doc["source"] = "2566/ใบมอบตัว ห้องเรียนวิทย์ ม.1"; break;
@@ -152,7 +153,7 @@
 	$authuser = $user_override ?? ($_SESSION["auth"]["user"] ?? "");
 	if (!strlen($authuser) && isset($_REQUEST["authuser"])) $authuser = $vToken -> read(trim($_REQUEST["authuser"]));
 	if (strlen($authuser) && (isset($_REQUEST["authuser"]) || $_SESSION["auth"]["type"]=="s" || isset($user_override))) {
-		$is_oldstd = (in_array($docID, ["csgrf", "sef-4n"]) && RegExTest("/^[45]/", $authuser)) || $authuser == "99999";
+		$is_oldstd = (in_array($docID, ["csgrf", "sef-4n", "rwaive"]) && RegExTest("/^[45]/", $authuser)) || $authuser == "99999";
 		// Fetch biological information
 		$get = $is_oldstd
 			? "SELECT citizen_id,birthy+543 AS birthy,birthm,birthd,room,number FROM user_s WHERE stdid=$authuser"
@@ -279,14 +280,31 @@
 			# textAt(28, atDocRow(11), 1.5, ROW_HGT, num2locale($read["room"]), $showBdr, 1, "C");
 			# textAt(31, atDocRow(11), 2, ROW_HGT, num2locale($read["number"]), $showBdr, 1, "C");
 			# textAt(9, atDocRow(12), 7, ROW_HGT, num2locale($authuser), $showBdr, 1, "C");
-		} else if ($docID == "waiver") {
+		} else if ($docID == "nwaive") { // formerly waiver
 			define("ROW_HGT", 34); // px
-			$cfg["margin"] = array("left" => 9.6, "top" => 6.2, "right" => 9.6);
 			$mFile -> SetFont($cfg["font"], "R", 16);
-			textAt(30, atDocRow(10), 3, ROW_HGT, num2locale((int)date("Y")+543), $showBdr, 1, "C");
+			// 2567-68
+			# $cfg["margin"] = array("left" => 9.6, "top" => 6.2, "right" => 9.6);
+			# textAt(30, atDocRow(10), 3, ROW_HGT, num2locale((int)date("Y")+543), $showBdr, 1, "C");
+			# $read["nameath"] = preg_replace("/^(ด\.[ชญ]\.|นา(ย|งสาว)) ?/", "", $read["nameath"]);
+			# textAt(13.25, atDocRow(16)-2, 13, ROW_HGT, $read["nameath"], $showBdr, 1, "C");
+			# textAt(3, atDocRow(17), 10.5, ROW_HGT, num2locale($authuser), $showBdr, 1, "C");
+			// 2569
+			define("ROW_HGT", 34); // px
+			$cfg["margin"] = array("left" => 9.6, "top" => 3.6, "right" => 9.6);
+			textAt(29.75, atDocRow(10), 3.25, ROW_HGT, num2locale((int)date("Y")+543), $showBdr, 1, "C");
 			$read["nameath"] = preg_replace("/^(ด\.[ชญ]\.|นา(ย|งสาว)) ?/", "", $read["nameath"]);
-			textAt(13.25, atDocRow(16)-2, 13, ROW_HGT, $read["nameath"], $showBdr, 1, "C");
-			textAt(3, atDocRow(17), 10.5, ROW_HGT, num2locale($authuser), $showBdr, 1, "C");
+			textAt(13, atDocRow(17)-2, 12.5, ROW_HGT, $read["nameath"], $showBdr, 1, "C");
+			textAt(3, atDocRow(18), 10, ROW_HGT, num2locale($authuser), $showBdr, 1, "C");
+		} else if ($docID == "rwaive") {
+			define("ROW_HGT", 34); // px
+			$cfg["margin"] = array("left" => 9.6, "top" => 3.6, "right" => 9.6);
+			$mFile -> SetFont($cfg["font"], "R", 16);
+			textAt(29.75, atDocRow(10), 3.25, ROW_HGT, num2locale((int)date("Y")+543), $showBdr, 1, "C");
+			$read["nameath"] = preg_replace("/^(ด\.[ชญ]\.|นา(ย|งสาว)) ?/", "", $read["nameath"]);
+			textAt(12.25, atDocRow(17)-2, 16, ROW_HGT, $read["nameath"], $showBdr, 1, "C");
+			textAt(30.5, atDocRow(17)-2, 2.5, ROW_HGT, num2locale($read["room"]), $showBdr, 1, "C");
+			textAt(6.5, atDocRow(18), 5, ROW_HGT, num2locale($authuser), $showBdr, 1, "C");
 		}
 	} addPrintJS();
 	// Send out file

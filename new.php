@@ -55,7 +55,7 @@
 				const cv = {
 					APIurl: "/e/enroll/resource/php/api",
 					group: <?=arrDump($CV_groupAdm)?>,
-					dlURL: "/e/enroll/resource/file/dl?name=sef-"
+					dlURL: "/e/enroll/form/sef-"
 				};
 				var sv = {};
 				var authen = function() {

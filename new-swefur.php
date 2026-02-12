@@ -129,7 +129,7 @@
 				<?php } else if (!$allowFile) { ?>
 					<center class="message cyan">นักเรียนได้เลือกยืนยันสิทธิ์หรือนักเรียนได้ทำการอัปโหลดไฟล์ไว้แล้ว</center>
 				<?php } else { ?>
-					<center style="margin-bottom: 37.5px;"><a href="/e/enroll/resource/file/dl?name=waiver" target="dlframe" download="ฟอร์มสละสิทธิ์.pdf">[<i class="material-icons">download</i> ฟอร์มคำร้องขอสละสิทธิ์ ]</a></center>
+					<center style="margin-bottom: 37.5px;"><a href="/e/enroll/form/nwaive" target="_blank" download="ฟอร์มสละสิทธิ์.pdf">[<i class="material-icons">download</i> ฟอร์มคำร้องขอสละสิทธิ์ ]</a></center>
 					<form class="form" method="post" enctype="multipart/form-data" action="/e/enroll/resource/php/api">
 						<div class="box"><input type="file" name="usf" accept=".png, .jpg, .jpeg, .gif, .heic, .pdf" required></div>
 						<div class="group last">
@@ -138,7 +138,6 @@
 							<button class="blue" onClick="return gsef.out()" style="white-space: nowrap;">อัปโหลด</button>
 						</div>
 					</form>
-					<iframe name="dlframe" hidden></iframe>
 				<?php } ?>
 			</div><?php } ?>
 		</main>

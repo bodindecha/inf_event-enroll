@@ -149,7 +149,7 @@
 										<span>ชื่อไฟล์</span>
 										<input type="text" readonly>
 									</div>
-									<center><a href="/e/enroll/resource/file/dl?name=sggtmf" onClick="return prs.intercept(this,event)">[<i class="material-icons">visibility</i> ตัวอย่างใบรับรองผลการสมัครเข้าศึกษาต่อระดับชั้นมัธยมศึกษาปีที่ 4 ]</a></center>
+									<center><a href="/e/enroll/form/sggtmf" onClick="return prs.intercept(this,event)">[<i class="material-icons">visibility</i> ตัวอย่างใบรับรองผลการสมัครเข้าศึกษาต่อระดับชั้นมัธยมศึกษาปีที่ 4 ]</a></center>
 								</fieldset>
 								<div class="group spread last" name="decide">
 									<button class="last green" onClick="return prs.choose(true)">ยืนยันสิทธิ์การเข้าศึกษาต่อ</button>
@@ -159,7 +159,7 @@
 						<?php } else { ?>
 							<center class="message red">ขณะนี้อยู่นอกช่วงเวลาในการรายงานตัวของนักเรียน</center>
 					<?php } } else { ?>
-						<center class="message green">นักเรียนได้<b><?=$readstatus["choose"]=="Y"?"ยืนยัน":"สละ"?>สิทธิ์</b>เรียบร้อยแล้วเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus["time"]))?> ผ่านที่อยู่ IP <?=$readstatus["ip"]?><?php if ($readstatus["choose"] == "Y") { ?><br><a href="/e/enroll/resource/upload/view?type=present" onClick="return prs.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a> <a href="/e/enroll/resource/file/dl?name=sef-4n" target="dlframe" download="ใบมอบตัว.pdf">[<i class="material-icons">download</i> ใบมอบตัว ]</a><?php } ?></center>
+						<center class="message green">นักเรียนได้<b><?=$readstatus["choose"]=="Y"?"ยืนยัน":"สละ"?>สิทธิ์</b>เรียบร้อยแล้วเมื่อ<?=date("วันที่ d/m/Y เวลา H:i:s", strtotime($readstatus["time"]))?> ผ่านที่อยู่ IP <?=$readstatus["ip"]?><?php if ($readstatus["choose"] == "Y") { ?><br><a href="/e/enroll/resource/upload/view?type=present" onClick="return prs.intercept(this,event)">[<i class="material-icons">visibility</i> ไฟล์หลักฐาน ]</a> <a href="/e/enroll/form/sef-4n" target="dlframe" download="ใบมอบตัว.pdf">[<i class="material-icons">download</i> ใบมอบตัว ]</a><?php } ?></center>
 						<?php if ($readstatus["choose"] == "Y") include($dirPWroot."e/enroll/resource/upload/direction/present.html");
 				} } ?>
 				<iframe name="dlframe" hidden></iframe>

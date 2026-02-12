@@ -243,7 +243,7 @@
 	<section class="container">
 		<h2>ระบบเปลี่ยนแปลงการใช้สิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
 		<div class="css-flex css-flex-gap-5 text-middle">
-			<a role="button" class="back black icon hollow ripple-click" href="<?=$backPage?>">
+			<a role="button" class="back black icon hollow ripple-click css-flex-noshrink" href="<?=$backPage?>">
 				<i class="material-icons">arrow_back</i>
 				<span class="text">ย้อนกลับ</span>
 			</a>
@@ -292,7 +292,7 @@
 			</div>
 			<fieldset class="evi-file">
 				<legend>กรุณาอัปโหลดไฟล์หลักฐานการสละสิทธิ์</legend>
-				<div class="css-flex css-flex-gap-10">
+				<div class="css-flex css-flex-gap-10 css-flex-autodir">
 					<div class="file-box land r-widescr">
 						<input type="file" name="usf" accept=".png, .jpg, .jpeg, .gif, .heic, .pdf" required />
 					</div>
@@ -308,7 +308,7 @@
 							</div>
 						</div>
 						<div class="left">
-							<a role="button" class="hollow icon long pill ripple-click" href="<?=$APP_CONST["baseURL"]?>e/enroll/resource/file/dl?name=waiver" target="dlframe" download="ฟอร์มสละสิทธิ์.pdf"><i class="material-icons">download</i><span class="text ref-00007">ฟอร์มสละสิทธิ์</span></a>
+							<a role="button" class="hollow icon long pill ripple-click" href="<?=$APP_CONST["baseURL"]?>e/enroll/form/rwaive" target="_blank" download="ฟอร์มสละสิทธิ์.pdf"><i class="material-icons">download</i><span class="text ref-00007">ฟอร์มสละสิทธิ์</span></a>
 						</div>
 					</div>
 				</div>
@@ -336,7 +336,6 @@
 				</tr>
 			</thead><tbody></tbody></table></div>
 		</details>
-		<iframe name="dlframe" hidden></iframe>
 	</section>
 </main>
 <?php
