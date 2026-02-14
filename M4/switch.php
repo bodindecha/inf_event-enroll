@@ -37,13 +37,10 @@
 	});
 	const page = (function(d) {
 		const cv = {
-			API_URL: AppConfig.APIbase + "enroll/v1/current-std",
+			API_URL: AppConfig.APIbase + "enroll/v1/returning-std",
 			option: chose => chose ? "ยืนยันสิทธิ์" : "สละสิทธิ์",
 			MaxLength: 200
-		},	mb2b = MB => MB*1024000,
-			kb2mb = KB => KB/1024,
-			b2kb = B => B/1024,
-			b2mb = B => B/1024000;
+		};
 		var sv = {
 			inited: false,
 			historyLoaded: false,
@@ -53,20 +50,24 @@
 		var initialize = function() {
 			if (sv.inited) return;
 			loading = $("app[name=main] > main .status");
-			setTimeout(checkState, 7.5e2);
+			setTimeout(checkState, 750);
 			$("app[name=main] > main .history").on("click", loadHistory);
 			$("app[name=main] > main .school input[name=school]").on("focus", selectSchool);
-			$("app[name=main] > main .form [name=usf]").on("change", function() { validate_file(false); });
+			sv.file = new FileUploadHandler.Watch("app[name=main] > main .form [name=usf]", {
+				preview: $("app[name=main] > main .form div.file-box"),
+				property: {
+					name: d.querySelector("app[name=main] > main .form [data-name=name]"),
+					size: d.querySelector("app[name=main] > main .form [data-name=size]")
+				}, options: {
+					sizeLimit: FileUploadHandler.convertSize.MB2B(10),
+					types: ["png", "jpg", "jpeg", "gif", "heic", "pdf"]
+				}, message: {
+					noFile: `กรุณาเลือกไฟล์หลักฐาน`
+				}
+			});
 			sv.inited = true;
 		};
-		var byte2text = function(bytes) {
-			let nv;
-			if (bytes < 1024000) nv = Math.round(b2kb(bytes)*100)/100;
-			else nv = Math.round(b2mb(bytes)*100)/100;
-			if (!nv*100%100) nv = parseInt(nv);
-			return nv+(bytes < 1024000 ? " KB" : " MB");
-		},
-		checkState = function(update = false) {
+		var checkState = function(update = false) {
 			if (typeof update === "object") update = false;
 			app.Util.ajax(cv.API_URL, {act: "get", cmd: "status"}).then(function(dat) {
 				if (!update) loading.hide();
@@ -102,13 +103,6 @@
 		fillInfo = function(field, info) {
 			$('app[name=main] > main output[name="' + field + '"]').val(info);
 		},
-		intercept = function(m, e) {
-			if (e.ctrlKey) return; // window.open(m.href);
-			else if (typeof e.preventDefault == "function") e.preventDefault();
-			app.UI.lightbox("center", {title: m.innerText.substring(10, m.innerText.length), allowClose: true, autoClose: 3e5},
-				'<iframe src="'+m.href+'" style="width:90vw;height:80vh;border:none">Loading...</iframe>'
-			);
-		},
 		loadHistory = function(update = false) {
 			if (typeof update === "object") update = false;
 			if (sv.historyLoaded && !update) return;
@@ -137,62 +131,30 @@
 			}
 		},
 		request = function() {
-			(function() {
-				if (!sv.chose) return app.UI.notify(1, "คุณไม่สามารถยืนยันสิทธิ์ได้");
-				var reason = $("app[name=main] > main .form .reason textarea").val();
-				if (reason.length > cv.MaxLength) return app.UI.notify(2, "Your note is too long (limit 200 characters)");
-				// if (sv.chose && dat.school == null) return app.UI.notify(1, "You must provide an attending school name");
-				if (sv.chose && !validate_file(true)) return $("app[name=main] > main .form [name=usf]").focus();
-				if (!confirm("Are you sure you want to change your rights?")) return;
-				$("app[name=main] > main .form").attr("disabled", "");
-				var details = { reason, school: sv.school };
-				if (sv.chose) {
-					let pseudoForm = new FormData();
-					pseudoForm.append("act", "answer");
-					pseudoForm.append("cmd", "add_evi_file");
-					pseudoForm.append("usf", d.querySelector("app[name=main] > main .form [name=usf]").files[0]);
-					$.ajax({
-						url: cv.API_URL, type: "POST", resultType: "JSON",
-						data: pseudoForm,
-						processData: false, contentType: false,
-						success: function(dat) {
-							if (dat.success) processRequest(details);
-							else {
-								$("app[name=main] > main .form").removeAttr("disabled");
-								if (typeof dat.messages === "object" && dat.messages.length) dat.messages.forEach(em => app.UI.notify(...em));
-							}
-						}
-					});
-				} else processRequest(details);
-			}()); return false;
-		},
-		validate_file = function(recheck) {
-			var f = d.querySelector("app[name=main] > main .form [name=usf]").files[0],
-				preview = $("app[name=main] > main .form div.file-box"), fprop = {
-					name: d.querySelector('app[name=main] > main .form input[data-name="name"]'),
-					size: d.querySelector('app[name=main] > main .form input[data-name="size"]')
-				};
-			// if (!recheck && typeof sv.img_link === "string") URL.revokeObjectURL(sv.img_link);
-			if (typeof f !== "undefined") {
-				let filename = f.name.toLowerCase().split(".");
-				if ((["png", "jpg", "jpeg", "heic", "gif", "pdf"].includes(filename[filename.length-1])) && (f.size > 0 && f.size < 10240000)) { // 10 MB
-					if (!recheck) {
-						fprop["name"].value = f.name;
-						fprop["size"].value = byte2text(f.size);
-						try { if (!app._var.isSafari()) {
-							sv.img_link = URL.createObjectURL(f);
-							preview.css("background-image", 'url("'+sv.img_link+'")');
-						} } catch(ex) {}
-					} return true;
-				} else app.UI.notify(2, "กรุณาตรวจสอบว่าภาพของคุณเป็นประเภท PNG/JPG/GIF/HEIF/PDF และมีขนาดไม่เกิน 10 MB");
-			} else {
-				fprop["name"].value = ""; fprop["size"].value = "";
-				preview.removeAttr("style");
-				if (recheck) app.UI.notify(1, "กรุณาเลือกไฟล์หลักฐาน.");
-			} return false;
+			if (!sv.chose) return app.UI.notify(1, "คุณไม่สามารถยืนยันสิทธิ์ได้");
+			var reason = $("app[name=main] > main .form .reason textarea").val();
+			if (reason.length > cv.MaxLength) return app.UI.notify(2, "Your note is too long (limit 200 characters)");
+			// if (sv.chose && dat.school == null) return app.UI.notify(1, "You must provide an attending school name");
+			if (sv.chose && !sv.file.validate(true)) return $("app[name=main] > main .form [name=usf]").focus();
+			if (!confirm("Are you sure you want to change your rights?")) return;
+			$("app[name=main] > main .form").attr("disabled", "");
+			var details = { reason, school: sv.school };
+			if (sv.chose) {
+				sv.file.uploadTo(cv.API_URL,
+					{act: "request", cmd: "add_evi_file"}, {
+						form: $("app[name=main] > main .form"),
+						buttons: $("app[name=main] > main .form button"),
+						uploadIcon: $("app[name=main] > main .loading")
+					},
+					function(dat) {
+						if (dat) return processRequest(details);
+						$("app[name=main] > main .form").removeAttr("disabled");
+					}
+				);
+			} else processRequest(details);
 		},
 		processRequest = function(details) {
-			app.Util.ajax(cv.API_URL, {act: "answer", cmd: "switch", param: details}).then(function(dat) {
+			app.Util.ajax(cv.API_URL, {act: "request", cmd: "switch", param: details}).then(function(dat) {
 				$("app[name=main] > main .form").removeAttr("disabled");
 				if (!dat) return;
 				checkState(true);
@@ -209,7 +171,7 @@
 			if (reference in sv.reasons) box.html(sv.reasons[reference]);
 			else {
 				me.attr("disabled", "");
-				app.Util.ajax(cv.API_URL, {act: "get", cmd: "memorandum", param: reference}).then(function(dat) {
+				app.Util.ajax(cv.API_URL, {act: "get", cmd: "memorandum", param: {source: "switch", ref: reference}}).then(function(dat) {
 					if (!dat) return me.removeAttr("disabled");
 					box.html(dat);
 					sv.reasons[reference] = dat;
@@ -228,16 +190,24 @@
 					display.val(sv.school.name);
 				}
 			});
+		},
+		action = function(act, m, e) {
+			if (app.IO.kbd.ctrl() || top.app.UI.lightbox.isOpen()) return;
+			if (e.preventDefault) e.preventDefault();
+			var frameHTML = `<div class="page-frame" data-action="${act.toLowerCase()}"><iframe src="${m.href}">Loading...</iframe></div>`;
+			if (act == "User") return app.UI.lightbox("top", {title: "View " + act, exitTap: true, allowScroll: true}, frameHTML);
+			top.app.UI.lightbox("center", {title: m.innerText.substring(10, m.innerText.length), exitTap: false}, frameHTML);
 		};
 		return {
 			init: initialize,
-			intercept,
+			action,
 			request,
 			getNotes
 		};
 	}(document));
 </script>
 <script type="text/javascript" src="<?=$APP_CONST["baseURL"]?>_resx/plugin/TianTcl/find-search/data.js"></script>
+<script type="text/javascript" src="<?=$APP_CONST["cdnURL"]?>static/script/core/fileUploadHandler.js"></script>
 <?php $APP_PAGE -> print -> nav("enroll"); ?>
 <main>
 	<section class="container">
@@ -264,7 +234,7 @@
 			นักเรียนได้<b><output name="choose"></output></b>เรียบร้อยแล้วเมื่อวันที่ <output name="at-date"></output> เวลา <output name="at-time"></output> น. ผ่านที่อยู่ IP <output name="ip"></output>
 			<a role="button" class="preview-file blue hollow -bare pill ripple-click"
 				href="<?=$APP_CONST["baseURL"]?>e/enroll/resource/upload/view?type=confirm"
-				onClick="page.intercept(this, event)"
+				onClick="page.action('file', this, event)"
 			>
 				<i class="material-icons">visibility</i>
 				<span class="text">ไฟล์หลักฐาน</span>
@@ -320,7 +290,7 @@
 					rows="3" maxlength="200"
 				></textarea>
 			</div>
-			<div class="group split">&nbsp;<button class="switch xwide ripple-click" onClick="return page.request()"><span class="text"></span></button></div>
+			<div class="group split">&nbsp;<button class="switch xwide ripple-click" onClick="page.request(); return false;"><span class="text"></span></button></div>
 		</form>
 		<details class="history card message cyan" style="display: none;">
 			<summary>ประวัติการเปลี่ยนแปลงสิทธิ์</summary>

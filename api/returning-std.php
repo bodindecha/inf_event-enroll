@@ -5,13 +5,40 @@
 	$year = $_SESSION["stif"]["t_year"];
 	require_once("_log-v1.php");
 	// Execute
+	function ThaiTime(string $ts): string {
+		return "วันที่ ".date2TH(substr($ts, 0, 10), true)." เวลา ".substr($ts, 11, 5)." น.";
+	}
 	if ($APP_USER == $APP_CONST["USER_TYPE"][3]) API::errorMessage(3, "You are not signed-in. Please reload and try again."); else
 	if ($_SESSION["auth"]["type"] <> "s") API::errorMessage(1, "Your account type is not student"); else
 	switch (API::$action) {
 		case "get": {
 			switch (API::$command) {
+				case "change": {
+					if ($APP_USER == $APP_CONST["USER_TYPE"][3] || $_SESSION["auth"]["type"] <> "s")
+						API::successState(array("hasChance" => false));
+					else {
+						$get = $APP_DB[5] -> query("SELECT a.type,a.choose,a.time,a.ip,b.start,b.stop FROM admission_change a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.stdid=$APP_USER");
+						if (!$get || !$get -> num_rows) API::successState(array("hasChance" => false));
+						$read = $get -> fetch_array(MYSQLI_ASSOC);
+						$resp = array(
+							"hasChance" => true,
+							"placement" => $read["type"],
+							"chose" => empty($read["choose"]) ? false : array(
+								"group" => $read["choose"],
+								"time" => ThaiTime($read["time"]),
+								"ip" => $read["ip"]
+							),
+							"available" => TianTcl::inTimeRange($read["start"], $read["stop"])
+						); if ($resp["available"]) {
+							if (!$resp["chose"]) $resp["slotEnds"] = ThaiTime($read["stop"]);
+							// Get sgroup list
+							$get = $APP_DB[5] -> query("SELECT code,name FROM admission_sgroup ORDER BY code");
+							if ($get && $get -> num_rows) $resp["groups"] = array_column($get -> fetch_all(MYSQLI_ASSOC), null, "code");
+						} API::successState($resp);
+					}
+				break; }
 				case "status": {
-					$getInfo = $APP_DB[5] -> query("SELECT a.choose,a.filetype,a.lastupdate AS time,a.ip,b.name,d.name AS new FROM admission_confirm a INNER JOIN admission_sgroup b ON a.type=b.code LEFT JOIN admission_change c ON a.stdid=c.stdid LEFT JOIN admission_sgroup d ON c.choose=d.code WHERE a.stdid=$APP_USER");
+					$getInfo = $APP_DB[5] -> query("SELECT choose,filetype,lastupdate AS time,ip,(SELECT name FROM admission_sgroup WHERE type=code) AS name,(SELECT name FROM admission_sgroup WHERE code=(SELECT c.choose FROM admission_change c WHERE c.stdid=a.stdid)) AS new FROM admission_confirm a WHERE stdid=$APP_USER");
 					$getHist = $APP_DB[5] -> query("SELECT 1 FROM admission_switch WHERE stdid=$APP_USER");
 					if (!$getInfo || !$getHist) {
 						API::errorMessage(3, "Unable to load data.");
@@ -54,26 +81,34 @@
 					}
 				break; }
 				case "memorandum": {
-					$refID = escapeSQL(switch_ref_decrypt(API::$attr));
-					$get = $APP_DB[5] -> query("SELECT stdid,reason FROM admission_switch WHERE refID=$refID");
-					if (!$get) {
-						API::errorMessage(3, "Unable to get notes.");
-						syslog_e(null, "admission", "swt", "getNote", "", false, "", "InvalidQuery");
-					} else if (!$get -> num_rows) {
-						API::errorMessage(1, "Memorandum not found.");
-						syslog_e(null, "admission", "swt", "getNote", "", false, "", "Empty");
+					$refID = escapeSQL(switch_ref_decrypt(API::$attr["ref"]));
+					$source = escapeSQL(API::$attr["source"]);
+					$translation = array("confirm" => "cng", "switch" => "swt");
+					if (!in_array($source, array_keys($translation))) {
+						API::errorMessage(3, "Invalid source requested.");
+						# syslog_e(null, "admission", "", "getNote", "", false, "", "Wrong");
 					} else {
-						$read = $get -> fetch_array(MYSQLI_ASSOC);
-						if ($read["stdid"] <> $APP_USER) {
-							API::errorMessage(3, "You don't have permission to view this memorandum.");
-							syslog_e(null, "admission", "swt", "getNote", "", false, "", "Unauthorized");
-						} else API::successState($read["reason"]);
+						$get = $APP_DB[5] -> query("SELECT stdid,reason FROM admission_$source WHERE refID=$refID");
+						$source = $translation[$source];
+						if (!$get) {
+							API::errorMessage(3, "Unable to get notes.");
+							syslog_e(null, "admission", $source, "getNote", "", false, "", "InvalidQuery");
+						} else if (!$get -> num_rows) {
+							API::errorMessage(1, "Memorandum not found.");
+							syslog_e(null, "admission", $source, "getNote", "", false, "", "Empty");
+						} else {
+							$read = $get -> fetch_array(MYSQLI_ASSOC);
+							if ($read["stdid"] <> $APP_USER) {
+								API::errorMessage(3, "You don't have permission to view this memorandum.");
+								syslog_e(null, "admission", $source, "getNote", "", false, "", "Unauthorized");
+							} else API::successState($read["reason"]);
+						}
 					}
 				break; }
 				default: API::errorMessage(1, "Invalid command"); break;
 			}
 		break; }
-		case "answer": {
+		case "request": {
 			switch (API::$command) {
 				case "switch": {
 					$get = $APP_DB[5] -> query("SELECT a.choose,a.filetype,b.shortname FROM admission_confirm a INNER JOIN admission_sgroup b ON a.type=b.code WHERE a.stdid=$APP_USER");
@@ -163,6 +198,16 @@
 					} else {
 						API::errorMessage(1, "นักเรียนไม่มีสิทธิ์ในการเข้าศึกษาต่อ หรือมีมากกว่าหนึ่งสิทธิ์. หากเป็นข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ."); // Invalid response
 						syslog_e($APP_USER, "admission", "swt", "addEviFile", $fileType, false, "", "InvalidResponse");
+					}
+				break; }
+				case "commit": {
+					$to = escapeSQL(API::$attr["to"]);
+					$translation = array("present" => "prs", "change" => "cng", "confirm" => "cng");
+					if (!in_array($to, array_keys($translation))) {
+						API::errorMessage(3, "Invalid destination sent.");
+						# syslog_e(null, "admission", "", "save", "", false, "", "Wrong");
+					} else {
+						$to = $translation[$to];
 					}
 				break; }
 				default: API::errorMessage(1, "Invalid command"); break;
