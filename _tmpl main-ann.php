@@ -105,6 +105,8 @@
 				<p>ประเภท<b>ห้องเรียนพิเศษ</b></p>
 				<a disabled data-release="__-__" target="_blank" href="<?=$admission["link"]?>_%2F_____">[รอบที่ <b>1</b>]</a>
 			</li>
+			<hr>
+			<li class="label"><span class="ref-00018">หากพบปัญหาในการใช้งานระบบ กรุณา</span><a href="<?=$APP_CONST["baseURL"]?>v2/ticket/create#app=3&cat=2&priority=H" target="_blank">ติดต่อเจ้าหน้าที่ผู้ดูแลระบบ</a></li>
 		</ul> -->
 		<center class="message black"><span class="ref-00016">ศึกษารายระเอียดทั้งหมดที่</span> <a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fadmission">งานรับนักเรียน</a><hr><a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fcostume">เครื่องแบบและระเบียบการแต่งกาย</a><span class="ref-00017">โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</span></center>
 	</section>

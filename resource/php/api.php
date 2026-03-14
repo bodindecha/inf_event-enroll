@@ -332,7 +332,13 @@
 				slog("webForm", "admission", $type, $command, "", "fail", "", "Unauthorized");
 			} else {
 				$authuser = $_SESSION["auth"]["user"] ?? "";
-				function optionResult($choice) { return (empty($choice) ? "ยังไม่ใช้" : ($choice=="Y" ? "ยืนยัน" : "สละ")); }
+				function optionResult($choice) {
+					return array(
+						"Y" => "ยืนยัน",
+						"C" => "เปลี่ยนกลุ่มยืนยัน",
+						"N" => "สละ",
+						"" => "ยังไม่ใช้"
+					)[(string)$choice]; }
 				require_once($dirPWroot."resource/php/core/config.php");
 				$mainDBname = "`tiantcl_inf`";
 				switch ($command) {
@@ -406,11 +412,12 @@
 										errorMessage(2, "ไม่มีข้อมูลให้ทำการลบ.");
 										slog($authuser, "admission", $type, $command, "$user,$group", "fail", "", "Empty");
 									} else {
+										$sqlreset = "SET choose=NULL,time=NULL,ip=''";
 										switch ($group) {
-											case "new": $sqldone = "UPDATE admission_newstd SET choose=NULL,time=NULL,ip='',namefen='',namelen='' WHERE datid=$user"; break;
-											case "prs": $sqldone = "UPDATE admission_present SET choose=NULL,filetype=NULL,time=NULL,ip='' WHERE stdid=$user"; break;
-											case "cng": $sqldone = "UPDATE admission_change SET choose=NULL,filetype=NULL,time=NULL,ip='' WHERE stdid=$user"; break;
-											case "cnf": $sqldone = "UPDATE admission_confirm SET choose=NULL,filetype=NULL,time=NULL,ip='' WHERE stdid=$user"; break;
+											case "new": $sqldone = "UPDATE admission_newstd $sqlreset,namefen='',namelen='' WHERE datid=$user"; break;
+											case "prs": $sqldone = "UPDATE admission_present $sqlreset,filetype=NULL WHERE stdid=$user"; break;
+											case "cng": $sqldone = "UPDATE admission_change $sqlreset,filetype=NULL WHERE stdid=$user"; break;
+											case "cnf": $sqldone = "UPDATE admission_confirm $sqlreset,filetype=NULL,reason=NULL WHERE stdid=$user"; break;
 										} $success = $db -> query($sqldone);
 										if ($success) {
 											successState(null);

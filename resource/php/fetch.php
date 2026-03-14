@@ -92,12 +92,12 @@
 						"B" => array("namefth", true, "ชื่อ", false, "c.namefth"),
 						"C" => array("namelth", true, "สกุล", false, "c.namelth"),
 						"D" => array("name", true, "สายการเรียน", false, "b.name"),
-						"E" => array("choose2", true, "เลือก", false, "(CASE a.choose WHEN 'Y' THEN 'ยืนยันสิทธิ์' WHEN 'N' THEN 'สละสิทธิ์' ELSE 'ยังไม่ใช้สิทธิ์' END)"),
+						"E" => array("choose2", true, "เลือก", false, "(CASE a.choose WHEN 'Y' THEN 'ยืนยันสิทธิ์' WHEN 'N' THEN 'สละสิทธิ์' WHEN 'C' THEN 'เปลี่ยนกลุ่ม' ELSE 'ยังไม่ใช้สิทธิ์' END)"),
 						"X" => array("filetype", true, "หมายเหตุ", true, "a.filetype"),
 						"W" => array("time", true, "แก้ไขล่าสุด", false, "a.time"),
 						"F" => array("room", true, "ห้อง", false, "c.room")
 					); # $queryBegin = "SELECT a.stdid,b.name,(CASE a.choose WHEN 'Y' THEN 'ยืนยันสิทธิ์' WHEN 'N' THEN 'สละสิทธิ์' ELSE 'ยังไม่ใช้สิทธิ์' END) AS choose2,a.filetype,CONCAT(c.namepth,c.namefth) AS namef,c.namelth,c.room FROM admission_confirm a INNER JOIN admission_sgroup b ON a.type=b.code INNER JOIN bd_student c ON a.stdid=c.stdid";
-					$queryBegin = "SELECT a.stdid,b.name,(CASE a.choose WHEN 'Y' THEN 'ยืนยันสิทธิ์' WHEN 'N' THEN 'สละสิทธิ์' ELSE 'ยังไม่ใช้สิทธิ์' END) AS choose2,a.filetype,c.namep,c.namefth,c.namelth,c.room FROM admission_confirm a INNER JOIN admission_sgroup b ON a.type=b.code INNER JOIN $mainDBname.user_s c ON a.stdid=c.stdid";
+					$queryBegin = "SELECT a.stdid,b.name,(CASE a.choose WHEN 'Y' THEN 'ยืนยันสิทธิ์' WHEN 'N' THEN 'สละสิทธิ์' WHEN 'C' THEN 'เปลี่ยนกลุ่ม' ELSE 'ยังไม่ใช้สิทธิ์' END) AS choose2,a.filetype,c.namep,c.namefth,c.namelth,c.room FROM admission_confirm a INNER JOIN admission_sgroup b ON a.type=b.code INNER JOIN $mainDBname.user_s c ON a.stdid=c.stdid";
 					$col = array("F", "A", "B", "C", "D", "E", "X");
 					$searchable = array("A", "B", "C", "D", "E", "F");
 					break;

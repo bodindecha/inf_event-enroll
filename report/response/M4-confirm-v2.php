@@ -182,6 +182,7 @@
 									<option value="*" selected>*นักเรียนที่มีสิทธิ์ทุกสถานะ*</option>
 									<option value="ans">ใช้สิทธิ์แล้ว</option>
 									<option value="Y">- ยืนยันสิทธิ์</option>
+									<option value="C">- เปลี่ยนกลุ่ม</option>
 									<option value="N">- สละสิทธิ์</option>
 									<option value="una">ยังไม่ใช้สิทธิ์</option>
 								</select>

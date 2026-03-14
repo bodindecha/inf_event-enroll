@@ -17,7 +17,6 @@
 	app[name=main] > main .form .school > a { cursor: help; }
 	app[name=main] > main .form .school > a + span { display: none; }
 	app[name=main] > main .form .school > a:where(:hover, :focus) + span, app[name=main] > main .form .school > a + span:where(:hover, :focus-within) { display: inline; }
-	app[name=main] > main .form .evi-file { border-radius: .3rem; }
 	app[name=main] > main .form .reason { border-collapse: collapse; }
 	app[name=main] > main .form .reason label { border-radius: var(--form-bdr-rad) var(--form-bdr-rad) 0 0 !important; }
 	app[name=main] > main .form .reason textarea {
@@ -31,14 +30,22 @@
 	}
 </style>
 <script type="text/javascript">
-	const TRANSLATION = location.pathname.substring(1).replace(/\/$/, "").replaceAll("/", "+");
+	const TRANSLATION = ["e+enroll+M4+API", location.pathname.substring(1).replace(/\/$/, "").replaceAll("/", "+")];
 	$(document).ready(function() {
 		page.init();
 	});
 	const page = (function(d) {
 		const cv = {
 			API_URL: AppConfig.APIbase + "enroll/v1/returning-std",
-			option: chose => chose ? "ยืนยันสิทธิ์" : "สละสิทธิ์",
+			API_MSG_INFO: {
+				pack: 2, prefix: "API_MSG_", map: [
+					[], [4], [1, 2, 5, 7, 8, 9, 10], [3, 50, 51, 6]
+				]
+			},
+			option: chose => chose ?
+				app._var.translationDic()[3].messages["confirmed"][app.settings["lang"]] :
+				app._var.translationDic()[3].messages["waived"][app.settings["lang"]],
+			MinLength: 5,
 			MaxLength: 200
 		};
 		var sv = {
@@ -131,38 +138,34 @@
 			}
 		},
 		request = function() {
-			if (!sv.chose) return app.UI.notify(1, "คุณไม่สามารถยืนยันสิทธิ์ได้");
+			if (!sv.chose) return app.UI.notify(1, app._var.translationDic()[3].messages["no-rights"][app.settings["lang"]]);
 			var reason = $("app[name=main] > main .form .reason textarea").val();
-			if (reason.length > cv.MaxLength) return app.UI.notify(2, "Your note is too long (limit 200 characters)");
-			// if (sv.chose && dat.school == null) return app.UI.notify(1, "You must provide an attending school name");
+			if (reason.length < cv.MinLength) return app.UI.notify(2, app._var.translationDic()[3].messages["length-insufficient"][app.settings["lang"]]);
+			if (reason.length > cv.MaxLength) return app.UI.notify(2, app._var.translationDic()[3].messages["length-exceed"][app.settings["lang"]]);
+			// if (sv.chose && dat.school == null) return app.UI.notify(1, app._var.translationDic()[3].messages["sch-req"][app.settings["lang"]]);
 			if (sv.chose && !sv.file.validate(true)) return $("app[name=main] > main .form [name=usf]").focus();
-			if (!confirm("Are you sure you want to change your rights?")) return;
+			if (!confirm(app._var.translationDic()[3].messages["confirmation"][app.settings["lang"]])) return;
 			$("app[name=main] > main .form").attr("disabled", "");
-			var details = { reason, school: sv.school };
-			if (sv.chose) {
-				sv.file.uploadTo(cv.API_URL,
-					{act: "request", cmd: "add_evi_file"}, {
-						form: $("app[name=main] > main .form"),
-						buttons: $("app[name=main] > main .form button"),
-						uploadIcon: $("app[name=main] > main .loading")
-					},
-					function(dat) {
-						if (dat) return processRequest(details);
-						$("app[name=main] > main .form").removeAttr("disabled");
-					}
-				);
-			} else processRequest(details);
-		},
-		processRequest = function(details) {
-			app.Util.ajax(cv.API_URL, {act: "request", cmd: "switch", param: details}).then(function(dat) {
-				$("app[name=main] > main .form").removeAttr("disabled");
-				if (!dat) return;
-				checkState(true);
-				if (sv.historyLoaded) loadHistory(true);
-				$("app[name=main] > main .form .reason textarea").val("");
-				sv.school = null; $("app[name=main] > main .school input[name=school]").val("");
-				app.UI.notify(0, "เปลี่ยนแปลงสิทธิ์เข้าศึกษาต่อสำเร็จ");
-			});
+			sv.file.uploadTo(cv.API_URL,
+				{act: "request", cmd: "commit", param: {
+					to: "switch", answer: sv.chose ? "N" : "Y",
+					reason, school: sv.school
+				}}, {
+					form: $("app[name=main] > main .form"),
+					buttons: $("app[name=main] > main .form button"),
+					uploadIcon: $("app[name=main] > main .loading")
+				},
+				function(dat) {
+					$("app[name=main] > main .form").removeAttr("disabled");
+					if (!dat) return;
+					checkState(true);
+					if (sv.historyLoaded) loadHistory(true);
+					$("app[name=main] > main .form .reason textarea").val("");
+					sv.school = null; $("app[name=main] > main .school input[name=school]").val("");
+					app.UI.notify(0, app._var.translationDic()[3].messages["switch-success"][app.settings["lang"]]);
+				},
+				cv.API_MSG_INFO
+			);
 		},
 		getNotes = function(me) {
 			var box = $(me.parentNode.parentNode);
@@ -179,7 +182,7 @@
 			}
 		},
 		selectSchool = function() {
-			fs.school("เลือกสถานศึกษา", function() {
+			fs.school(app._var.translationDic()[3].messages["select-school"][app.settings["lang"]], function() {
 				var display = $("app[name=main] .school input[name=school]");
 				if (!arguments.length) {
 					sv.school = null;
@@ -211,13 +214,13 @@
 <?php $APP_PAGE -> print -> nav("enroll"); ?>
 <main>
 	<section class="container">
-		<h2>ระบบเปลี่ยนแปลงการใช้สิทธิ์เข้าศึกษาต่อ ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
-		<div class="css-flex css-flex-gap-5 text-middle">
+		<h2><?=$header["title"]?> ณ โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</h2>
+		<div class="css-flex css-flex-gap-5 css-text-middle">
 			<a role="button" class="back black icon hollow ripple-click css-flex-noshrink" href="<?=$backPage?>">
 				<i class="material-icons">arrow_back</i>
 				<span class="text">ย้อนกลับ</span>
 			</a>
-			<div class="status css-flex text-middle">
+			<div class="status css-flex css-text-middle">
 				<div class="loading"></div>
 				<span>กำลังตรวจสอบข้อมูล</span>
 			</div>
@@ -266,7 +269,7 @@
 					<div class="file-box land r-widescr">
 						<input type="file" name="usf" accept=".png, .jpg, .jpeg, .gif, .heic, .pdf" required />
 					</div>
-					<div class="css-flex css-flex-col css-flex-split css-full-x">
+					<div class="css-flex css-flex-col css-flex-split css-flex-gap-10 css-full-x">
 						<div class="container">
 							<div class="group">
 								<label class="ref-00005">ชื่อไฟล์</label>
@@ -278,7 +281,11 @@
 							</div>
 						</div>
 						<div class="left">
-							<a role="button" class="hollow icon long pill ripple-click" href="<?=$APP_CONST["baseURL"]?>e/enroll/form/rwaive" target="_blank" download="ฟอร์มสละสิทธิ์.pdf"><i class="material-icons">download</i><span class="text ref-00007">ฟอร์มสละสิทธิ์</span></a>
+							<a
+								role="button" class="hollow icon long pill ripple-click"
+								href="<?=$APP_CONST["baseURL"]?>e/enroll/form/rwaive"
+								target="_blank" download="ฟอร์มสละสิทธิ์.pdf"
+							><i class="material-icons">download</i><span class="text ref-00007">ฟอร์มสละสิทธิ์</span></a>
 						</div>
 					</div>
 				</div>
@@ -286,7 +293,7 @@
 			<div class="reason">
 				<div class="group"><label>บันทึกช่วยจำ (เหตุผลการเปลี่ยนแปลง)</label></div>
 				<textarea name="reason" class="resize-y"
-					placeholder="เพิ่มบันทึก..."
+					placeholder="เพิ่มบันทึก…"
 					rows="3" maxlength="200"
 				></textarea>
 			</div>

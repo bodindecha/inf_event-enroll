@@ -36,8 +36,13 @@
 	if (!class_exists("TianTcl")) require_once($APP_RootDir."private/script/lib/TianTcl/various.php");
 	define("ADMISSION_ANSWER_YES", "Y");
 	define("ADMISSION_ANSWER_NO", "N");
+	define("ADMISSION_ANSWER_CHANGE", "C");
 	define("ADMISSION_SECRET_KEY", "B0d1^/-4dm1$5|o/v");
 	define("ADMISSION_SECRET_SALT", 2565.2024);
+	define("ADMISSION_LINE_TOKEN", "3Iy4xiCuirfOo2BxvU5ruqTafbt2FAKYqUXliNlBhjf");
+	$year = $_SESSION["stif"]["t_year"] ?? null;
+	$year = $year ? $year + 1 : (int)date("Y") + 543;
+
 	function switch_ref_encrypt($refID) {
 		return TianTcl::encrypt(
 			"swt".str_pad(strval($refID), 4, "0", STR_PAD_LEFT)."ADM",
@@ -46,6 +51,10 @@
 		);
 	}
 	function switch_ref_decrypt($reference) {
-		return rtrim(substr(TianTcl::decrypt($reference, key: ADMISSION_SECRET_KEY, salt: ADMISSION_SECRET_SALT), 3), "ADM");
+		return rtrim(substr(TianTcl::decrypt(
+			$reference,
+			key: ADMISSION_SECRET_KEY,
+			salt: ADMISSION_SECRET_SALT)
+		, 3), "ADM");
 	}
 ?>

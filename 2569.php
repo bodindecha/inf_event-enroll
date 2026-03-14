@@ -83,9 +83,9 @@
 			<li class="label ref-00013" id="/announcement/new-student">ประกาศผลนักเรียนที่ผ่านการคัดเลือก (สอบเข้าใหม่)</li>
 			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
 			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b> (<b>ความสามารถพิเศษ</b>)</a></li>
-			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
+			<li data-release="02-26"><a target="_blank" href="<?=$admission["link"]?>2%2F37560">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></a></li>
 			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภท<b>ห้องเรียนปกติ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
-			<li disabled data-release="__-__"><a target="_blank" href="<?=$admission["link"]?>_%2F_____">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
+			<li data-release="02-26"><a target="_blank" href="<?=$admission["link"]?>2%2F37560">ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
 			<li data-release="01-14"><a target="_blank" href="<?=$admission["link"]?>1%2F37169">ประเภท<b>ห้องเรียนพสวท. (สู่ความเป็นเลิศ)</b> ชั้นมัธยมศึกษาปีที่ <b>4</b></a></li>
 			<li class="label ref-00014" id="/announcement/current-student">ประกาศผลนักเรียนชั้นมัธยมศึกษาปีที่ 3 ที่มีสิทธิ์เข้าเรียนต่อชั้นมัธยมศึกษาปีที่ 4 โรงเรียนเดิม</li>
 			<li  data-release="01-28"><a target="_blank" href="<?=$admission["link"]?>1%2F37229">ประเภทห้องเรียนปกติ (<b>รอบ 1</b>)</a></li>
@@ -105,9 +105,16 @@
 				<a data-release="02-05" target="_blank" href="<?=$admission["link"]?>2%2F37450">[รอบที่ <b>4</b>]</a>
 			</li>
 			<li>
-				<p>ประเภท<b>ห้องเรียนพิเศษ</b></p>
-				<a disabled data-release="__-__" target="_blank" href="<?=$admission["link"]?>_%2F_____">[รอบที่ <b>1</b>]</a>
+				<p>ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>1</b></p>
+				<a data-release="03-02" target="_blank" href="<?=$admission["link"]?>3%2F37574">[รอบที่ <b>1</b>]</a>
 			</li>
+			<li>
+				<p>ประเภท<b>ห้องเรียนพิเศษ</b>ชั้นมัธยมศึกษาปีที่ <b>4</b></p>
+				<a data-release="03-02" target="_blank" href="<?=$admission["link"]?>3%2F37576">[รอบที่ <b>1</b>]</a>
+				<a data-release="03-09" target="_blank" href="<?=$admission["link"]?>3%2F37608">[รอบที่ <b>2</b>]</a>
+			</li>
+			<hr>
+			<li class="label"><span class="ref-00018">หากพบปัญหาในการใช้งานระบบ กรุณา</span><a href="<?=$APP_CONST["baseURL"]?>v2/ticket/create#app=3&cat=2&priority=H" target="_blank">ติดต่อเจ้าหน้าที่ผู้ดูแลระบบ</a></li>
 		</ul>
 		<center class="message black"><span class="ref-00016">ศึกษารายระเอียดทั้งหมดที่</span> <a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fadmission">งานรับนักเรียน</a><hr><a target="_blank" href="/go?url=https%3A%2F%2Fbodin.ac.th%2Fhome%2Fcostume">เครื่องแบบและระเบียบการแต่งกาย</a><span class="ref-00017">โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)</span></center>
 	</section>

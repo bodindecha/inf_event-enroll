@@ -98,18 +98,23 @@
 					} } break;
 				} case "cnf": {
 					$name = "ยืนยันสิทธิ์ม3 ขึ้นม4";
-					$result = $db -> query("SELECT a.stdid,b.name,a.choose,a.filetype,COALESCE(a.time,a.lastupdate) AS time FROM admission_confirm a INNER JOIN admission_sgroup b ON a.type=b.code ORDER BY time ASC");
+					$result = $db -> query("SELECT a.stdid,b.name,a.choose,a.filetype,COALESCE(a.time, a.lastupdate) AS time,a.reason FROM admission_confirm a INNER JOIN admission_sgroup b ON a.type=b.code ORDER BY time ASC");
 					$has_result = ($result && $result -> num_rows); switch ($reqType) {
 						case "csv": case "tsv": {
 							$delimeter = ($reqType == "tsv" ? "\t" : ",");
-							$outputData = "\"ประทับเวลา\"$delimeter\"เลขประจำตัวนักเรียน\"$delimeter\"กลุ่มการเรียน\"$delimeter\"การเลือกใช้สิทธิ์\"";
+							$outputData = "\"ประทับเวลา\"$delimeter\"เลขประจำตัวนักเรียน\"$delimeter\"กลุ่มการเรียน\"$delimeter\"การเลือกใช้สิทธิ์\"$delimeter\"เหตุผลการสละสิทธิ์\"";
 							if ($evdLink) $outputData .= "$delimeter\"ไฟล์หลักฐาน\"";
 							if ($has_result) { while ($er = $result -> fetch_assoc()) {
 								// Modify
-								$er["choose"] = (empty($er["choose"]) ? "ยังไม่ใช้สิทธิ์" : ($er["choose"]=="Y" ? "ยืนยันสิทธิ์" : "สละสิทธิ์"));
+								$er["choose"] = array(
+									"Y" => "ยืนยันสิทธิ์",
+									"C" => "เปลี่ยนกลุ่ม",
+									"N" => "สละสิทธิ์",
+									"" => "ยังไม่ใช้สิทธิ์"
+								)[(string)$er["choose"]];
 								if (!empty($er["filetype"])) $er["filetype"] = $linkPrefix.$er["stdid"]."&type=confirm";
 								// Concat
-								$outputData .= "\n\"".$er["time"]."\"$delimeter\"".$er["stdid"]."\"$delimeter\"".$er["name"]."\"$delimeter\"".$er["choose"]."\"";
+								$outputData .= "\n\"".$er["time"]."\"$delimeter\"".$er["stdid"]."\"$delimeter\"".$er["name"]."\"$delimeter\"".$er["choose"]."\""."\"$delimeter\"".$er["reason"]."\"";
 								if ($evdLink) $outputData .= "$delimeter\"".$er["filetype"]."\"";
 							} }
 							break;
