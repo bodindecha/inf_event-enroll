@@ -122,6 +122,7 @@
 							),
 							"available" => TianTcl::inTimeRange($read["start"], $read["stop"])
 						); if ($resp["available"]) $resp["slotEnds"] = ThaiTime($read["stop"]);
+						else $resp["overdue"] = time() > strtotime($read["stop"]);
 						if (!empty($read["request"])) $resp["changeReq"] = $read["request"];
 						API::successState($resp);
 					}
@@ -171,7 +172,8 @@
 							$read = $get -> fetch_array(MYSQLI_ASSOC);
 							$hasFile = isset(API::$file["usf"]);
 							$query = ["UPDATE admission_$name SET", "choose='$answer',ip='$USER_IP' WHERE stdid=$APP_USER"];
-							if ($checkTime) $inTime = TianTcl::inTimeRange($read["start"], $read["stop"]);
+							if ($checkTime) $inTime = TianTcl::inTimeRange($read["start"], $read["stop"])
+								|| ($to == "cnf" && $overdue = (time() > strtotime($read["stop"])));
 							if ($checkTime && !$inTime) {
 								API::errorMessage(5); // Timeout
 								syslog_e($APP_USER, "admission", $to, "save", $answer, false, "", "Timeout");
@@ -212,7 +214,10 @@
 												API::$attr["school"]["ID"].'">โรงเรียน'.
 												API::$attr["school"]["name"]."</span>"
 											).(strlen($reason) ? "<hr>" : "").$reason;
-										} if ($fileReq && strlen(API::$attr["reason"]) < 5) {
+										} if ($overdue && $answer <> ADMISSION_ANSWER_NO) {
+											API::errorMessage(2); // Invalid option
+											syslog_e($APP_USER, "admission", $to, "save", $answer, false, "", "InvalidOption");
+										} else if ($fileReq && strlen(API::$attr["reason"]) < 5) {
 											API::errorMessage(11); // Condition: reason too short
 											syslog_e($APP_USER, "admission", $to, "save", $log_data, false, "", "InvalidReason");
 										} else if (!empty($read["choose"])) {

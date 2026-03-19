@@ -51,12 +51,13 @@
 		};
 		const field = name => $(`app[name=main] > main [name=${name}]`),
 			cbox = name => $(`app[name=main] > main .${name}`);
-		var sv = {inited: false};
+		var sv = {inited: false, noConfirm: false};
 		var initialize = function() {
 			if (sv.inited) return;
 			setTimeout(getStatus, 750); // Wait for msgPack to load first
 			cbox("remark-1").insertBefore(cbox("actions"));
 			cbox("remark-2").insertAfter(cbox("actions"));
+			cbox("hasReq").append(cbox("ann-date"));
 			sv.inited = true;
 		};
 		var getStatus = function() {
@@ -73,8 +74,16 @@
 					manSubmission(dat);
 					return cbox("sent").show();
 				} if (!dat.available) {
-					if (!dat.chosen) cbox("timeout").show();
-					return;
+					if (!dat.chosen) {
+						cbox("timeout").show();
+						if (dat.overdue) {
+							sv.noConfirm = true;
+							cbox("step-1 .title").removeAttr("disabled");
+							cbox("step-1 .subs-1").toggle("fold");
+							cbox("step-1 .subs-1 .green").attr("disabled", "").toggle("zoom");
+							cbox("step-2").fadeOut();
+						}
+					} return;
 				} field("date-limit").text(dat.slotEnds);
 				cbox("date-range").show();
 				// Initialize Forms
@@ -86,6 +95,7 @@
 			if ("GU".includes(dir)) cbox("step-1 .subs-1").toggle("fold");
 			switch (dir) {
 				case "G": {
+					if (sv.noConfirm) return app.UI.notify(1, app._var.translationDic()[3].messages["no-confirm"][app.settings["lang"]]);
 					cbox("step-1 .title").attr("disabled", "");
 					cbox("step-2 .title").removeAttr("disabled");
 					cbox("step-2 .subs-1").toggle("fold");
@@ -112,6 +122,7 @@
 				case "S": {
 					const ans = arguments[1];
 					if (ans == cv.OPTION_NO) return requestEvi();
+					else if (sv.noConfirm) return app.UI.notify(1, app._var.translationDic()[3].messages["no-confirm"][app.settings["lang"]]);
 					const btn = cbox("step-2 .subs-1 .actions").attr("disabled", "");
 					let isConfirmed = await new Promise(function(resolve, reject) {
 						app.UI.modal(cbox("profile").html() + "<hr><b><span class=\"ref-000" + 
@@ -181,6 +192,7 @@
 			);
 		},
 		requestSend = function(answer) {
+			if (sv.noConfirm) return app.UI.notify(1, app._var.translationDic()[3].messages["no-confirm"][app.settings["lang"]]);
 			const btn = cbox("step-2 .subs-1 .actions");
 			cbox("loading").show();
 			app.Util.ajax(cv.API_URL,
@@ -196,10 +208,12 @@
 			app.UI.notify(0, app._var.translationDic()[3].messages["submitted"][app.settings["lang"]]
 				.replace("{option}", cv.option(dat.chose.option))
 			);
+			cbox("title").attr("disabled", "");
 			cbox("step-1 .subs-2").fadeOut();
 			cbox("step-2 .subs-1").fadeOut();
 			// Add form2
 			cbox("date-range").fadeOut();
+			cbox("timeout").fadeOut();
 			// New info
 			manSubmission(dat);
 			if (!cbox("sent").is(":visible")) cbox("sent").toggle("blind");
@@ -210,9 +224,10 @@
 			field("IP-sent").text(dat.chose.ip);
 			if (typeof dat.changeReq !== "undefined" && dat.chose.option == cv.OPTION_CHANGE)
 				cbox("hasReq").insertAfter(cbox("sent"))
-			if (dat.chose.option == cv.OPTION_NO)
+			if (dat.chose.option == cv.OPTION_NO) {
+				cbox("sent .group").hide();
 				return cbox("step-2").fadeOut();
-			cbox("sent .gray").replaceWith("&nbsp;");
+			} cbox("sent .gray").replaceWith("&nbsp;");
 			cbox("instruction").insertAfter(cbox("sent"));
 			if (dat.chose.option == cv.OPTION_YES)
 				cbox("sent .orange").remove();
@@ -324,7 +339,7 @@
 							<button class="purple xwide ripple-click" onClick="cnf.interact('S', 'C')"><span>ขอประมวลการ<br>จัดกลุ่มการเรียนใหม่</span></button>
 						</div>
 						<!-- Remark 2 -->
-						<p class="hasReq css-text-italic" style="display: none;"><span class="ref-00017">คำร้องการขอเปลี่ยนเป็นกลุ่มการเรียน</span><u><output name="request"></output></u><span class="ref-00018">ของนักเรียนจะได้รับการพิจารณาภายหลัง</span></p>
+						<p class="hasReq css-text-italic" style="display: none;"><span class="ref-00017">คำร้องการขอเปลี่ยนเป็นกลุ่มการเรียน</span><u><output name="request"></output></u><span class="ref-00018">ของนักเรียนจะได้รับการพิจารณาภายหลังการยืนยันสิทธิ์เข้าศึกษาต่อ </span></p>
 					</li>
 				</ul>
 			</li>

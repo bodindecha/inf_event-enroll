@@ -51,7 +51,7 @@
 									if (dat.info.action) {
 										sv.ID = data.param.user;
 										sv.action = dat.info.impact;
-										$("main form.result").append('<div class="group split">&nbsp;<button class="red icon" onClick="return drp.delete()" name="danger"><i class="material-icons">delete</i>ลบกรายการนี้</button></div>');
+										$("main form.result").append('<div class="group split">&nbsp;<button class="red icon" onClick="return drp.delete()" name="danger"><i class="material-icons">delete</i>ลบรายการนี้</button></div>');
 										if (dat.info.action > 1) $("main form.result .group").prepend('<a role="button" class="gray icon hollow" onClick="return drp.intercept(this,event)" href="/e/enroll/report/response/file?of='+sv.ID+'&type='+cv.typeName[data.param.group]+'" draggable="false"><i class="material-icons">visibility</i>ดูไฟล์หลักฐาน</button>');
 									}
 								} else dat.reason.forEach(em => app.ui.notify(1, em));

@@ -98,7 +98,14 @@
 					} } break;
 				} case "cnf": {
 					$name = "ยืนยันสิทธิ์ม3 ขึ้นม4";
-					$result = $db -> query("SELECT a.stdid,b.name,a.choose,a.filetype,COALESCE(a.time, a.lastupdate) AS time,a.reason FROM admission_confirm a INNER JOIN admission_sgroup b ON a.type=b.code ORDER BY time ASC");
+					$result = $db -> query("SELECT a.stdid,b.name,a.choose,a.filetype,COALESCE(a.time, a.lastupdate) AS time,a.reason,(SELECT times FROM admission_change WHERE stdid=a.stdid) AS changes FROM admission_confirm a INNER JOIN admission_sgroup b ON a.type=b.code ORDER BY time ASC");
+					$chooseText = array(
+						"Y" => "ยืนยันสิทธิ์",
+						"C" => "เปลี่ยนกลุ่ม (ประมวลสำรอง)",
+						"R" => "เปลี่ยนกลุ่ม (เลือกใหม่)",
+						"N" => "สละสิทธิ์",
+						"" => "ยังไม่ใช้สิทธิ์"
+					);
 					$has_result = ($result && $result -> num_rows); switch ($reqType) {
 						case "csv": case "tsv": {
 							$delimeter = ($reqType == "tsv" ? "\t" : ",");
@@ -106,15 +113,11 @@
 							if ($evdLink) $outputData .= "$delimeter\"ไฟล์หลักฐาน\"";
 							if ($has_result) { while ($er = $result -> fetch_assoc()) {
 								// Modify
-								$er["choose"] = array(
-									"Y" => "ยืนยันสิทธิ์",
-									"C" => "เปลี่ยนกลุ่ม",
-									"N" => "สละสิทธิ์",
-									"" => "ยังไม่ใช้สิทธิ์"
-								)[(string)$er["choose"]];
+								if ($er["choose"] == "C" && (int)$er["changes"]) $er["choose"] = "R";
+								$er["choose"] = $chooseText[(string)$er["choose"]];
 								if (!empty($er["filetype"])) $er["filetype"] = $linkPrefix.$er["stdid"]."&type=confirm";
 								// Concat
-								$outputData .= "\n\"".$er["time"]."\"$delimeter\"".$er["stdid"]."\"$delimeter\"".$er["name"]."\"$delimeter\"".$er["choose"]."\""."\"$delimeter\"".$er["reason"]."\"";
+								$outputData .= "\n\"".$er["time"]."\"$delimeter\"".$er["stdid"]."\"$delimeter\"".$er["name"]."\"$delimeter\"".$er["choose"]."\"$delimeter\"".$er["reason"]."\"";
 								if ($evdLink) $outputData .= "$delimeter\"".$er["filetype"]."\"";
 							} }
 							break;
@@ -122,15 +125,17 @@
 							$outputData = array();
 							if ($has_result) { while ($er = $result -> fetch_assoc()) {
 								// Modify
-								$er["choose"] = (empty($er["choose"]) ? "ยังไม่ใช้สิทธิ์" : ($er["choose"]=="Y" ? "ยืนยันสิทธิ์" : "สละสิทธิ์"));
+								if ($er["choose"] == "C" && (int)$er["changes"]) $er["choose"] = "R";
+								$er["choose"] = $chooseText[(string)$er["choose"]];
 								$er["filetype"] = (empty($er["filetype"]) ? "" : $linkPrefix.$er["stdid"]."&type=confirm");
 								// Concat
 								$rowdata = array(
 									"ประทับเวลา" => $er["time"],
 									"เลขประจำตัวนักเรียน" => $er["stdid"],
 									"กลุ่มการเรียน" => $er["name"],
-									"การเลือกใช้สิทธิ์" => $er["choose"]
-								); if ($evdLink) $rowdata["ไฟล์หลักฐาน"] = $er["filetype"];
+									"การเลือกใช้สิทธิ์" => $er["choose"],
+									"เหตุผลการสละสิทธิ์" => $er["reason"]
+								); if ($evdLink) $rowdata["ไฟล์หลักฐาน"] = strlen($er["filetype"]) ? $er["filetype"] : null;
 								array_push($outputData, $rowdata);
 							} }
 							break;

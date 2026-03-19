@@ -184,8 +184,8 @@
 	# $mFile -> setDocModificationTimestamp(" GMT+07:00");
 	$mFile -> setProtection(
 		["modify", "copy", "annot-forms", "extract", "assemble"],
-		$user_action == "print" ? "" : DBConfig::get("PSWD-PDF_view"),
-		DBConfig::get("PSWD-PDF_master"),
+		$user_action == "print" ? "" : DBConfig::get("pdf.pswd.view"),
+		DBConfig::get("pdf.pswd.master"),
 	1);
 	$mFile -> setViewerPreferences(array(
 		"FitWindow" => true,

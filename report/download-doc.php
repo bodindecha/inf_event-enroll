@@ -79,12 +79,13 @@
 			sv.msgID = app.UI.notify(1, "Downloading zipped files...", 0);
 			app.UI.lightbox("center", {allowClose: false}, $("app[name=main] main .progress-template").html());
 			app.Util.ajax(cv.API_URL, {act: "get", cmd: "info", param: encodeURIComponent(token)}).then(async function(dat) {
-				if (!dat) {
+				if (!dat || !dat.filesize) {
 					app.UI.lightbox.close();
 					app.UI.notify.close(sv.msgID);
 					$("app[name=main] main .form button").removeAttr("disabled", "").toggleClass("orange green").html(cv.btn[0]);
 					app.nav.confirmLeave(false);
 					sv.processing = false;
+					if (!dat.filesize) app.UI.notify(3, "There's an error locating the specified file.");
 					return;
 				} var chunks = [], bytesRead = 0, offset = 0,
 					download = d.querySelector("app[name=main] main [name=dl-link]");

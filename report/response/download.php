@@ -3,9 +3,9 @@
 	require_once($APP_RootDir."private/script/start/API.php");
 	API::initialize();
 	$year = $_SESSION["stif"]["t_year"];
-	require_once($APP_RootDir."public_html/e/enroll/api/_log-v1.php");
+	require_once("$APP_RootDir$APP_CONST[publicDir]$APP_CONST[baseURL]e/enroll/api/_log-v1.php");
 	$type2name = array("prs" => "present", "cng" => "change", "cnf" => "confirm", "new" => "newstd");
-	$fileDir = $APP_RootDir."public_html/e/enroll/resource/upload/";
+	$fileDir = "$APP_RootDir$APP_CONST[publicDir]$APP_CONST[baseURL]e/enroll/resource/upload/";
 	$delimeter = "-";
 	// Execute
 	switch (API::$action) {
@@ -40,6 +40,7 @@
 						// First create record to prevent other overwrite
 						$APP_DB[5] -> query("INSERT INTO admission_evidence (requester,type,gathered,ip) VALUE ('$APP_USER','$type',$amount,'$USER_IP')");
 						$refID = $APP_DB[5] -> insert_id;
+						if (!is_dir($fileDir."archive/$year/")) mkdir($fileDir."archive/$year/", 0755, true);
 						$file = new ZipArchive();
 						if (!$file -> open($fileDir."archive/$year/".$type2name[$type].".zip", ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
 							API::errorMessage(3, "Unable to create ZIP file");
