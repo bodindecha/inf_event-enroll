@@ -287,7 +287,7 @@
 											case "prs": {
 												API::successState(array(
 													"chose" => array(
-														"group" => $answer,
+														"option" => $answer,
 														"time" => ThaiTime(),
 														"ip" => $USER_IP
 													)

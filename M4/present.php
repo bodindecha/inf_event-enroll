@@ -142,7 +142,8 @@
 			field("option").text(cv.option(dat.chose.option));
 			field("date-sent").text(dat.chose.time);
 			field("IP-sent").text(dat.chose.ip);
-			if (dat.chose.option == cv.OPTION_NO) return cbox("sent .gray").remove();
+			if (dat.chose.option == cv.OPTION_NO)
+				return cbox("sent [role=button]").remove();
 			if (!cbox("instruction").is(":visible")) cbox("instruction").toggle("fold");
 		}
 		action = function(act, m, e) {
@@ -218,6 +219,11 @@
 				href="<?=$APP_CONST["baseURL"]?>e/enroll/resource/upload/view?type=present"
 				onClick="prs.action('Uploaded document', this, event)"
 			><i class="material-icons">visibility</i> <span class="ref-00013">ไฟล์ใบรับรองผลการสมัครเข้าศึกษาต่อ</span></a>
+			<a
+				role="button" class="icon long pill ripple-click"
+				href="<?=$APP_CONST["baseURL"]?>e/enroll/form/sef-4n"
+				target="_blank" download="ใบมอบตัว.pdf"
+			><i class="material-icons">download</i> <span class="ref-00016">ใบมอบตัว</span></a>
 		</div>
 		<!-- Instruction -->
 		<?php require_once("$APP_RootDir$APP_CONST[publicDir]$APP_CONST[baseURL]e/enroll/resource/upload/direction/present.html"); ?>
