@@ -121,7 +121,7 @@
 				break; }
 				case "S": {
 					const ans = arguments[1];
-					if (ans == cv.OPTION_NO) return requestEvi();
+					if (ans == cv.OPTION_NO) return requestEvi(ans);
 					else if (sv.noConfirm) return app.UI.notify(1, app._var.translationDic()[3].messages["no-confirm"][app.settings["lang"]]);
 					const btn = cbox("step-2 .subs-1 .actions").attr("disabled", "");
 					let isConfirmed = await new Promise(function(resolve, reject) {
@@ -177,10 +177,10 @@
 			btn.prop("disabled", !pass);
 			return pass;
 		},
-		requestEvi = function() {
+		requestEvi = function(answer) {
 			if (!validateEvi(false)) return;
 			var answer = {
-				answer: cv.OPTION_NO,
+				answer,
 				reason: field("reason").val().trim()
 			}; if (sv.school) answer.school = sv.school;
 			sv.file.uploadTo(cv.API_URL,
@@ -345,12 +345,12 @@
 			</li>
 		</ul>
 		<div class="sent message green" style="display: none;">
-			<span class="ref-00011">นักเรียนได้</span><u><output name="option"></output></u><span class="ref-00012">เรียบร้อยแล้ว</span><br><span class="ref-00013">ครั้งล่าสุดเมื่อ</span><output name="date-sent"></output> <span class="ref-00014">ผ่านที่อยู่ IP</span> <output name="IP-sent"></output>
+			<span class="ref-00011">นักเรียนได้</span><u><output name="option" hidden></output><span class="ref-00020">ส่งคำตอบ</span></u><span class="ref-00012">เรียบร้อยแล้ว</span><br><span class="ref-00013">ครั้งล่าสุดเมื่อ</span><output name="date-sent"></output> <span class="ref-00014">ผ่านที่อยู่ IP</span> <output name="IP-sent"></output>
 			<div class="form form-bs inline css-flex-split">
 				<a
 					role="button" class="gray icon long pill ripple-click"
 					href="<?=$APP_CONST["baseURL"]?>e/enroll/resource/upload/view?type=confirm"
-					onClick="return cnf.action('File', this, event)"
+					onClick="cnf.action('Uploaded document', this, event)"
 				><i class="material-icons">visibility</i> <span class="ref-00015">ไฟล์หลักฐาน</span></a>
 				<div class="group">
 					<a role="button" class="yellow long ripple-click" href="switch"><span class="ref-00016">เปลี่ยนแปลงคำตอบ</span></a>

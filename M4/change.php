@@ -138,7 +138,7 @@
 			<a
 				role="button" class="gray icon long pill ripple-click"
 				href="<?=$APP_CONST["baseURL"]?>e/enroll/resource/upload/view?type=change"
-				onClick="return cng.action('File', this, event)"
+				onClick="cng.action('Uploaded document', this, event)"
 			><i class="material-icons">visibility</i> <span class="ref-00009">ไฟล์หลักฐาน</span></a>
 		</div>
 		<!-- instruction -->

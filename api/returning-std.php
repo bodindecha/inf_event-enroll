@@ -13,6 +13,25 @@
 	switch (API::$action) {
 		case "get": {
 			switch (API::$command) {
+				case "present": {
+					if ($APP_USER == $APP_CONST["USER_TYPE"][3] || $_SESSION["auth"]["type"] <> "s")
+						API::successState(array("hasChance" => false));
+					else {
+						$get = $APP_DB[5] -> query("SELECT a.choose,a.time,a.ip,b.start,b.stop FROM admission_present a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.stdid=$APP_USER");
+						if (!$get || !$get -> num_rows) API::successState(array("hasChance" => false));
+						$read = $get -> fetch_array(MYSQLI_ASSOC);
+						$resp = array(
+							"hasChance" => true,
+							"chose" => empty($read["choose"]) ? false : array(
+								"option" => $read["choose"],
+								"time" => ThaiTime($read["time"]),
+								"ip" => $read["ip"]
+							),
+							"available" => TianTcl::inTimeRange($read["start"], $read["stop"])
+						); if ($resp["available"]) $resp["slotEnds"] = ThaiTime($read["stop"]);
+						API::successState($resp);
+					}
+				break; }
 				case "change": {
 					if ($APP_USER == $APP_CONST["USER_TYPE"][3] || $_SESSION["auth"]["type"] <> "s")
 						API::successState(array("hasChance" => false));
@@ -35,6 +54,28 @@
 							$get = $APP_DB[5] -> query("SELECT code,name FROM admission_sgroup ORDER BY code");
 							if ($get && $get -> num_rows) $resp["groups"] = array_column($get -> fetch_all(MYSQLI_ASSOC), null, "code");
 						} API::successState($resp);
+					}
+				break; }
+				case "confirm": {
+					if ($APP_USER == $APP_CONST["USER_TYPE"][3] || $_SESSION["auth"]["type"] <> "s")
+						API::successState(array("hasChance" => false));
+					else {
+						$get = $APP_DB[5] -> query("SELECT a.choose,a.type,a.lastupdate AS time,a.ip,b.start,b.stop,(SELECT name FROM admission_sgroup WHERE code=a.type) AS type,(SELECT name FROM admission_sgroup WHERE code=(SELECT choose FROM admission_change c WHERE c.stdid=a.stdid)) AS request FROM admission_confirm a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.stdid=$APP_USER");
+						if (!$get || !$get -> num_rows) API::successState(array("hasChance" => false));
+						$read = $get -> fetch_array(MYSQLI_ASSOC);
+						$resp = array(
+							"hasChance" => true,
+							"placement" => $read["type"],
+							"chose" => empty($read["choose"]) ? false : array(
+								"option" => $read["choose"],
+								"time" => ThaiTime($read["time"]),
+								"ip" => $read["ip"]
+							),
+							"available" => TianTcl::inTimeRange($read["start"], $read["stop"])
+						); if ($resp["available"]) $resp["slotEnds"] = ThaiTime($read["stop"]);
+						else $resp["overdue"] = time() > strtotime($read["stop"]);
+						if (!empty($read["request"])) $resp["changeReq"] = $read["request"];
+						API::successState($resp);
 					}
 				break; }
 				case "status": {
@@ -103,28 +144,6 @@
 								syslog_e($APP_USER, "admission", $source, "getNote", "", false, "", "Unauthorized");
 							} else API::successState($read["reason"]);
 						}
-					}
-				break; }
-				case "confirm": {
-					if ($APP_USER == $APP_CONST["USER_TYPE"][3] || $_SESSION["auth"]["type"] <> "s")
-						API::successState(array("hasChance" => false));
-					else {
-						$get = $APP_DB[5] -> query("SELECT a.choose,a.type,a.lastupdate AS time,a.ip,b.start,b.stop,(SELECT name FROM admission_sgroup WHERE code=a.type) AS type,(SELECT name FROM admission_sgroup WHERE code=(SELECT choose FROM admission_change c WHERE c.stdid=a.stdid)) AS request FROM admission_confirm a INNER JOIN admission_timerange b ON a.timerange=b.trid WHERE a.stdid=$APP_USER");
-						if (!$get || !$get -> num_rows) API::successState(array("hasChance" => false));
-						$read = $get -> fetch_array(MYSQLI_ASSOC);
-						$resp = array(
-							"hasChance" => true,
-							"placement" => $read["type"],
-							"chose" => empty($read["choose"]) ? false : array(
-								"option" => $read["choose"],
-								"time" => ThaiTime($read["time"]),
-								"ip" => $read["ip"]
-							),
-							"available" => TianTcl::inTimeRange($read["start"], $read["stop"])
-						); if ($resp["available"]) $resp["slotEnds"] = ThaiTime($read["stop"]);
-						else $resp["overdue"] = time() > strtotime($read["stop"]);
-						if (!empty($read["request"])) $resp["changeReq"] = $read["request"];
-						API::successState($resp);
 					}
 				break; }
 				default: API::errorMessage(1, "Invalid command"); break;
@@ -265,6 +284,15 @@
 									if ($success) {
 										syslog_e($APP_USER, "admission", $to, "save", $answer);
 										switch ($to) {
+											case "prs": {
+												API::successState(array(
+													"chose" => array(
+														"group" => $answer,
+														"time" => ThaiTime(),
+														"ip" => $USER_IP
+													)
+												));
+											break; }
 											case "cng": {
 												API::successState(array(
 													"available" => $inTime,
