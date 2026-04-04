@@ -72,6 +72,7 @@
 			$truncatedText .= $char;
 		} return $text;
 	}
+	$row_mv = 0;
 	function textAt(
 		float|int|string $x, float|int|string $y,
 		float|int|string $w, float|int|string $h = 0,
@@ -87,13 +88,13 @@
 		string $valign = "M",
 		string $ellipsis = "…"
 	): void {
-		global $mFile, $cfg;
+		global $mFile, $cfg, $row_mv;
 		$cellWidth = cs2mm((float)$w);
 		$options = [$border, $lines, $align, $fill, $link, $stretch, $ignore_min_height, $calign, $valign];
 
 		$mFile -> SetXY(
 			($cfg["margin"]["left"] ?? 0) + cs2mm((float)$x),
-			($cfg["margin"]["top"] ?? 0) + px2mm((float)$y)
+			($cfg["margin"]["top"] ?? 0) + px2mm((float)$y + $row_mv)
 		); $symbol = "⌀";
 		if (str_contains($txt, $symbol)) { # RegExTest("/[⌀→]/gu", $txt)
 			$parts = explode($symbol, $txt); $moved = $mFile -> GetStringWidth($parts[0]);
@@ -247,7 +248,7 @@
 				break; }
 				case 2: {
 					textAt(13.9, atDocRow(20)-2, 18.1, ROW_HGT, $read["nameath"], $showBdr, 1, "L");
-					textAt(15.8, atDocRow(28)+8, 13, ROW_HGT, $read["nameath"], $showBdr, 1, "C");
+					# textAt(15.8, atDocRow(28)+8, 13, ROW_HGT, $read["nameath"], $showBdr, 1, "C");
 					# $curDate = explode(" ", date2TH("", false));
 					# $curDate = str_repeat(" ", strlen($curDate[0]) + strlen($curDate[1]) + 2).$curDate[2];
 					# textAt(18.8, atDocRow(29)+8, 9.5, ROW_HGT, $curDate, $showBdr, 1, "C");
